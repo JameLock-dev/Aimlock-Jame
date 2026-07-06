@@ -1,1 +1,23 @@
-document.addEventListener('DOMContentLoaded',()=>{const canvas=document.getElementById('chart');const ctx=canvas.getContext('2d');function resize(){canvas.width=canvas.clientWidth;canvas.height=200}resize();window.onresize=resize;let cpu=[],ram=[],ping=[];for(let i=0;i<60;i++){cpu.push(40+Math.random()*20);ram.push(35+Math.random()*25);ping.push(10+Math.random()*20);}function line(a,c){ctx.beginPath();ctx.strokeStyle=c;ctx.lineWidth=2;a.forEach((v,i)=>{let x=i*(canvas.width/59),y=canvas.height-v*2.5;i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.stroke()}function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);line(cpu,'#00c8ff');line(ram,'orange');line(ping,'#2eff6d')}setInterval(()=>{cpu.shift();ram.shift();ping.shift();cpu.push(35+Math.random()*30);ram.push(30+Math.random()*35);ping.push(10+Math.random()*20);draw();cpuV.textContent=Math.round(cpu.at(-1))+'%';ramV.textContent=Math.round(ram.at(-1))+'%';pingV.textContent=Math.round(ping.at(-1))+' ms';},1000);const cpuV=document.getElementById('cpu'),ramV=document.getElementById('ram'),pingV=document.getElementById('ping');draw();const list=document.getElementById('list');['Performance Mode','Network Optimizer','Battery Saver','Animation Boost','Background Cleaner','Memory Monitor'].forEach(n=>{const d=document.createElement('div');d.className='item';d.innerHTML=`<span>${n}</span><label class='switch'><input type='checkbox'><span class='slider'></span></label>`;list.appendChild(d);});});
+const functions = [
+
+"Chế độ hiệu năng",
+
+"Tối ưu mạng",
+
+"Tiết kiệm pin",
+
+"Tăng tốc giao diện",
+
+"Dọn dẹp bộ nhớ",
+
+"Giám sát hệ thống",
+
+"Tối ưu nền",
+
+"Giảm nhiệt thiết bị",
+
+"Kiểm tra kết nối",
+
+"Thông tin thiết bị"
+
+];
