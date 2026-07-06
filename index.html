@@ -1,20 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Performance Dashboard</title>
+    <title>Bảng Điều Khiển Hiệu Năng</title>
 
-<link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 </head>
 
@@ -24,75 +25,79 @@
 
 <div class="container">
 
-<div class="card">
+    <!-- Thẻ hiệu năng -->
 
-<div class="title">
+    <div class="card">
 
-<span>System Performance</span>
+        <div class="title">
 
-<div class="status">
+            <span>📊 Hiệu Năng Hệ Thống</span>
 
-CPU <span id="cpuTop">52%</span>
+            <div class="status">
 
-RAM <span id="ramTop">46%</span>
+                CPU <span id="cpuTop">52%</span>
 
-PING <span id="pingTop">8ms</span>
+                RAM <span id="ramTop">46%</span>
 
-</div>
+                PING <span id="pingTop">8ms</span>
 
-</div>
+            </div>
 
-<canvas id="chart"></canvas>
+        </div>
 
-<div class="info">
+        <canvas id="chart"></canvas>
 
-<div class="box">
+        <div class="info">
 
-<h3>CPU</h3>
+            <div class="box">
 
-<h1 id="cpu">49%</h1>
+                <h3>CPU</h3>
 
-<p>Processor Usage</p>
+                <h1 id="cpu">49%</h1>
 
-</div>
+                <p>Mức sử dụng bộ xử lý</p>
 
-<div class="box">
+            </div>
 
-<h3>RAM</h3>
+            <div class="box">
 
-<h1 id="ram">44%</h1>
+                <h3>RAM</h3>
 
-<p>Memory Usage</p>
+                <h1 id="ram">44%</h1>
 
-</div>
+                <p>Mức sử dụng bộ nhớ</p>
 
-<div class="box">
+            </div>
 
-<h3>Network</h3>
+            <div class="box">
 
-<h1 id="ping">12ms</h1>
+                <h3>Mạng</h3>
 
-<p>Latency</p>
+                <h1 id="ping">12ms</h1>
 
-</div>
+                <p>Độ trễ kết nối</p>
 
-</div>
+            </div>
 
-</div>
+        </div>
 
-<div class="card">
+    </div>
 
-<div class="title">
+    <!-- Danh sách chức năng -->
 
-<span>Performance Functions</span>
+    <div class="card">
 
-<span class="badge">ACTIVE</span>
+        <div class="title">
 
-</div>
+            <span>⚙️ Chức Năng Hệ Thống</span>
 
-<div id="functionList"></div>
+            <span class="badge">ĐANG HOẠT ĐỘNG</span>
 
-</div>
+        </div>
+
+        <div id="functionList"></div>
+
+    </div>
 
 </div>
 
