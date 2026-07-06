@@ -1,1 +1,318 @@
-body{background:#07111d;color:#fff;font-family:Arial;padding:15px}.panel{background:#0d1a2a;border:1px solid #1b3b66;border-radius:16px;padding:15px;margin-bottom:18px}canvas{width:100%;height:200px;background:#08121d;border-radius:12px}.stats{display:flex;gap:10px;margin-top:10px}.card{flex:1;background:#13253d;padding:12px;border-radius:12px;text-align:center}.item{display:flex;justify-content:space-between;align-items:center;background:#13253d;padding:12px;border-radius:12px;margin-top:10px}.switch{position:relative;width:52px;height:28px}.switch input{display:none}.slider{position:absolute;inset:0;background:#555;border-radius:28px}.slider:before{content:"";position:absolute;width:22px;height:22px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.3s}input:checked+.slider{background:#18d56b}input:checked+.slider:before{transform:translateX(24px)}
+/*=============================
+    CYBER DASHBOARD UI v2
+=============================*/
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+
+    background:#07101d;
+
+    color:#fff;
+
+    overflow-x:hidden;
+
+    min-height:100vh;
+
+}
+
+/*=========================
+BACKGROUND
+=========================*/
+
+body::before{
+
+    content:"";
+
+    position:fixed;
+
+    width:700px;
+
+    height:700px;
+
+    left:-250px;
+
+    top:-250px;
+
+    background:#0e6eff;
+
+    filter:blur(220px);
+
+    opacity:.16;
+
+    border-radius:50%;
+
+    z-index:-5;
+
+}
+
+body::after{
+
+    content:"";
+
+    position:fixed;
+
+    width:600px;
+
+    height:600px;
+
+    right:-200px;
+
+    bottom:-200px;
+
+    background:#00ffd5;
+
+    filter:blur(240px);
+
+    opacity:.12;
+
+    border-radius:50%;
+
+    z-index:-5;
+
+}
+
+.bg{
+
+    position:fixed;
+
+    inset:0;
+
+    background-image:
+
+    linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),
+
+    linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
+
+    background-size:35px 35px;
+
+    pointer-events:none;
+
+}
+
+/*=========================
+LAYOUT
+=========================*/
+
+.container{
+
+    width:95%;
+
+    max-width:1100px;
+
+    margin:auto;
+
+    padding:25px 0;
+
+}
+
+/*=========================
+CARD
+=========================*/
+
+.card{
+
+    position:relative;
+
+    background:rgba(14,25,43,.88);
+
+    border:1px solid rgba(65,120,255,.35);
+
+    border-radius:22px;
+
+    margin-bottom:22px;
+
+    overflow:hidden;
+
+    backdrop-filter:blur(15px);
+
+    box-shadow:
+
+    0 0 25px rgba(0,170,255,.15),
+
+    inset 0 0 0 1px rgba(255,255,255,.03);
+
+}
+
+.card::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+
+    top:0;
+
+    width:100%;
+
+    height:3px;
+
+    background:linear-gradient(90deg,#00bfff,#00ffea,#0099ff);
+
+}
+
+/*=========================
+TITLE
+=========================*/
+
+.title{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:20px 25px;
+
+    border-bottom:1px solid rgba(255,255,255,.06);
+
+}
+
+.title span:first-child{
+
+    font-size:20px;
+
+    font-weight:600;
+
+    letter-spacing:.5px;
+
+}
+
+.status{
+
+    display:flex;
+
+    gap:20px;
+
+    font-size:13px;
+
+    color:#9ec8ff;
+
+}
+
+.status span{
+
+    color:#00e5ff;
+
+    font-weight:700;
+
+}
+
+/*=========================
+BADGE
+=========================*/
+
+.badge{
+
+    background:linear-gradient(90deg,#008cff,#00d4ff);
+
+    color:#fff;
+
+    padding:6px 15px;
+
+    border-radius:40px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+    box-shadow:0 0 15px rgba(0,195,255,.5);
+
+}
+
+/*=========================
+CHART
+=========================*/
+
+#chart{
+
+    display:block;
+
+    width:100%;
+
+    height:220px;
+
+    padding:20px;
+
+}
+
+/*=========================
+INFO
+=========================*/
+
+.info{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:18px;
+
+    padding:22px;
+
+}
+
+.box{
+
+    background:#101d33;
+
+    border-radius:18px;
+
+    padding:22px;
+
+    text-align:center;
+
+    border:1px solid rgba(255,255,255,.05);
+
+    transition:.35s;
+
+}
+
+.box:hover{
+
+    transform:translateY(-6px);
+
+    border-color:#00bfff;
+
+    box-shadow:0 0 20px rgba(0,180,255,.25);
+
+}
+
+.box h3{
+
+    color:#8ab8ff;
+
+    font-size:15px;
+
+    margin-bottom:8px;
+
+}
+
+.box h1{
+
+    color:#00d8ff;
+
+    font-size:38px;
+
+    margin-bottom:10px;
+
+}
+
+.box p{
+
+    color:#8e9db2;
+
+    font-size:13px;
+
+}
