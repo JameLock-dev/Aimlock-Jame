@@ -1,1 +1,103 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="style.css"></head><body><div class="panel"><h2>System Performance</h2><canvas id="chart"></canvas><div class="stats"><div class="card"><h3>CPU</h3><span id="cpu">0%</span></div><div class="card"><h3>RAM</h3><span id="ram">0%</span></div><div class="card"><h3>Ping</h3><span id="ping">0 ms</span></div></div></div><div class="panel"><h2>Functions</h2><div id="list"></div></div><script src="script.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Performance Dashboard</title>
+
+<link rel="stylesheet" href="style.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="bg"></div>
+
+<div class="container">
+
+<div class="card">
+
+<div class="title">
+
+<span>System Performance</span>
+
+<div class="status">
+
+CPU <span id="cpuTop">52%</span>
+
+RAM <span id="ramTop">46%</span>
+
+PING <span id="pingTop">8ms</span>
+
+</div>
+
+</div>
+
+<canvas id="chart"></canvas>
+
+<div class="info">
+
+<div class="box">
+
+<h3>CPU</h3>
+
+<h1 id="cpu">49%</h1>
+
+<p>Processor Usage</p>
+
+</div>
+
+<div class="box">
+
+<h3>RAM</h3>
+
+<h1 id="ram">44%</h1>
+
+<p>Memory Usage</p>
+
+</div>
+
+<div class="box">
+
+<h3>Network</h3>
+
+<h1 id="ping">12ms</h1>
+
+<p>Latency</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<div class="title">
+
+<span>Performance Functions</span>
+
+<span class="badge">ACTIVE</span>
+
+</div>
+
+<div id="functionList"></div>
+
+</div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
