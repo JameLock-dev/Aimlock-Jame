@@ -1,4 +1,7 @@
-// ====== Lấy phần tử ======
+//============================
+// CYBER DASHBOARD v2
+//============================
+
 const canvas = document.getElementById("chart");
 const ctx = canvas.getContext("2d");
 
@@ -10,19 +13,27 @@ function resizeCanvas() {
 resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
 
-// ====== Dữ liệu mô phỏng ======
+//============================
+// DỮ LIỆU MÔ PHỎNG
+//============================
+
 let cpu = [];
 let ram = [];
 let ping = [];
 
 for (let i = 0; i < 60; i++) {
-    cpu.push(40 + Math.random() * 20);
-    ram.push(35 + Math.random() * 20);
-    ping.push(10 + Math.random() * 15);
+
+    cpu.push(45 + Math.random() * 12);
+    ram.push(35 + Math.random() * 15);
+    ping.push(8 + Math.random() * 10);
+
 }
 
-// ====== Vẽ đường ======
-function veDuong(data, color) {
+//============================
+// VẼ BIỂU ĐỒ
+//============================
+
+function drawLine(data, color) {
 
     ctx.beginPath();
 
@@ -30,11 +41,15 @@ function veDuong(data, color) {
 
     ctx.lineWidth = 3;
 
+    ctx.shadowBlur = 12;
+
+    ctx.shadowColor = color;
+
     data.forEach((value, index) => {
 
-        const x = index * (canvas.width / (data.length - 1));
+        let x = index * (canvas.width / (data.length - 1));
 
-        const y = canvas.height - value * 3;
+        let y = canvas.height - value * 3;
 
         if (index === 0)
             ctx.moveTo(x, y);
@@ -47,80 +62,121 @@ function veDuong(data, color) {
 
 }
 
-// ====== Vẽ biểu đồ ======
-function veBieuDo() {
+function drawChart() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    veDuong(cpu, "#00d4ff");
+    drawLine(cpu, "#00d4ff");
 
-    veDuong(ram, "#ffae00");
+    drawLine(ram, "#ff9800");
 
-    veDuong(ping, "#00ff88");
+    drawLine(ping, "#00ff84");
 
 }
 
-// ====== Cập nhật dữ liệu ======
-function capNhat() {
+drawChart();
+
+//============================
+// CẬP NHẬT MỖI GIÂY
+//============================
+
+setInterval(() => {
 
     cpu.shift();
     ram.shift();
     ping.shift();
 
-    cpu.push(35 + Math.random() * 30);
+    cpu.push(40 + Math.random() * 20);
+    ram.push(30 + Math.random() * 20);
+    ping.push(8 + Math.random() * 12);
 
-    ram.push(30 + Math.random() * 35);
+    drawChart();
 
-    ping.push(8 + Math.random() * 18);
+    let cpuValue = Math.round(cpu[cpu.length - 1]);
+    let ramValue = Math.round(ram[ram.length - 1]);
+    let pingValue = Math.round(ping[ping.length - 1]);
 
-    veBieuDo();
+    document.getElementById("cpu").innerHTML = cpuValue + "%";
+    document.getElementById("ram").innerHTML = ramValue + "%";
+    document.getElementById("ping").innerHTML = pingValue + " ms";
 
-    const cpuValue = Math.round(cpu[cpu.length - 1]);
-    const ramValue = Math.round(ram[ram.length - 1]);
-    const pingValue = Math.round(ping[ping.length - 1]);
+    document.getElementById("cpuTop").innerHTML = cpuValue + "%";
+    document.getElementById("ramTop").innerHTML = ramValue + "%";
+    document.getElementById("pingTop").innerHTML = pingValue + " ms";
 
-    document.getElementById("cpu").innerText = cpuValue + "%";
-    document.getElementById("ram").innerText = ramValue + "%";
-    document.getElementById("ping").innerText = pingValue + " ms";
+}, 1000);
 
-    document.getElementById("cpuTop").innerText = cpuValue + "%";
-    document.getElementById("ramTop").innerText = ramValue + "%";
-    document.getElementById("pingTop").innerText = pingValue + " ms";
+//============================
+// DANH SÁCH CHỨC NĂNG
+//============================
 
+const functions = [
+
+{
+icon:"⚡",
+title:"Chế độ hiệu năng",
+desc:"Theo dõi trạng thái hiệu năng của thiết bị."
+},
+
+{
+icon:"🌐",
+title:"Tối ưu mạng",
+desc:"Hiển thị và theo dõi chất lượng kết nối."
+},
+
+{
+icon:"🔋",
+title:"Tiết kiệm pin",
+desc:"Mô phỏng trạng thái tiết kiệm năng lượng."
+},
+
+{
+icon:"💾",
+title:"Dọn dẹp bộ nhớ",
+desc:"Hiển thị thông tin bộ nhớ đang sử dụng."
+},
+
+{
+icon:"📊",
+title:"Giám sát hệ thống",
+desc:"Theo dõi CPU, RAM và độ trễ theo thời gian."
+},
+
+{
+icon:"🎨",
+title:"Hiệu ứng giao diện",
+desc:"Bật hoặc tắt các hiệu ứng hiển thị."
+},
+
+{
+icon:"🔄",
+title:"Làm mới dữ liệu",
+desc:"Làm mới dữ liệu mô phỏng của dashboard."
+},
+
+{
+icon:"📱",
+title:"Thông tin thiết bị",
+desc:"Hiển thị thông tin mô phỏng về thiết bị."
+},
+
+{
+icon:"🌙",
+title:"Chế độ ban đêm",
+desc:"Giảm độ sáng giao diện."
+},
+
+{
+icon:"🛠",
+title:"Chẩn đoán hệ thống",
+desc:"Kiểm tra trạng thái hoạt động mô phỏng."
 }
-
-veBieuDo();
-
-setInterval(capNhat, 1000);
-
-// ====== Danh sách chức năng ======
-const danhSach = [
-
-    "Chế độ hiệu năng",
-
-    "Tối ưu mạng",
-
-    "Tiết kiệm pin",
-
-    "Dọn dẹp bộ nhớ",
-
-    "Giám sát hệ thống",
-
-    "Hiệu ứng giao diện",
-
-    "Làm mới dữ liệu",
-
-    "Thông tin thiết bị",
-
-    "Chế độ ban đêm",
-
-    "Chẩn đoán"
 
 ];
 
 const functionList = document.getElementById("functionList");
 
-danhSach.forEach((ten) => {
+functions.forEach(itemData => {
 
     const item = document.createElement("div");
 
@@ -128,33 +184,69 @@ danhSach.forEach((ten) => {
 
     item.innerHTML = `
 
-        <span>${ten}</span>
+<div class="itemLeft">
 
-        <label class="switch">
+<div class="icon">${itemData.icon}</div>
 
-            <input type="checkbox">
+<div class="text">
 
-            <span class="slider"></span>
+<h3>${itemData.title}</h3>
 
-        </label>
+<p>${itemData.desc}</p>
 
-    `;
+</div>
+
+</div>
+
+<div class="state">
+
+<span class="online">BẬT</span>
+
+<label class="switch">
+
+<input type="checkbox" checked>
+
+<span class="slider"></span>
+
+</label>
+
+</div>
+
+`;
+
+    const checkbox = item.querySelector("input");
+    const status = item.querySelector(".online");
+
+    checkbox.addEventListener("change", function(){
+
+        if(this.checked){
+
+            status.innerHTML="BẬT";
+            status.className="online";
+
+        }else{
+
+            status.innerHTML="TẮT";
+            status.className="offline";
+
+        }
+
+    });
 
     functionList.appendChild(item);
 
 });
 
-// ====== Hiệu ứng khi bật/tắt ======
-document.addEventListener("change", (e) => {
+//============================
+// GIỜ HỆ THỐNG
+//============================
 
-    if (e.target.type === "checkbox") {
+setInterval(() => {
 
-        if (e.target.checked) {
-            console.log("Đã bật");
-        } else {
-            console.log("Đã tắt");
-        }
+    const now = new Date();
 
-    }
+    document.title =
+        "Bảng Điều Khiển Hiệu Năng • " +
+        now.toLocaleTimeString("vi-VN");
 
-});
+},1000);
