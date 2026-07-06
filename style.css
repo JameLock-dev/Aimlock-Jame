@@ -316,3 +316,342 @@ INFO
     font-size:13px;
 
 }
+/*==================================
+FUNCTION LIST
+==================================*/
+
+#functionList{
+
+    padding:18px;
+
+}
+
+.item{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    background:#0f1d33;
+
+    border:1px solid rgba(255,255,255,.05);
+
+    border-radius:18px;
+
+    padding:18px 22px;
+
+    margin-bottom:16px;
+
+    transition:.35s;
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.item:hover{
+
+    border-color:#00c8ff;
+
+    transform:translateY(-3px);
+
+    box-shadow:0 0 20px rgba(0,180,255,.18);
+
+}
+
+.item::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+
+    top:0;
+
+    width:4px;
+
+    height:100%;
+
+    background:#00c8ff;
+
+    opacity:0;
+
+    transition:.3s;
+
+}
+
+.item:hover::before{
+
+    opacity:1;
+
+}
+
+.itemLeft{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+}
+
+.icon{
+
+    width:52px;
+
+    height:52px;
+
+    border-radius:50%;
+
+    background:linear-gradient(145deg,#0095ff,#00e5ff);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:22px;
+
+    color:white;
+
+    box-shadow:
+
+    0 0 15px rgba(0,195,255,.45);
+
+}
+
+.text{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.text h3{
+
+    font-size:16px;
+
+    font-weight:600;
+
+    color:white;
+
+}
+
+.text p{
+
+    margin-top:4px;
+
+    color:#8ca3bf;
+
+    font-size:13px;
+
+    line-height:20px;
+
+}
+
+/*==================================
+STATUS
+==================================*/
+
+.state{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+}
+
+.online{
+
+    background:#18d66f;
+
+    color:white;
+
+    font-size:11px;
+
+    padding:5px 12px;
+
+    border-radius:30px;
+
+    font-weight:600;
+
+    letter-spacing:.5px;
+
+    box-shadow:0 0 12px rgba(24,214,111,.35);
+
+}
+
+.offline{
+
+    background:#555;
+
+    color:white;
+
+    font-size:11px;
+
+    padding:5px 12px;
+
+    border-radius:30px;
+
+}
+
+/*==================================
+IOS SWITCH
+==================================*/
+
+.switch{
+
+    position:relative;
+
+    display:inline-block;
+
+    width:62px;
+
+    height:34px;
+
+}
+
+.switch input{
+
+    display:none;
+
+}
+
+.slider{
+
+    position:absolute;
+
+    cursor:pointer;
+
+    inset:0;
+
+    border-radius:34px;
+
+    background:#475264;
+
+    transition:.35s;
+
+}
+
+.slider::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:28px;
+
+    height:28px;
+
+    left:3px;
+
+    top:3px;
+
+    border-radius:50%;
+
+    background:white;
+
+    transition:.35s;
+
+    box-shadow:
+
+    0 3px 8px rgba(0,0,0,.35);
+
+}
+
+.switch input:checked + .slider{
+
+    background:linear-gradient(90deg,#00d96f,#28ff93);
+
+    box-shadow:
+
+    0 0 18px rgba(0,255,120,.45);
+
+}
+
+.switch input:checked + .slider::before{
+
+    transform:translateX(28px);
+
+}
+
+/*==================================
+CLICK EFFECT
+==================================*/
+
+.item:active{
+
+    transform:scale(.98);
+
+}
+
+/*==================================
+SCROLLBAR
+==================================*/
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#07101d;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#00bfff;
+
+    border-radius:20px;
+
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+    background:#33d6ff;
+
+}
+
+/*==================================
+ANIMATION
+==================================*/
+
+@keyframes glow{
+
+0%{
+
+box-shadow:0 0 8px rgba(0,180,255,.2);
+
+}
+
+50%{
+
+box-shadow:0 0 25px rgba(0,180,255,.5);
+
+}
+
+100%{
+
+box-shadow:0 0 8px rgba(0,180,255,.2);
+
+}
+
+}
+
+.card{
+
+    animation:glow 3s infinite;
+
+}
