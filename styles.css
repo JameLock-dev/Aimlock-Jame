@@ -191,3 +191,103 @@ svg{display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:ro
 .modal-overlay{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.58);backdrop-filter:blur(8px)}.side-drawer{position:fixed;z-index:45;left:calc(50% - min(100vw,440px)/2 + 18px);top:18px;width:min(320px,calc(100vw - 44px));border:1px solid rgba(255,58,76,.5);border-radius:24px;background:rgba(10,11,16,.96);box-shadow:0 0 46px rgba(255,25,48,.24),0 24px 70px rgba(0,0,0,.55);padding:18px}.drawer-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}.drawer-head strong{color:#ff6571;letter-spacing:1.3px}.drawer-head button,.modal-close{width:38px;height:38px;border-radius:12px;border:1px solid rgba(255,58,76,.44);background:rgba(255,45,63,.08);color:#fff;font-size:22px}.side-drawer button,.side-drawer a{width:100%;height:48px;margin-top:10px;border-radius:14px;border:1px solid rgba(255,58,76,.32);background:rgba(255,45,63,.08);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;letter-spacing:.4px}.modal-card{position:fixed;z-index:46;left:50%;top:50%;transform:translate(-50%,-50%);width:min(380px,calc(100vw - 40px));border:1px solid rgba(255,58,76,.5);border-radius:26px;background:linear-gradient(180deg,rgba(25,26,34,.98),rgba(8,9,13,.98));box-shadow:0 0 54px rgba(255,30,52,.25),0 26px 80px rgba(0,0,0,.62);padding:22px}.modal-card h2{margin:4px 44px 12px 0;color:#ff6673;letter-spacing:.8px}.modal-card p{color:#b7bcc6;line-height:1.5}.modal-close{position:absolute;right:14px;top:14px}.modal-primary{width:100%;height:48px;border-radius:15px;margin-top:10px;background:linear-gradient(180deg,#ff4f61,#ff1534);color:#fff;font-weight:1000;letter-spacing:.6px;box-shadow:0 0 24px rgba(255,45,63,.22)}.hidden{display:none!important}
 .info-copy button:hover,.quick-button:hover,.top-icon:hover,.key-card:hover,.game-status-head button:hover{filter:brightness(1.15);transform:translateY(-1px)}
 @media (max-width:380px){.key-actions{grid-template-columns:1fr}.paste-key-btn{min-height:42px}.game-status-head strong{font-size:18px}.pro-feature-grid .feature-card{min-height:160px}}
+
+/* =========================
+   OFFICIAL LOGO + APP ICON PATCH
+   ========================= */
+.brand-logo.official-brand{
+  position:absolute;
+  left:50%;
+  top:8px;
+  translate:-50% 0;
+  width:min(315px,82vw);
+  height:178px;
+  margin:0;
+  display:grid;
+  place-items:center;
+  z-index:2;
+  filter:drop-shadow(0 0 22px rgba(255,32,52,.58));
+}
+.brand-logo.official-brand img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center;
+  border-radius:18px;
+  mix-blend-mode:screen;
+}
+.card-brand-lockup{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:4px;
+  min-width:0;
+}
+.card-brand-lockup img{
+  width:220px;
+  max-width:52vw;
+  height:72px;
+  object-fit:contain;
+  object-position:left center;
+  filter:drop-shadow(0 0 14px rgba(255,45,63,.46));
+  border-radius:14px;
+  mix-blend-mode:screen;
+}
+.card-brand-lockup p{
+  margin:0 0 0 3px !important;
+  color:var(--red3);
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:2.3px;
+}
+.mini-logo.official-mini{
+  display:grid;
+  place-items:center;
+  width:150px;
+  height:70px;
+  line-height:1;
+  filter:drop-shadow(0 0 16px rgba(255,45,63,.5));
+}
+.mini-logo.official-mini img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  border-radius:12px;
+  mix-blend-mode:screen;
+}
+.avatar-core.avatar-logo{
+  overflow:hidden;
+  background:radial-gradient(circle,rgba(255,45,63,.18),rgba(5,6,10,.92));
+}
+.avatar-core.avatar-logo img{
+  width:78px;
+  height:78px;
+  object-fit:contain;
+  border-radius:18px;
+  filter:drop-shadow(0 0 12px rgba(255,45,63,.55));
+  mix-blend-mode:screen;
+}
+.app-social-icon{
+  position:relative;
+  z-index:1;
+  width:36px;
+  height:36px;
+  border-radius:12px;
+  object-fit:cover;
+  box-shadow:0 0 16px rgba(255,255,255,.08), 0 0 20px rgba(255,45,63,.12);
+}
+.quick-button:hover .app-social-icon{
+  transform:scale(1.06);
+  transition:.18s ease;
+}
+@media (max-width:380px){
+  .brand-logo.official-brand{width:min(285px,82vw);height:158px;top:12px}
+  .card-brand-lockup img{width:190px;height:62px}
+  .mini-logo.official-mini{width:122px;height:58px}
+  .app-social-icon{width:32px;height:32px}
+}
+
+/* spacing tune after replacing text logo with official image */
+.login-hero .eyebrow{margin-top:178px;}
+.app-topbar{min-height:78px;align-items:center;}
+@media (max-width:380px){.login-hero .eyebrow{margin-top:160px}.app-topbar{min-height:68px}}
