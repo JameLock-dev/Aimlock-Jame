@@ -7,20 +7,27 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Admin11";
 
+const DB_URL = process.env.DATABASE_PUBLIC_URL || process.env.DATABASE_URL;
+
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false
+  connectionString: DB_URL,
+  ssl: DB_URL ? { rejectUnauthorized: false } : false
 });
+
+function maskDbUrl(url) {
+  if (!url) return "NOT_SET";
+  return url.replace(/postgresql:\/\/([^:]+):([^@]+)@/, "postgresql://$1:****@");
+}
 
 app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 
 function requireDatabase(req, res, next) {
-  if (!process.env.DATABASE_URL) {
+  if (!DB_URL) {
     return res.status(500).json({
       ok: false,
-      message: "Chưa cấu hình DATABASE_URL trên Railway Variables."
+      message: "Chưa cấu hình DATABASE_PUBLIC_URL hoặc DATABASE_URL trên Railway Variables."
     });
   }
   next();
@@ -277,11 +284,13 @@ initDb()
   .then(() => {
     app.listen(PORT, () => {
       console.log(`AIMLOCK JAME Postgres server running on port ${PORT}`);
+      console.log(`Database connected with: ${maskDbUrl(DB_URL)}`);
     });
   })
   .catch((error) => {
     console.error("Database init failed:", error);
     app.listen(PORT, () => {
       console.log(`AIMLOCK JAME server running without initialized database on port ${PORT}`);
+      console.log(`Database attempted with: ${maskDbUrl(DB_URL)}`);
     });
   });
