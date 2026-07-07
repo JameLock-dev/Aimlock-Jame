@@ -1,5 +1,6 @@
 const API_BASE = "https://aimlock-jame-production.up.railway.app";
 // API_BASE chỉ là domain backend Railway. KHÔNG thêm /admin.html và KHÔNG thêm dấu / cuối link.
+const DEMO_MODE = true; // Bản xem trước: tự mở panel và mock API để demo tính năng.
 
 const appShell = document.getElementById("appShell");
 const loginOverlay = document.getElementById("loginOverlay");
@@ -31,17 +32,20 @@ const headlockOffBtn = document.getElementById("headlockOffBtn");
 const runBoostBtn = document.getElementById("runBoostBtn");
 const closeBoostBtn = document.getElementById("closeBoostBtn");
 const boostOutput = document.getElementById("boostOutput");
-const crosshairSize = document.getElementById("crosshairSize");
-const crosshairColor = document.getElementById("crosshairColor");
-const crosshairPreview = document.getElementById("crosshairPreview");
-const saveCrosshairBtn = document.getElementById("saveCrosshairBtn");
+const pingOutput = document.getElementById("pingOutput");
+const runPingBtn = document.getElementById("runPingBtn");
+const pingOffBtn = document.getElementById("pingOffBtn");
+const cacheOutput = document.getElementById("cacheOutput");
+const runCacheBtn = document.getElementById("runCacheBtn");
+const cacheOffBtn = document.getElementById("cacheOffBtn");
 
 const featureMap = {
   boost: ["boostState", "menuBoostState"],
-  crosshair: ["crosshairState", "menuCrosshairState"],
   aimbody: ["aimbodyState", "menuAimbodyState"],
   nhetam: ["nhetamState", "menuNhetamState"],
-  headlock: ["headlockState", "menuHeadlockState"]
+  headlock: ["headlockState", "menuHeadlockState"],
+  ping: ["pingState", "menuPingState"],
+  cache: ["cacheState", "menuCacheState"]
 };
 
 function pad(n) {
@@ -100,6 +104,19 @@ function apiUrl(path) {
 }
 
 async function apiFetch(path, options = {}) {
+  if (DEMO_MODE) {
+    await new Promise((resolve) => setTimeout(resolve, 180));
+    if (path === "/api/stats") {
+      return { ok: true, online: 7, activeKeys: 2, today: 14, railway: "Online" };
+    }
+    if (path === "/api/health") {
+      return { ok: true, message: "Demo API OK" };
+    }
+    if (path === "/api/verify-key") {
+      return { ok: true, key: { expire: "2100-01-01T23:59:59.000Z", slotUsed: 1, slotLimit: 1 } };
+    }
+  }
+
   let res;
 
   try {
@@ -160,10 +177,11 @@ function toggleFeature(name) {
 function labelFeature(name) {
   return {
     boost: "Boost RAM",
-    crosshair: "REG FF OB54",
     aimbody: "AIMBODY",
     nhetam: "NHẸ TÂM",
-    headlock: "JAMELOCK"
+    headlock: "JAMELOCK",
+    ping: "AINTIBAN",
+    cache: "REG FF"
   }[name] || name;
 }
 
@@ -200,7 +218,8 @@ function modalByFeature(name) {
   return {
     headlock: document.getElementById("headlockModal"),
     boost: document.getElementById("boostModal"),
-    crosshair: document.getElementById("crosshairModal"),
+    ping: document.getElementById("pingModal"),
+    cache: document.getElementById("cacheModal"),
     info: document.getElementById("infoModal")
   }[name] || null;
 }
@@ -275,6 +294,15 @@ async function updateStats() {
 }
 
 function initSavedLogin() {
+  if (DEMO_MODE) {
+    localStorage.setItem("jameLoginUnlocked", "true");
+    localStorage.setItem("jameKeyInfo", JSON.stringify({ expire: "2100-01-01T23:59:59.000Z", slotUsed: 1, slotLimit: 1 }));
+    if (keyExpireText) keyExpireText.textContent = formatExpire("2100-01-01T23:59:59.000Z");
+    if (keySlotText) keySlotText.textContent = "1/1";
+    lockApp(false);
+    return;
+  }
+
   try {
     const savedInfo = JSON.parse(localStorage.getItem("jameKeyInfo") || "null");
 
@@ -380,27 +408,68 @@ copyDeviceBtn?.addEventListener("click", async () => {
   }
 });
 
-function renderCrosshairPreview() {
-  if (!crosshairPreview) return;
-  const size = Number(crosshairSize?.value || 24);
-  const color = crosshairColor?.value || "red";
 
-  crosshairPreview.style.fontSize = `${size}px`;
-  crosshairPreview.className = "crosshair-preview";
-  if (color !== "red") crosshairPreview.classList.add(color);
-}
+runPingBtn?.addEventListener("click", async () => {
+  if (!pingOutput) return;
+  pingOutput.textContent = "> activating AINTIBAN panel status...\n";
+  const start = performance.now();
+  try {
+    const data = await apiFetch("/api/health");
+    const ms = Math.max(1, Math.round(performance.now() - start));
+    pingOutput.textContent += `> response: ${data.message || "OK"}\n`;
+    pingOutput.textContent += `> api check: ${ms}ms\n`;
+    pingOutput.textContent += "> AINTIBAN status active.\n";
+    setFeature("ping", true);
+    showToast(`AINTIBAN: ON`);
+  } catch (err) {
+    pingOutput.textContent += `> error: ${err.message}\n`;
+    setFeature("ping", false);
+    showToast("AINTIBAN thất bại");
+  }
+});
 
-crosshairSize?.addEventListener("input", renderCrosshairPreview);
-crosshairColor?.addEventListener("change", renderCrosshairPreview);
-saveCrosshairBtn?.addEventListener("click", () => {
-  setFeature("crosshair", true);
-  renderCrosshairPreview();
-  showToast("Đã lưu REG FF OB54");
-  closeModals();
+pingOffBtn?.addEventListener("click", () => {
+  setFeature("ping", false);
+  if (pingOutput) pingOutput.textContent = "AINTIBAN stopped.";
+  showToast("AINTIBAN: OFF");
+});
+
+runCacheBtn?.addEventListener("click", async () => {
+  if (!cacheOutput) return;
+  cacheOutput.textContent = "> activating REG FF panel status...\n";
+  let removed = 0;
+
+  Object.keys(localStorage).forEach((key) => {
+    if (key.startsWith("aimlockTemp_") || key.startsWith("tmp_")) {
+      localStorage.removeItem(key);
+      removed += 1;
+    }
+  });
+
+  try {
+    if ("caches" in window) {
+      const names = await caches.keys();
+      await Promise.all(names.map((name) => caches.delete(name)));
+      removed += names.length;
+    }
+  } catch (_) {}
+
+  await new Promise((resolve) => setTimeout(resolve, 280));
+  cacheOutput.textContent += `> cleaned temporary panel cache: ${removed} item(s)\n`;
+  cacheOutput.textContent += "> keeping login key and device id safe.\n";
+  cacheOutput.textContent += "> REG FF status active.\n";
+  setFeature("cache", true);
+  showToast("REG FF: ON");
+  updateStats();
+});
+
+cacheOffBtn?.addEventListener("click", () => {
+  setFeature("cache", false);
+  if (cacheOutput) cacheOutput.textContent = "REG FF stopped.";
+  showToast("REG FF: OFF");
 });
 
 initSavedLogin();
 renderFeatures();
-renderCrosshairPreview();
 updateStats();
 setInterval(updateStats, 4000);

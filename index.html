@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AIMLOCK JAME</title>
-  <link rel="stylesheet" href="styles.css?v=3" />
+  <link rel="stylesheet" href="styles.css?v=8" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -48,12 +48,6 @@
       <em id="menuBoostState">OFF</em>
     </button>
 
-    <button class="menu-row" type="button" data-open-feature="crosshair">
-      <span class="menu-ico">⊕</span>
-      <span><b>REG FF OB54</b><small>Tùy chỉnh tâm ngắm</small></span>
-      <em id="menuCrosshairState">OFF</em>
-    </button>
-
     <button class="menu-row" type="button" data-toggle-feature="aimbody">
       <span class="menu-ico">🎯</span>
       <span><b>AIMBODY</b><small>Hỗ trợ chế độ ngắm</small></span>
@@ -70,6 +64,18 @@
       <span class="menu-ico">🔒</span>
       <span><b>JAMELOCK</b><small>Bật / tắt chế độ</small></span>
       <em id="menuHeadlockState">OFF</em>
+    </button>
+
+    <button class="menu-row" type="button" data-open-feature="ping">
+      <span class="menu-ico">📡</span>
+      <span><b>AINTIBAN</b><small>Bật trạng thái bảo vệ</small></span>
+      <em id="menuPingState">OFF</em>
+    </button>
+
+    <button class="menu-row" type="button" data-open-feature="cache">
+      <span class="menu-ico">🧹</span>
+      <span><b>REG FF</b><small>Kích hoạt REG FF</small></span>
+      <em id="menuCacheState">OFF</em>
     </button>
 
     <button class="menu-row" type="button" data-open-feature="info">
@@ -131,12 +137,6 @@
           <small>Tối ưu hiệu suất</small>
           <em id="boostState">OFF</em>
         </button>
-        <button class="feature-card" type="button" data-open-feature="crosshair">
-          <span class="feature-icon">⊕</span>
-          <strong>REG FF OB54</strong>
-          <small>Tùy chỉnh tâm ngắm</small>
-          <em id="crosshairState">OFF</em>
-        </button>
         <button class="feature-card" type="button" data-toggle-feature="aimbody">
           <span class="feature-icon">🎯</span>
           <strong>AIMBODY</strong>
@@ -154,6 +154,18 @@
           <strong>JAMELOCK</strong>
           <small>Bật / tắt chế độ</small>
           <em id="headlockState">OFF</em>
+        </button>
+        <button class="feature-card" type="button" data-open-feature="ping">
+          <span class="feature-icon">📡</span>
+          <strong>AINTIBAN</strong>
+          <small>Bật trạng thái bảo vệ</small>
+          <em id="pingState">OFF</em>
+        </button>
+        <button class="feature-card" type="button" data-open-feature="cache">
+          <span class="feature-icon">🧹</span>
+          <strong>REG FF</strong>
+          <small>Kích hoạt REG FF</small>
+          <em id="cacheState">OFF</em>
         </button>
         <button class="feature-card" type="button" data-open-feature="info">
           <span class="feature-icon">ℹ️</span>
@@ -195,21 +207,29 @@
     </div>
   </section>
 
-  <section id="crosshairModal" class="modal-box hidden">
+  <section id="pingModal" class="modal-box hidden">
     <div class="modal-card">
       <button class="modal-close" type="button" data-close-modal>×</button>
-      <h3>REG FF OB54</h3>
-      <p>Tùy chỉnh hiển thị tâm ngắm trong giao diện.</p>
-      <label class="modal-label">Kích thước</label>
-      <input id="crosshairSize" class="modal-input" type="range" min="12" max="42" value="24">
-      <label class="modal-label">Màu</label>
-      <select id="crosshairColor" class="modal-input">
-        <option value="red">Red</option>
-        <option value="green">Green</option>
-        <option value="white">White</option>
-      </select>
-      <div id="crosshairPreview" class="crosshair-preview">⊕</div>
-      <button id="saveCrosshairBtn" class="activate-btn small" type="button">Lưu REG FF OB54</button>
+      <h3>AINTIBAN</h3>
+      <p>Bật trạng thái AINTIBAN trong web panel và kiểm tra kết nối API Railway.</p>
+      <pre id="pingOutput" class="terminal-output">Ready...</pre>
+      <div class="modal-actions">
+        <button id="runPingBtn" class="activate-btn small" type="button">🛡️ Bật AINTIBAN</button>
+        <button id="pingOffBtn" class="secondary-login-btn center" type="button">Tắt AINTIBAN</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="cacheModal" class="modal-box hidden">
+    <div class="modal-card">
+      <button class="modal-close" type="button" data-close-modal>×</button>
+      <h3>REG FF</h3>
+      <p>Kích hoạt trạng thái REG FF trong web panel, lưu trạng thái ON/OFF và làm mới dashboard.</p>
+      <pre id="cacheOutput" class="terminal-output">Ready...</pre>
+      <div class="modal-actions">
+        <button id="runCacheBtn" class="activate-btn small" type="button">🔥 Bật REG FF</button>
+        <button id="cacheOffBtn" class="secondary-login-btn center" type="button">Tắt REG FF</button>
+      </div>
     </div>
   </section>
 
@@ -237,6 +257,6 @@
   </section>
 
   <div id="toast" class="toast">Thông báo</div>
-  <script src="script.js?v=5"></script>
+  <script src="script.js?v=8"></script>
 </body>
 </html>
