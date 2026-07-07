@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AIMLOCK ADMIN</title>
+  <link rel="stylesheet" href="admin.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <main class="admin-wrap">
+    <header class="admin-header">
+      <div>
+        <h1>AIMLOCK ADMIN</h1>
+        <p>Key Server Dashboard</p>
+      </div>
+      <a href="/" class="back-btn">Về App</a>
+    </header>
+
+    <section class="login-admin" id="adminLoginBox">
+      <h2>Đăng nhập Admin</h2>
+      <p>Nhập mật khẩu admin. Mặc định: Admin11 hoặc biến môi trường ADMIN_PASSWORD trên Railway.</p>
+      <div class="admin-login-row">
+        <input id="adminPassword" type="password" placeholder="Admin password">
+        <button id="adminLoginBtn" type="button">Đăng nhập</button>
+      </div>
+      <div id="adminLoginStatus" class="save-status"></div>
+    </section>
+
+    <section id="adminContent" class="admin-content hidden">
+      <div class="stats-row">
+        <article><span>Online</span><strong id="statOnline">0</strong></article>
+        <article><span>Active Keys</span><strong id="statActive">0</strong></article>
+        <article><span>Today</span><strong id="statToday">0</strong></article>
+        <article><span>Railway</span><strong id="statRailway">Online</strong></article>
+      </div>
+
+      <section class="card">
+        <h2>Thêm / cập nhật key</h2>
+        <div class="form-grid">
+          <input id="keyInput" type="text" placeholder="Key, ví dụ: Admin11">
+          <input id="typeInput" type="text" placeholder="Type, ví dụ: custom">
+          <input id="expireInput" type="datetime-local">
+          <input id="slotInput" type="number" min="1" value="100" placeholder="Slot limit">
+          <button id="saveKeyBtn" type="button">Lưu key</button>
+        </div>
+        <div id="saveStatus" class="save-status">Sẵn sàng.</div>
+      </section>
+
+      <section class="card">
+        <div class="table-head">
+          <h2>Danh sách key</h2>
+          <button id="reloadBtn" type="button">Tải lại</button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Type</th>
+                <th>Hết hạn</th>
+                <th>Slot</th>
+                <th>Trạng thái</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="keyTable"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="admin.js"></script>
+</body>
+</html>

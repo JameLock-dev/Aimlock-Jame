@@ -1,0 +1,32 @@
+{
+  "keys": [
+    {
+      "key": "Admin11",
+      "type": "custom",
+      "expire": "2031-07-04T22:34:00+07:00",
+      "slotUsed": 2,
+      "slotLimit": 100,
+      "status": "active",
+      "createdAt": "2026-07-07T00:00:00+07:00"
+    },
+    {
+      "key": "VIP123-JAME",
+      "type": "30day",
+      "expire": "2027-07-28T20:51:00+07:00",
+      "slotUsed": 3,
+      "slotLimit": 3,
+      "status": "active",
+      "createdAt": "2026-07-07T00:00:00+07:00"
+    },
+    {
+      "key": "JAME-VIP1",
+      "type": "7day",
+      "expire": "2026-07-12T01:01:00+07:00",
+      "slotUsed": 15,
+      "slotLimit": 15,
+      "status": "active",
+      "createdAt": "2026-07-07T00:00:00+07:00"
+    }
+  ],
+  "usageLog": []
+}
