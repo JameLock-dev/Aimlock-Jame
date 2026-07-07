@@ -1,6 +1,7 @@
 const API_BASE = "https://aimlock-jame-production.up.railway.app";
 // API_BASE chỉ là domain backend Railway. KHÔNG thêm /admin.html và KHÔNG thêm dấu / cuối link.
-const DEMO_MODE = true; // Bản xem trước: tự mở panel và mock API để demo tính năng.
+const DEMO_MODE = false; // Bản chạy chính: dùng login/API thật.
+const DEMO_FORCE_LOGIN = false;
 
 const appShell = document.getElementById("appShell");
 const loginOverlay = document.getElementById("loginOverlay");
@@ -32,20 +33,16 @@ const headlockOffBtn = document.getElementById("headlockOffBtn");
 const runBoostBtn = document.getElementById("runBoostBtn");
 const closeBoostBtn = document.getElementById("closeBoostBtn");
 const boostOutput = document.getElementById("boostOutput");
-const crosshairSize = document.getElementById("crosshairSize");
-const crosshairColor = document.getElementById("crosshairColor");
-const crosshairPreview = document.getElementById("crosshairPreview");
-const saveCrosshairBtn = document.getElementById("saveCrosshairBtn");
 const pingOutput = document.getElementById("pingOutput");
 const runPingBtn = document.getElementById("runPingBtn");
 const pingOffBtn = document.getElementById("pingOffBtn");
 const cacheOutput = document.getElementById("cacheOutput");
 const runCacheBtn = document.getElementById("runCacheBtn");
 const cacheOffBtn = document.getElementById("cacheOffBtn");
+const logoutBtn = document.getElementById("logoutBtn");
 
 const featureMap = {
   boost: ["boostState", "menuBoostState"],
-  crosshair: ["crosshairState", "menuCrosshairState"],
   aimbody: ["aimbodyState", "menuAimbodyState"],
   nhetam: ["nhetamState", "menuNhetamState"],
   headlock: ["headlockState", "menuHeadlockState"],
@@ -111,15 +108,31 @@ function apiUrl(path) {
 async function apiFetch(path, options = {}) {
   if (DEMO_MODE) {
     await new Promise((resolve) => setTimeout(resolve, 180));
+
+    let demoData = { ok: true };
+
     if (path === "/api/stats") {
-      return { ok: true, online: 7, activeKeys: 2, today: 14, railway: "Online" };
+      demoData = { ok: true, online: 7, activeKeys: 2, today: 14, railway: "Online" };
     }
+
     if (path === "/api/health") {
-      return { ok: true, message: "Demo API OK" };
+      demoData = { ok: true, message: "API OK" };
     }
+
     if (path === "/api/verify-key") {
-      return { ok: true, key: { expire: "2100-01-01T23:59:59.000Z", slotUsed: 1, slotLimit: 1 } };
+      let body = {};
+      try { body = JSON.parse(options.body || "{}"); } catch (_) {}
+      const demoKey = String(body.key || "").trim();
+
+      if (demoKey.length > 0) {
+        demoData = { ok: true, key: { expire: "2100-01-01T23:59:59.000Z", slotUsed: 1, slotLimit: 1 } };
+      } else {
+        demoData = { ok: false, message: "Vui lòng nhập key." };
+      }
     }
+
+    if (demoData.ok === false) throw new Error(demoData.message || "Request thất bại.");
+    return demoData;
   }
 
   let res;
@@ -182,7 +195,6 @@ function toggleFeature(name) {
 function labelFeature(name) {
   return {
     boost: "Boost RAM",
-    crosshair: "REG FF OB54",
     aimbody: "AIMBODY",
     nhetam: "NHẸ TÂM",
     headlock: "JAMELOCK",
@@ -224,7 +236,6 @@ function modalByFeature(name) {
   return {
     headlock: document.getElementById("headlockModal"),
     boost: document.getElementById("boostModal"),
-    crosshair: document.getElementById("crosshairModal"),
     ping: document.getElementById("pingModal"),
     cache: document.getElementById("cacheModal"),
     info: document.getElementById("infoModal")
@@ -301,6 +312,15 @@ async function updateStats() {
 }
 
 function initSavedLogin() {
+  if (DEMO_MODE && DEMO_FORCE_LOGIN) {
+    localStorage.removeItem("jameLoginUnlocked");
+    localStorage.removeItem("jameKeyInfo");
+    if (keyExpireText) keyExpireText.textContent = "--";
+    if (keySlotText) keySlotText.textContent = "--";
+    lockApp(true);
+    return;
+  }
+
   if (DEMO_MODE) {
     localStorage.setItem("jameLoginUnlocked", "true");
     localStorage.setItem("jameKeyInfo", JSON.stringify({ expire: "2100-01-01T23:59:59.000Z", slotUsed: 1, slotLimit: 1 }));
@@ -415,20 +435,6 @@ copyDeviceBtn?.addEventListener("click", async () => {
   }
 });
 
-function renderCrosshairPreview() {
-  if (!crosshairPreview) return;
-  crosshairPreview.textContent = "> REG FF OB54 ready...\n> no crosshair customization.";
-}
-
-saveCrosshairBtn?.addEventListener("click", () => {
-  setFeature("crosshair", true);
-  if (crosshairPreview) {
-    crosshairPreview.textContent = "> activating REG FF OB54...\n> status saved: ON.";
-  }
-  showToast("REG FF OB54: ON");
-  setTimeout(closeModals, 450);
-});
-
 
 runPingBtn?.addEventListener("click", async () => {
   if (!pingOutput) return;
@@ -490,8 +496,20 @@ cacheOffBtn?.addEventListener("click", () => {
   showToast("REG FF: OFF");
 });
 
+
+logoutBtn?.addEventListener("click", () => {
+  localStorage.removeItem("jameLoginUnlocked");
+  localStorage.removeItem("jameKeyInfo");
+  if (loginKeyInput) loginKeyInput.value = "";
+  if (loginStatus) {
+    loginStatus.textContent = "Đã đăng xuất. Vui lòng nhập lại key.";
+    loginStatus.className = "login-status";
+  }
+  lockApp(true);
+  showToast("Đã đăng xuất");
+});
+
 initSavedLogin();
 renderFeatures();
-renderCrosshairPreview();
 updateStats();
 setInterval(updateStats, 4000);

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AIMLOCK JAME</title>
-  <link rel="stylesheet" href="styles.css?v=3" />
+  <link rel="stylesheet" href="styles.css?v=10" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -25,7 +25,7 @@
         <button id="toggleKeyBtn" class="toggle-key-btn" type="button">👁</button>
       </div>
 
-      <div id="loginStatus" class="login-status">Đang chờ Postgres key server...</div>
+      <div id="loginStatus" class="login-status">Sẵn sàng kích hoạt</div>
       <button id="activateBtn" class="activate-btn" type="button">⚡ Kích Hoạt Jame</button>
       <div class="login-divider"><span>HOẶC</span></div>
       <button id="freeKeyBtn" class="secondary-login-btn" type="button">🔑 Nhận Key Miễn Phí</button>
@@ -46,12 +46,6 @@
       <span class="menu-ico">⚡</span>
       <span><b>Boost RAM</b><small>Tối ưu hiệu suất</small></span>
       <em id="menuBoostState">OFF</em>
-    </button>
-
-    <button class="menu-row" type="button" data-open-feature="crosshair">
-      <span class="menu-ico">⊕</span>
-      <span><b>REG FF OB54</b><small>Tối ưu cấu hình OB54</small></span>
-      <em id="menuCrosshairState">OFF</em>
     </button>
 
     <button class="menu-row" type="button" data-toggle-feature="aimbody">
@@ -98,7 +92,7 @@
         <div class="brand-mark"><img src="logo.png" alt="AIMLOCK JAME" onerror="this.style.display='none'"></div>
         <div class="brand-text"><h1>AIMLOCK</h1><p>JAME</p></div>
       </div>
-      <div class="status-chip"><span class="status-dot"></span> Online</div>
+      <div class="top-actions"><div class="status-chip"><span class="status-dot"></span> Online</div><button id="logoutBtn" class="logout-btn" type="button">Đăng xuất</button></div>
     </header>
 
     <section class="premium-card frame">
@@ -142,12 +136,6 @@
           <strong>Boost RAM</strong>
           <small>Tối ưu hiệu suất</small>
           <em id="boostState">OFF</em>
-        </button>
-        <button class="feature-card" type="button" data-open-feature="crosshair">
-          <span class="feature-icon">⊕</span>
-          <strong>REG FF OB54</strong>
-          <small>Tối ưu cấu hình OB54</small>
-          <em id="crosshairState">OFF</em>
         </button>
         <button class="feature-card" type="button" data-toggle-feature="aimbody">
           <span class="feature-icon">🎯</span>
@@ -219,16 +207,6 @@
     </div>
   </section>
 
-  <section id="crosshairModal" class="modal-box hidden">
-    <div class="modal-card">
-      <button class="modal-close" type="button" data-close-modal>×</button>
-      <h3>REG FF OB54</h3>
-      <p>Kích hoạt trạng thái REG FF OB54 trong web panel. Không còn phần tùy chỉnh tâm ngắm.</p>
-      <pre id="crosshairPreview" class="terminal-output">Ready...</pre>
-      <button id="saveCrosshairBtn" class="activate-btn small" type="button">Bật REG FF OB54</button>
-    </div>
-  </section>
-
   <section id="pingModal" class="modal-box hidden">
     <div class="modal-card">
       <button class="modal-close" type="button" data-close-modal>×</button>
@@ -279,6 +257,6 @@
   </section>
 
   <div id="toast" class="toast">Thông báo</div>
-  <script src="script.js?v=6-demo"></script>
+  <script src="script.js?v=10"></script>
 </body>
 </html>
