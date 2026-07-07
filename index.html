@@ -2,128 +2,52 @@
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#050000" />
-    <title>AIMLOCK JAME UI</title>
+    <title>AIMLOCK JAME - Login</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
-  <body>
-    <main class="phone-shell">
-      <section id="loginScreen" class="screen login-screen active" aria-label="Màn hình đăng nhập">
-        <div class="scanline"></div>
-        <div class="corner corner-tl"></div>
-        <div class="corner corner-tr"></div>
-        <div class="corner corner-bl"></div>
-        <div class="corner corner-br"></div>
+  <body class="page-login">
+    <main class="app-frame login-frame">
+      <div class="bg-hud" aria-hidden="true"></div>
+      <div class="edge-glow" aria-hidden="true"></div>
 
-        <header class="login-hero">
-          <div class="target-mark"></div>
-          <h1 class="brand brand-large"><span>AIMLOCK</span><b>JAME</b></h1>
-          <div class="secure-badge">SECURE ACCESS</div>
-        </header>
+      <header class="login-hero">
+        <div class="crosshair-mark" aria-hidden="true"></div>
+        <div class="logo logo-xl" aria-label="AIMLOCK JAME">
+          <span class="logo-aim">AIMLOCK</span>
+          <span class="logo-jame">J A M E</span>
+        </div>
+        <div class="secure-chip">SECURE ACCESS</div>
+      </header>
 
-        <section class="access-card neon-panel">
-          <h2 class="card-logo"><span>AIMLOCK</span> <b>JAME</b></h2>
-          <p class="byline">BY JAME FF</p>
+      <section class="login-panel panel-cut">
+        <div class="panel-shine" aria-hidden="true"></div>
+        <h1 class="product-title"><span>AIMLOCK</span> <b>JAME</b></h1>
+        <p class="byline">BY JAME FF</p>
 
-          <label class="input-wrap" for="keyInput">
-            <span class="field-icon" aria-hidden="true">🔒</span>
-            <input id="keyInput" type="password" placeholder="Nhập mật khẩu hoặc Key Mua" autocomplete="off" />
-            <button id="togglePassword" class="eye-btn" type="button" aria-label="Ẩn/hiện mật khẩu">◉</button>
-          </label>
-
-          <button id="activateBtn" class="primary-btn" type="button">
-            <span aria-hidden="true">⚡</span>
-            KÍCH HOẠT JAME
+        <label class="key-field" for="licenseKey">
+          <svg class="field-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V8a5 5 0 0 1 10 0v2"/><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M12 14v3"/></svg>
+          <input id="licenseKey" type="password" placeholder="Nhập mật khẩu hoặc Key Mua" autocomplete="off" />
+          <button id="toggleKey" class="ghost-icon" type="button" aria-label="Ẩn hiện key">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="3"/></svg>
           </button>
+        </label>
 
-          <p id="loginStatus" class="status ready"><span></span>Sẵn sàng kích hoạt</p>
-        </section>
+        <button id="activateBtn" class="activate-button" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 10-13h-7l0-7Z"/></svg>
+          <span>KÍCH HOẠT JAME</span>
+        </button>
 
-        <section class="quick-connect login-connect" aria-label="Kết nối nhanh">
-          <h3 class="section-title">KẾT NỐI NHANH</h3>
-          <div class="connect-grid">
-            <a class="connect-card" href="#" aria-label="TikTok">
-              <span class="social tiktok">♪</span>
-              <strong>TikTok</strong>
-            </a>
-            <a class="connect-card" href="#" aria-label="Zalo">
-              <span class="social zalo">Z</span>
-              <strong>Zalo</strong>
-            </a>
-          </div>
-        </section>
+        <p id="loginStatus" class="ready-status"><i></i><span>Sẵn sàng kích hoạt</span></p>
       </section>
 
-      <section id="dashboardScreen" class="screen dashboard-screen" aria-label="Màn hình trong app">
-        <div class="scanline"></div>
-        <header class="app-header">
-          <button class="icon-btn" type="button" aria-label="Menu">☰</button>
-          <h1 class="brand brand-small"><span>AIMLOCK</span><b>JAME</b></h1>
-          <button class="icon-btn notify" type="button" aria-label="Thông báo">⌁</button>
-        </header>
-
-        <section class="user-strip neon-panel-soft">
-          <div class="avatar-mark">✦</div>
-          <div class="welcome">
-            <p>Xin chào, <strong>JAME FF</strong></p>
-            <div class="vip-row"><span>♛ VIP</span><b>Còn 30 ngày</b></div>
-          </div>
-          <button class="key-box" type="button">
-            <small>Key của bạn</small>
-            <strong>🔑 2</strong>
-            <span>›</span>
-          </button>
-        </section>
-
-        <section class="stats-grid" aria-label="Thống kê">
-          <article class="stat-card neon-panel-soft">
-            <i>👥</i><small>ONLINE</small><strong>0</strong><span>Người dùng</span>
-          </article>
-          <article class="stat-card neon-panel-soft">
-            <i>🔑</i><small>ACTIVE KEYS</small><strong>2</strong><span>Đang hoạt động</span>
-          </article>
-          <article class="stat-card neon-panel-soft">
-            <i>⚡</i><small>TODAY</small><strong>1</strong><span>Lượt kích hoạt</span>
-          </article>
-        </section>
-
-        <section class="features" aria-label="Tính năng">
-          <h2 class="section-title">TÍNH NĂNG</h2>
-          <div class="feature-grid">
-            <article class="feature-card neon-panel-soft"><i>▣</i><h3>BOOST RAM</h3><button class="switch" type="button"><span></span><b>OFF</b></button></article>
-            <article class="feature-card neon-panel-soft"><i>◎</i><h3>AIMBODY</h3><button class="switch" type="button"><span></span><b>OFF</b></button></article>
-            <article class="feature-card neon-panel-soft"><i>♡</i><h3>NHẸ TÂM</h3><button class="switch" type="button"><span></span><b>OFF</b></button></article>
-            <article class="feature-card neon-panel-soft"><i>🔒</i><h3>JAMELOCK</h3><button class="switch" type="button"><span></span><b>OFF</b></button></article>
-            <article class="feature-card neon-panel-soft"><i>◈</i><h3>AINTIBAN</h3><button class="switch" type="button"><span></span><b>OFF</b></button></article>
-            <article class="feature-card neon-panel-soft"><i>⌖</i><h3>REG FF</h3><button class="switch" type="button"><span></span><b>OFF</b></button></article>
-          </div>
-        </section>
-
-        <section class="info-card neon-panel-soft">
-          <div>
-            <h2>THÔNG TIN</h2>
-            <p>Cập nhật chính sách, hướng dẫn sử dụng và hỗ trợ nhanh chóng.</p>
-            <button type="button">XEM NGAY ›</button>
-          </div>
-          <i>▤</i>
-        </section>
-
-        <section class="quick-connect" aria-label="Liên kết nhanh">
-          <h2 class="section-title">LIÊN KẾT NHANH</h2>
-          <div class="connect-grid">
-            <a class="connect-card" href="#"><span class="social tiktok">♪</span><strong>TikTok</strong><em>›</em></a>
-            <a class="connect-card" href="#"><span class="social zalo">Z</span><strong>Zalo</strong><em>›</em></a>
-          </div>
-        </section>
-
-        <nav class="bottom-nav" aria-label="Điều hướng">
-          <button class="active" type="button"><i>⌂</i><span>TRANG CHỦ</span></button>
-          <button id="goActivation" type="button"><i>ϟ</i><span>KÍCH HOẠT</span></button>
-          <button class="nav-center" type="button"><i>◎</i></button>
-          <button type="button"><i>ⓘ</i><span>THÔNG TIN</span></button>
-          <button type="button"><i>●</i><span>TÀI KHOẢN</span></button>
-        </nav>
+      <section class="quick-links login-links" aria-label="Kết nối nhanh">
+        <h2 class="section-title"><span>KẾT NỐI NHANH</span></h2>
+        <div class="quick-grid">
+          <a class="quick-card" href="#" aria-label="TikTok"><span class="tiktok-mark">♪</span><strong>TikTok</strong></a>
+          <a class="quick-card" href="#" aria-label="Zalo"><span class="zalo-mark">Z</span><strong>Zalo</strong></a>
+        </div>
       </section>
     </main>
 
