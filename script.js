@@ -1,6 +1,6 @@
 const API_BASE = "";
 // Nếu frontend KHÔNG chạy cùng domain Railway backend thì sửa thành:
-// const API_BASE = "https://ten-app-cua-ban.up.railway.app";
+// const API_BASE = "https://aimlock-jame-postgres-key-server-production.up.railway.app";
 
 const appShell = document.getElementById("appShell");
 const loginOverlay = document.getElementById("loginOverlay");
