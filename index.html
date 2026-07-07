@@ -12,10 +12,7 @@
 
   <section id="loginOverlay" class="login-overlay">
     <div class="login-card">
-      <div class="login-logo-wrap">
-        <img src="logo.png" alt="AIMLOCK JAME" onerror="this.style.display='none'">
-      </div>
-
+      <div class="login-logo-wrap"><img src="logo.png" alt="AIMLOCK JAME" onerror="this.style.display='none'"></div>
       <div class="login-sub">SECURE ACCESS</div>
       <h2 class="login-title">AIMLOCK <span>JAME</span></h2>
       <div class="login-brand-line">BY JAME FF</div>
@@ -27,67 +24,17 @@
         <button id="toggleKeyBtn" class="toggle-key-btn" type="button">👁</button>
       </div>
 
-      <div id="loginStatus" class="login-status">Đang chờ key server...</div>
+      <div id="loginStatus" class="login-status">Đang chờ Postgres key server...</div>
       <button id="activateBtn" class="activate-btn" type="button">⚡ Kích Hoạt Jame</button>
-
       <div class="login-divider"><span>HOẶC</span></div>
       <button id="freeKeyBtn" class="secondary-login-btn" type="button">🔑 Nhận Key Miễn Phí</button>
       <button id="contactKeyBtn" class="secondary-login-btn" type="button">💬 Liên hệ mua key</button>
-
-      <div class="login-security">
-        <div class="shield">🛡</div>
-        <div>
-          <strong>Bảo mật tuyệt đối</strong>
-          <p>Dữ liệu của bạn luôn được bảo vệ</p>
-        </div>
-      </div>
     </div>
   </section>
 
-  <aside id="sideMenu" class="side-menu" aria-hidden="true">
-    <div class="side-menu-panel">
-      <div class="side-menu-head">
-        <div>
-          <h3>AIMLOCK JAME</h3>
-          <p>MENU SUPPORT</p>
-        </div>
-        <button id="closeMenuBtn" class="close-menu-btn" type="button">×</button>
-      </div>
-
-      <div class="support-card">
-        <div>
-          <h4>Mua KEY Liên Hệ Jame FF</h4>
-          <p>Zalo 0333635135</p>
-        </div>
-        <span class="support-icon">☎</span>
-      </div>
-
-      <a class="support-card link-card" href="https://www.facebook.com/" target="_blank" rel="noopener">
-        <div>
-          <h4>FaceBook</h4>
-          <p>Jame FF</p>
-        </div>
-        <span class="support-icon">f</span>
-      </a>
-
-      <a class="support-card link-card" href="https://www.tiktok.com/@jame.ff.11" target="_blank" rel="noopener">
-        <div>
-          <h4>TikTok</h4>
-          <p>https://www.tiktok.com/@jame.ff.11</p>
-        </div>
-        <span class="support-icon">♪</span>
-      </a>
-
-      <button id="getKeyBtn" class="get-key-btn" type="button">Get Key Free</button>
-      <a class="admin-link-btn" href="/admin">🔐 Admin Key Server</a>
-      <button id="logoutBtn" class="logout-btn" type="button">🚪 Đăng xuất App</button>
-      <div class="copyright">Copyright belongs to Jame FF</div>
-    </div>
-  </aside>
-
   <main id="appShell" class="app-shell locked">
     <header class="topbar frame">
-      <button class="menu-btn" type="button" aria-label="Menu"><span></span><span></span><span></span></button>
+      <button class="menu-btn" type="button"><span></span><span></span><span></span></button>
       <div class="brand">
         <div class="brand-mark"><img src="logo.png" alt="AIMLOCK JAME" onerror="this.style.display='none'"></div>
         <div class="brand-text"><h1>AIMLOCK</h1><p>JAME</p></div>
@@ -109,39 +56,16 @@
       <div class="premium-pattern"></div>
     </section>
 
-    <section class="feature-list frame">
-      <div class="feature-head">
-        <div><div class="section-label">FF SUPPORT</div><h3>TÍNH NĂNG HỆ THỐNG</h3></div>
-        <button id="runAllBtn" class="run-all-btn" type="button">CHẠY TẤT CẢ</button>
-      </div>
-
-      <article class="feature-row" data-feature="network"><div class="feature-left"><div class="feature-icon">🌐</div><div class="feature-text"><h4>TỐI ƯU MẠNG</h4><p>Hiển thị và theo dõi chất lượng kết nối.</p><div class="row-progress"><span></span></div></div></div><div class="feature-right"><span class="badge-state">BẬT</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label><button class="go-btn" type="button">›</button></div></article>
-      <article class="feature-row" data-feature="antiban"><div class="feature-left"><div class="feature-icon">🛡️</div><div class="feature-text"><h4>ANTIBAN</h4><p>Giảm nguy cơ bị phát hiện và khóa tài khoản.</p><div class="row-progress"><span></span></div></div></div><div class="feature-right"><span class="badge-state">BẬT</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label><button class="go-btn" type="button">›</button></div></article>
-      <article class="feature-row" data-feature="reg"><div class="feature-left"><div class="feature-icon">🎯</div><div class="feature-text"><h4>REG OB54</h4><p>Tối ưu và chỉnh sửa registry cho phiên bản OB54.</p><div class="row-progress"><span></span></div></div></div><div class="feature-right"><span class="badge-state">BẬT</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label><button class="go-btn" type="button">›</button></div></article>
-      <article class="feature-row" data-feature="monitor"><div class="feature-left"><div class="feature-icon">📊</div><div class="feature-text"><h4>GIÁM SÁT HỆ THỐNG</h4><p>Theo dõi CPU, RAM và độ trễ theo thời gian.</p><div class="row-progress"><span></span></div></div></div><div class="feature-right"><span class="badge-state">BẬT</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label><button class="go-btn" type="button">›</button></div></article>
-      <article class="feature-row" data-feature="effects"><div class="feature-left"><div class="feature-icon">🎮</div><div class="feature-text"><h4>HIỆU ỨNG GIAO DIỆN</h4><p>Bật hoặc tắt các hiệu ứng hiển thị.</p><div class="row-progress"><span></span></div></div></div><div class="feature-right"><span class="badge-state">BẬT</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label><button class="go-btn" type="button">›</button></div></article>
-      <article class="feature-row" data-feature="aimdoy"><div class="feature-left"><div class="feature-icon">🔄</div><div class="feature-text"><h4>AIMDOY</h4><p>Làm mới dữ liệu mô phỏng của dashboard.</p><div class="row-progress"><span></span></div></div></div><div class="feature-right"><span class="badge-state">BẬT</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label><button class="go-btn" type="button">›</button></div></article>
-      <article class="feature-row" data-feature="device"><div class="feature-left"><div class="feature-icon">📱</div><div class="feature-text"><h4>THÔNG TIN THIẾT BỊ</h4><p>Hiển thị thông tin mô phỏng về thiết bị.</p><div class="row-progress"><span></span></div></div></div><div class="feature-right"><span class="badge-state">BẬT</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label><button class="go-btn" type="button">›</button></div></article>
-      <article class="feature-row" data-feature="aimlock"><div class="feature-left"><div class="feature-icon">◎</div><div class="feature-text"><h4>AIMLOCK</h4><p>Hỗ trợ ngắm chuẩn mục tiêu.</p><div class="row-progress"><span></span></div></div></div><div class="feature-right"><span class="badge-state">BẬT</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label><button class="go-btn" type="button">›</button></div></article>
-      <article class="feature-row" data-feature="diagnose"><div class="feature-left"><div class="feature-icon">💓</div><div class="feature-text"><h4>CHẨN ĐOÁN HỆ THỐNG</h4><p>Kiểm tra trạng thái hoạt động mô phỏng.</p><div class="row-progress"><span></span></div></div></div><div class="feature-right"><span class="badge-state">BẬT</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label><button class="go-btn" type="button">›</button></div></article>
-    </section>
-
     <section class="dashboard frame">
-      <div class="dashboard-head"><div><div class="section-label">LIVE DASHBOARD</div><h3>BÁO CÁO HOẠT ĐỘNG</h3></div><button id="refreshBtn" class="refresh-btn" type="button">↻</button></div>
+      <div class="dashboard-head"><div><div class="section-label">LIVE DASHBOARD</div><h3>BÁO CÁO SERVER</h3></div><a class="admin-shortcut" href="/admin.html">Admin</a></div>
 
       <div class="stats-grid">
         <article class="stat-card"><span class="stat-name">ONLINE</span><strong id="onlineCount" class="stat-value">0</strong><span class="stat-sub">NGƯỜI DÙNG</span></article>
         <article class="stat-card"><span class="stat-name">ACTIVE KEYS</span><strong id="keyActive" class="stat-value">0</strong><span class="stat-sub">BẢN QUYỀN</span></article>
         <article class="stat-card"><span class="stat-name">TODAY</span><strong id="todayCount" class="stat-value">0</strong><span class="stat-sub">LƯỢT SỬ DỤNG</span></article>
-        <article class="stat-card"><span class="stat-name">RAILWAY</span><strong id="railwayStatus" class="stat-value large">ONLINE</strong><span class="stat-sub">TRẠNG THÁI</span></article>
+        <article class="stat-card"><span class="stat-name">POSTGRES</span><strong id="railwayStatus" class="stat-value large">ONLINE</strong><span class="stat-sub">TRẠNG THÁI</span></article>
       </div>
-
-      <div class="activity-panel">
-        <div class="progress-wrap"><div class="progress-top"><span id="activeTask">Chờ bật tính năng...</span><strong id="progressPercent">0%</strong></div><div class="progress-bar"><span id="progressFill"></span></div></div>
-        <div class="log-head"><span>REALTIME LOG</span><button id="clearLogBtn" type="button">XÓA LOG</button></div>
-        <div id="activityLog" class="activity-log"><div class="log-line muted">[SYSTEM] Panel sẵn sàng. Dữ liệu key kiểm tra từ server riêng.</div></div>
-        <div class="update-row">Cập nhật: <strong id="updateTime">--:--:--</strong></div>
-      </div>
+      <div class="update-row">Cập nhật: <strong id="updateTime">--:--:--</strong></div>
     </section>
   </main>
 

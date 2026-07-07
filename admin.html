@@ -5,50 +5,62 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AIMLOCK ADMIN</title>
   <link rel="stylesheet" href="admin.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
-  <main class="admin-wrap">
+  <main class="admin-page">
     <header class="admin-header">
       <div>
         <h1>AIMLOCK ADMIN</h1>
-        <p>Key Server Dashboard</p>
+        <p>Postgres Key Server Dashboard</p>
       </div>
-      <a href="/" class="back-btn">Về App</a>
+      <a class="open-app" href="/">Mở App</a>
     </header>
 
-    <section class="login-admin" id="adminLoginBox">
+    <section id="loginBox" class="login-box">
       <h2>Đăng nhập Admin</h2>
-      <p>Nhập mật khẩu admin. Mặc định: Admin11 hoặc biến môi trường ADMIN_PASSWORD trên Railway.</p>
-      <div class="admin-login-row">
+      <p>Nhập mật khẩu admin. Mặc định: <b>Admin11</b> hoặc biến môi trường <b>ADMIN_PASSWORD</b> trên Railway.</p>
+      <div class="login-row">
         <input id="adminPassword" type="password" placeholder="Admin password">
         <button id="adminLoginBtn" type="button">Đăng nhập</button>
       </div>
-      <div id="adminLoginStatus" class="save-status"></div>
+      <div id="loginStatus" class="status-line"></div>
     </section>
 
-    <section id="adminContent" class="admin-content hidden">
-      <div class="stats-row">
-        <article><span>Online</span><strong id="statOnline">0</strong></article>
-        <article><span>Active Keys</span><strong id="statActive">0</strong></article>
-        <article><span>Today</span><strong id="statToday">0</strong></article>
-        <article><span>Railway</span><strong id="statRailway">Online</strong></article>
-      </div>
+    <section id="adminContent" class="hidden">
+      <section class="stats-grid">
+        <article>
+          <span>Online</span>
+          <strong id="statOnline">1</strong>
+        </article>
+        <article>
+          <span>Active Keys</span>
+          <strong id="statActive">0</strong>
+        </article>
+        <article>
+          <span>Today</span>
+          <strong id="statToday">1</strong>
+        </article>
+        <article>
+          <span>Postgres</span>
+          <strong id="statRailway" class="railway">Online</strong>
+        </article>
+      </section>
 
       <section class="card">
         <h2>Thêm / cập nhật key</h2>
-        <div class="form-grid">
-          <input id="keyInput" type="text" placeholder="Key, ví dụ: Admin11">
-          <input id="typeInput" type="text" placeholder="Type, ví dụ: custom">
+        <div class="form-row">
+          <input id="keyInput" type="text" placeholder="Admin11">
+          <input id="typeInput" type="text" placeholder="custom">
           <input id="expireInput" type="datetime-local">
-          <input id="slotInput" type="number" min="1" value="100" placeholder="Slot limit">
+          <input id="slotLimitInput" type="number" min="1" value="100" placeholder="Slot">
           <button id="saveKeyBtn" type="button">Lưu key</button>
         </div>
         <div id="saveStatus" class="save-status">Sẵn sàng.</div>
       </section>
 
       <section class="card">
-        <div class="table-head">
+        <div class="table-title">
           <h2>Danh sách key</h2>
           <button id="reloadBtn" type="button">Tải lại</button>
         </div>
@@ -62,7 +74,7 @@
                 <th>Hết hạn</th>
                 <th>Slot</th>
                 <th>Trạng thái</th>
-                <th></th>
+                <th>Thao tác</th>
               </tr>
             </thead>
             <tbody id="keyTable"></tbody>
