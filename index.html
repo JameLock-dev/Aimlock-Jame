@@ -8,24 +8,20 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body class="login-page">
-    <main class="phone-shell login-shell">
+    <main class="phone-shell login-shell gaming-upgrade">
       <div class="ambient ambient-one"></div>
       <div class="ambient ambient-two"></div>
       <div class="scan-grid"></div>
+      <div class="hud-lines" aria-hidden="true"><i></i><i></i><i></i></div>
 
       <section class="login-hero" aria-label="AIMLOCK JAME login">
-        <div class="brand-orbit" aria-hidden="true">
-          <span></span><span></span><span></span>
-        </div>
+        <div class="brand-orbit" aria-hidden="true"><span></span><span></span><span></span></div>
         <p class="eyebrow">SECURE ACCESS</p>
-        <h1 class="brand-logo">
-          <span>AIMLOCK</span>
-          <b>JAME</b>
-        </h1>
-        <p class="brand-subtitle">PRIVATE CONTROL CENTER</p>
+        <h1 class="brand-logo"><span>AIMLOCK</span><b>JAME</b></h1>
+        <p class="brand-subtitle">PRIVATE GAMING CONTROL CENTER</p>
       </section>
 
-      <section class="glass-card login-card">
+      <section class="glass-card login-card pro-login-card">
         <div class="card-corner corner-a"></div>
         <div class="card-corner corner-b"></div>
         <div class="login-title-row">
@@ -46,6 +42,15 @@
           </button>
         </label>
 
+        <div class="key-actions">
+          <a id="freeKeyBtn" class="free-key-btn" href="https://link-cua-ban.com/lay-key" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 2 11 12"/><circle cx="8" cy="15" r="4"/><path d="M15 8h4v4"/></svg>
+            <span>LẤY KEY MIỄN PHÍ</span>
+            <b>›</b>
+          </a>
+          <button id="pasteKeyBtn" class="paste-key-btn" type="button">DÁN KEY</button>
+        </div>
+
         <button id="activateBtn" class="primary-btn" type="button">
           <span class="bolt" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13 2 4.5 13.4h6.3L9.7 22 20 9.3h-6.5L13 2Z"/></svg></span>
           <span>KÍCH HOẠT JAME</span>
@@ -57,18 +62,13 @@
       <section class="quick-zone login-quick" aria-label="Liên kết nhanh">
         <div class="section-divider"><span>KẾT NỐI NHANH</span></div>
         <div class="quick-grid two">
-          <a class="quick-button" href="https://www.tiktok.com/@jame.ff.11" target="_blank" rel="noopener">
-            <span class="social tiktok">♪</span>
-            <strong>TikTok</strong>
-          </a>
-          <a class="quick-button" href="https://zalo.me/0333635135" target="_blank" rel="noopener">
-            <span class="social zalo">Z</span>
-            <strong>Zalo</strong>
-          </a>
+          <a class="quick-button" href="https://www.tiktok.com/@jame.ff.11" target="_blank" rel="noopener"><span class="social tiktok">♪</span><strong>TikTok</strong></a>
+          <a class="quick-button" href="https://zalo.me/0333635135" target="_blank" rel="noopener"><span class="social zalo">Z</span><strong>Zalo</strong></a>
         </div>
       </section>
-    </main>
 
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    </main>
     <script src="./app.js"></script>
   </body>
 </html>
