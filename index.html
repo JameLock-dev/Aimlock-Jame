@@ -1,88 +1,83 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#050509" />
-    <title>AIMLOCK JAME — Secure Access</title>
-    <link rel="stylesheet" href="./styles.css" />
-  </head>
-  <body class="login-page">
-    <main class="phone-shell login-shell gaming-upgrade">
-      <div class="ambient ambient-one"></div>
-      <div class="ambient ambient-two"></div>
-      <div class="scan-grid"></div>
-      <div class="hud-lines" aria-hidden="true"><i></i><i></i><i></i></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AIMLOCK JAME - Login</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="theme-dark page-login">
+  <main class="app-shell login-shell">
+    <section class="hero-block">
+      <div class="logo-stack large">
+        <img src="logo.png" alt="AIMLOCK JAME" class="brand-logo" />
+      </div>
+      <div class="hero-subtitle">
+        <span></span>
+        <p>PRIVATE GAMING ACCESS</p>
+        <span></span>
+      </div>
+    </section>
 
-      <section class="login-hero" aria-label="AIMLOCK JAME login">
-        <div class="brand-orbit" aria-hidden="true"><span></span><span></span><span></span></div>
-        <p class="eyebrow">SECURE ACCESS</p>
-        <h1 class="brand-logo official-brand"><img src="./logo.png" alt="AIMLOCK JAME" onerror="this.style.display='none';this.parentElement.classList.add('logo-fallback');" /></h1>
-        <p class="brand-subtitle">PRIVATE GAMING CONTROL CENTER</p>
-      </section>
-
-      <section class="glass-card login-card pro-login-card">
-        <div class="card-corner corner-a"></div>
-        <div class="card-corner corner-b"></div>
-        <div class="login-title-row">
-          <div class="card-brand-lockup">
-            <img src="./logo.png" alt="AIMLOCK JAME" onerror="this.style.display='none';this.parentElement.classList.add('logo-fallback');" />
-            <p>BY JAME FF</p>
+    <section class="panel login-panel">
+      <div class="panel-head login-head">
+        <div class="mini-brand">
+          <img src="logo.png" alt="AIMLOCK JAME" class="mini-logo" />
+          <div>
+            <div class="mini-title">AIMLOCK JAME</div>
+            <div class="mini-caption">BY JAME FF</div>
           </div>
-          <div class="status-chip"><i></i> ONLINE</div>
         </div>
+        <div class="status-pill online"><span class="dot"></span>ONLINE</div>
+      </div>
 
-        <label class="input-wrap" for="licenseKey">
-          <span class="input-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M7 11V8a5 5 0 0 1 10 0v3"/><rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M12 15v2"/></svg>
-          </span>
-          <input id="licenseKey" type="password" placeholder="Nhập mật khẩu hoặc Key Mua" autocomplete="off" />
-          <button id="toggleKey" class="icon-btn" type="button" aria-label="Ẩn hiện key">
-            <svg viewBox="0 0 24 24"><path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>
-          </button>
-        </label>
-
-        <div class="key-actions">
-          <a id="freeKeyBtn" class="free-key-btn" href="https://link-cua-ban.com/lay-key" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 2 11 12"/><circle cx="8" cy="15" r="4"/><path d="M15 8h4v4"/></svg>
-            <span>LẤY KEY MIỄN PHÍ</span>
-            <b>›</b>
-          </a>
-          <button id="pasteKeyBtn" class="paste-key-btn" type="button">DÁN KEY</button>
-        </div>
-
-        <button id="activateBtn" class="primary-btn" type="button">
-          <span class="bolt" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13 2 4.5 13.4h6.3L9.7 22 20 9.3h-6.5L13 2Z"/></svg></span>
-          <span>KÍCH HOẠT JAME</span>
+      <div class="input-wrap">
+        <span class="input-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.2"/></svg>
+        </span>
+        <input id="keyInput" type="password" placeholder="Nhập mật khẩu hoặc Key Mua" autocomplete="off" />
+        <button class="ghost-icon" id="togglePassword" type="button" aria-label="Hiện key">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="3"/></svg>
         </button>
+      </div>
 
-        <p id="loginStatus" class="ready-line"><i></i><span>Sẵn sàng kích hoạt</span></p>
-      </section>
+      <div class="dual-actions">
+        <a class="secondary-btn" id="freeKeyBtn" href="https://link-cua-ban.com/lay-key" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M7.5 7a2.5 2.5 0 1 1 0-5c2 0 4.5 5 4.5 5"/><path d="M16.5 7a2.5 2.5 0 1 0 0-5c-2 0-4.5 5-4.5 5"/></svg>
+          <span>LẤY KEY MIỄN PHÍ</span>
+        </a>
+        <button class="secondary-btn" id="pasteKeyBtn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="8" y="3" width="8" height="4" rx="1.5"/><path d="M8 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><path d="M9 12h6M9 16h6"/></svg>
+          <span>DÁN KEY</span>
+        </button>
+      </div>
 
-      <section class="quick-zone login-quick" aria-label="Liên kết nhanh">
-        <div class="section-divider"><span>KẾT NỐI NHANH</span></div>
-        <div class="quick-grid two">
-          <a class="quick-button" href="https://www.tiktok.com/@jame.ff.11" target="_blank" rel="noopener"><svg class="app-social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="TikTok">
-  <rect width="128" height="128" rx="30" fill="#08090d"/>
-  <path d="M73.1 22.8c4.2 15.1 13.1 23.5 28.7 24.5v19.1c-9.1.9-17.1-2.1-25.8-7.4v32.1c0 39.5-43.1 51.9-60.4 23.6-11.2-18.4-4.4-50.6 31.5-51.9v20.2c-3 .5-6.2 1.3-9.1 2.6-8.7 3.9-13.5 11.2-12.1 19.1 2.8 15.2 30.2 19.7 27.9-10V22.8h19.3z" fill="#25F4EE" opacity=".95"/>
-  <path d="M79.8 22.8c4.2 15.1 13.1 23.5 28.7 24.5v19.1c-9.1.9-17.1-2.1-25.8-7.4v32.1c0 39.5-43.1 51.9-60.4 23.6-4.3-7.1-5.6-16.2-3.9-24.7 2.2 4.6 5.7 8.8 10.6 12 17.4 11.5 44.8 1.4 44.8-28.1V22.8h6z" fill="#FE2C55" opacity=".95"/>
-  <path d="M66.8 22.8h12.8v18.1c4.6 5.2 10.4 8.2 18.7 8.8v12.7c-8.9.1-15.1-2.7-24.5-8.1v36.8c0 17.5-8.5 29.6-22.5 33.4-13.7 3.8-28.2-2.7-34.2-12.6 12.2 8.4 36.6 8.4 36.6-18.1V63c-3.1-.4-6.5-.1-9.8.7v-14c4.5-.8 9.6-.8 14.2.1v44.1c0 10.4 18 8.5 18-2.9V22.8z" fill="#fff"/>
-</svg>
-<strong>TikTok</strong></a>
-          <a class="quick-button" href="https://zalo.me/0333635135" target="_blank" rel="noopener"><svg class="app-social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Zalo">
-  <defs>
-    <linearGradient id="b" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#1CA9FF"/><stop offset="1" stop-color="#0068FF"/></linearGradient>
-  </defs>
-  <rect width="128" height="128" rx="30" fill="url(#b)"/>
-  <path d="M26 32h76c9.4 0 17 7.6 17 17v28c0 9.4-7.6 17-17 17H70.5L44 111V94H26c-9.4 0-17-7.6-17-17V49c0-9.4 7.6-17 17-17z" fill="#fff"/>
-  <text x="64" y="75" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="800" fill="#0068FF">Zalo</text>
-</svg>
-<strong>Zalo</strong></a>
-        </div>
-      </section>
+      <button class="primary-btn" id="activateBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>
+        <span>KÍCH HOẠT JAME</span>
+      </button>
 
-      <div id="toast" class="toast" role="status" aria-live="polite"></div>
-    </main>
-    <script src="./app.js"></script>
-  </body>
+      <div class="ready-state" id="loginStatus"><span class="dot"></span>Sẵn sàng kích hoạt</div>
+    </section>
+
+    <section class="quick-links-card compact">
+      <h3>KẾT NỐI NHANH</h3>
+      <div class="quick-links two-col">
+        <a class="quick-link" href="https://www.tiktok.com/" target="_blank" rel="noopener">
+          <span class="social-mark tiktok-mark">♪</span>
+          <span>TikTok</span>
+        </a>
+        <a class="quick-link" href="https://zalo.me/" target="_blank" rel="noopener">
+          <span class="social-mark zalo-mark">Z</span>
+          <span>Zalo</span>
+        </a>
+      </div>
+    </section>
+
+    <div class="footer-caption">PRIVATE CONTROL CENTER</div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+  <script src="app.js"></script>
+</body>
 </html>

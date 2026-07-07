@@ -1,172 +1,183 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#050509" />
-    <title>AIMLOCK JAME — Gaming Dashboard</title>
-    <link rel="stylesheet" href="./styles.css" />
-  </head>
-  <body class="dashboard-page">
-    <main class="phone-shell dashboard-shell gaming-upgrade">
-      <div class="ambient ambient-one"></div>
-      <div class="ambient ambient-two"></div>
-      <div class="scan-grid"></div>
-      <div class="hud-lines" aria-hidden="true"><i></i><i></i><i></i></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AIMLOCK JAME - Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="theme-dark page-dashboard">
+  <main class="app-shell dashboard-shell">
+    <header class="topbar">
+      <button class="icon-square" id="menuBtn" type="button" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <div class="topbar-brand">
+        <img src="logo.png" alt="AIMLOCK JAME" class="header-logo" />
+      </div>
+      <button class="icon-square" id="notifyBtn" type="button" aria-label="Thông báo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M15 17H5.5a1.5 1.5 0 0 1-1.2-2.4L6 12.5V10a6 6 0 0 1 12 0v2.5l1.7 2.1A1.5 1.5 0 0 1 18.5 17H15"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
+        <span class="notif-dot"></span>
+      </button>
+    </header>
 
-      <header class="app-topbar">
-        <button id="menuBtn" class="top-icon" type="button" aria-label="Menu">
-          <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-        </button>
-        <a class="mini-logo official-mini" href="./dashboard.html" aria-label="AIMLOCK JAME"><img src="./logo.png" alt="AIMLOCK JAME" onerror="this.style.display='none';this.parentElement.classList.add('logo-fallback');" /></a>
-        <button id="notifyBtn" class="top-icon has-dot" type="button" aria-label="Thông báo">
-          <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg>
-        </button>
-      </header>
-
-      <section class="profile-card glass-card pro-profile">
-        <div class="avatar-core avatar-logo" aria-hidden="true"><img src="./logo.png" alt="" onerror="this.style.display='none';this.parentElement.classList.add('logo-fallback');" /></div>
-        <div class="profile-copy">
-          <p>Xin chào, <strong>JAME FF</strong></p>
-          <div class="vip-row"><span>VIP</span><b>Còn 30 ngày</b></div>
+    <section class="panel user-panel">
+      <div class="user-left">
+        <div class="gem-icon"></div>
+        <div>
+          <div class="hello">Xin chào, <strong id="helloName">JAME FF</strong></div>
+          <div class="vip-row">
+            <span class="vip-badge">VIP</span>
+            <span>Còn 30 ngày</span>
+          </div>
         </div>
-        <button id="keyCardBtn" class="key-card" type="button">
-          <small>Key của bạn</small>
-          <strong><svg viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M10.8 12.2 21 2M15 8h4v4"/></svg><span id="keyActiveMini">2</span></strong>
-        </button>
-      </section>
-
-      <section class="game-status glass-card">
-        <div class="game-status-head">
-          <div><span>GAME MODE</span><strong>NEON STRIKE</strong></div>
-          <button id="hubPulseBtn" type="button">BOOST HUD</button>
+      </div>
+      <div class="key-box interactive" data-toast="Bạn hiện có 2 key đang hoạt động.">
+        <div class="key-label">Key của bạn</div>
+        <div class="key-value">
+          <span class="key-icon">⌁</span>
+          <strong>2</strong>
         </div>
-        <div class="core-meter" aria-hidden="true"><i id="coreMeter"></i></div>
-        <div class="status-mini"><span id="coreStatus">CORE READY</span><b id="activeModulesText">0 MODULE ON</b></div>
-      </section>
+      </div>
+    </section>
 
-      <section class="stats-grid" aria-label="Thống kê">
-        <article class="stat-card glass-card action-card" data-action="refresh-stats">
-          <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg>
-          <span>ONLINE</span><strong id="onlineCount">0</strong><small>Người dùng</small>
-        </article>
-        <article class="stat-card glass-card action-card" data-action="key-info">
-          <svg viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M10.8 12.2 21 2M15 8h4v4"/></svg>
-          <span>ACTIVE KEYS</span><strong id="keyActive">2</strong><small>Đang hoạt động</small>
-        </article>
-        <article class="stat-card glass-card action-card" data-action="refresh-stats">
-          <svg viewBox="0 0 24 24"><path d="M13 2 4.5 13.4h6.3L9.7 22 20 9.3h-6.5L13 2Z"/></svg>
-          <span>TODAY</span><strong id="todayCount">1</strong><small>Lượt kích hoạt</small>
-        </article>
-      </section>
+    <section class="stats-grid">
+      <button class="panel stat-card interactive" data-toast="Hiện tại có 0 người dùng online.">
+        <div class="stat-icon">◔</div>
+        <div class="stat-title">ONLINE</div>
+        <div class="stat-value">0</div>
+        <div class="stat-sub">Người dùng</div>
+      </button>
+      <button class="panel stat-card interactive" data-toast="Có 2 key đang hoạt động.">
+        <div class="stat-icon">⌁</div>
+        <div class="stat-title">ACTIVE KEYS</div>
+        <div class="stat-value">2</div>
+        <div class="stat-sub">Đang hoạt động</div>
+      </button>
+      <button class="panel stat-card interactive" data-toast="Hôm nay có 1 lượt kích hoạt.">
+        <div class="stat-icon">⚡</div>
+        <div class="stat-title">TODAY</div>
+        <div class="stat-value">1</div>
+        <div class="stat-sub">Lượt kích hoạt</div>
+      </button>
+    </section>
 
-      <section class="feature-section" aria-label="Tính năng">
-        <div class="section-divider"><span>TÍNH NĂNG</span></div>
-        <div class="feature-grid-v3 pro-feature-grid">
-          <article class="feature-card glass-card" data-feature-card="boost" data-open-feature="boost">
-            <div class="feature-icon"><svg viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10"/><path d="M3 10h4M3 14h4M17 10h4M17 14h4M10 3v4M14 3v4M10 17v4M14 17v4"/></svg></div>
-            <div><h3>BOOST RAM</h3><p>Tối ưu bộ nhớ</p></div>
-            <button class="toggle" type="button" data-toggle-feature="boost"><i></i><b id="boostState">OFF</b></button>
-          </article>
-          <article class="feature-card glass-card" data-feature-card="aimbody" data-open-feature="aimbody">
-            <div class="feature-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg></div>
-            <div><h3>AIMBODY</h3><p>Chế độ module</p></div>
-            <button class="toggle" type="button" data-toggle-feature="aimbody"><i></i><b id="aimbodyState">OFF</b></button>
-          </article>
-          <article class="feature-card glass-card" data-feature-card="nhetam" data-open-feature="nhetam">
-            <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg></div>
-            <div><h3>NHẸ TÂM</h3><p>Trạng thái nhẹ</p></div>
-            <button class="toggle" type="button" data-toggle-feature="nhetam"><i></i><b id="nhetamState">OFF</b></button>
-          </article>
-          <article class="feature-card glass-card" data-feature-card="headlock" data-open-feature="headlock">
-            <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M7 11V8a5 5 0 0 1 10 0v3"/><rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M12 15v2"/></svg></div>
-            <div><h3>JAMELOCK</h3><p>Khóa bảo vệ</p></div>
-            <button class="toggle" type="button" data-toggle-feature="headlock"><i></i><b id="headlockState">OFF</b></button>
-          </article>
-          <article class="feature-card glass-card" data-feature-card="ping" data-open-feature="ping">
-            <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M12 2 20 6v6c0 5-3.4 8.8-8 10-4.6-1.2-8-5-8-10V6l8-4Z"/><path d="m8 16 8-8"/></svg></div>
-            <div><h3>AINTIBAN</h3><p>Kiểm tra kết nối</p></div>
-            <button class="toggle" type="button" data-toggle-feature="ping"><i></i><b id="pingState">OFF</b></button>
-          </article>
-          <article class="feature-card glass-card" data-feature-card="cache" data-open-feature="cache">
-            <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg></div>
-            <div><h3>REG FF</h3><p>Dọn dữ liệu tạm</p></div>
-            <button class="toggle" type="button" data-toggle-feature="cache"><i></i><b id="cacheState">OFF</b></button>
-          </article>
+    <div class="section-title"><span></span><h3>TÍNH NĂNG</h3><span></span></div>
+
+    <section class="feature-grid">
+      <article class="panel feature-card">
+        <div class="feature-icon">▣</div>
+        <div class="feature-main">
+          <h4>BOOST RAM</h4>
+          <p>Tối ưu bộ nhớ</p>
         </div>
-      </section>
+        <button class="toggle" data-feature="boostram" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
+      </article>
 
-      <section class="info-card glass-card">
-        <div class="info-copy">
-          <span>THÔNG TIN</span><h2>Cập nhật & hỗ trợ</h2>
-          <p>Cập nhật chính sách, hướng dẫn sử dụng và hỗ trợ nhanh chóng.</p>
-          <button id="infoBtn" type="button">XEM NGAY <b>›</b></button>
+      <article class="panel feature-card">
+        <div class="feature-icon">◎</div>
+        <div class="feature-main">
+          <h4>AIMBODY</h4>
+          <p>Chế độ module</p>
         </div>
-        <div class="info-art" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg></div>
-      </section>
+        <button class="toggle" data-feature="aimbody" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
+      </article>
 
-      <section class="quick-zone dashboard-quick" aria-label="Liên kết nhanh">
-        <div class="section-divider"><span>LIÊN KẾT NHANH</span></div>
-        <div class="quick-grid two">
-          <a class="quick-button" href="https://www.tiktok.com/@jame.ff.11" target="_blank" rel="noopener"><svg class="app-social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="TikTok">
-  <rect width="128" height="128" rx="30" fill="#08090d"/>
-  <path d="M73.1 22.8c4.2 15.1 13.1 23.5 28.7 24.5v19.1c-9.1.9-17.1-2.1-25.8-7.4v32.1c0 39.5-43.1 51.9-60.4 23.6-11.2-18.4-4.4-50.6 31.5-51.9v20.2c-3 .5-6.2 1.3-9.1 2.6-8.7 3.9-13.5 11.2-12.1 19.1 2.8 15.2 30.2 19.7 27.9-10V22.8h19.3z" fill="#25F4EE" opacity=".95"/>
-  <path d="M79.8 22.8c4.2 15.1 13.1 23.5 28.7 24.5v19.1c-9.1.9-17.1-2.1-25.8-7.4v32.1c0 39.5-43.1 51.9-60.4 23.6-4.3-7.1-5.6-16.2-3.9-24.7 2.2 4.6 5.7 8.8 10.6 12 17.4 11.5 44.8 1.4 44.8-28.1V22.8h6z" fill="#FE2C55" opacity=".95"/>
-  <path d="M66.8 22.8h12.8v18.1c4.6 5.2 10.4 8.2 18.7 8.8v12.7c-8.9.1-15.1-2.7-24.5-8.1v36.8c0 17.5-8.5 29.6-22.5 33.4-13.7 3.8-28.2-2.7-34.2-12.6 12.2 8.4 36.6 8.4 36.6-18.1V63c-3.1-.4-6.5-.1-9.8.7v-14c4.5-.8 9.6-.8 14.2.1v44.1c0 10.4 18 8.5 18-2.9V22.8z" fill="#fff"/>
-</svg>
-<strong>TikTok</strong><em>›</em></a>
-          <a class="quick-button" href="https://zalo.me/0333635135" target="_blank" rel="noopener"><svg class="app-social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Zalo">
-  <defs>
-    <linearGradient id="b" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#1CA9FF"/><stop offset="1" stop-color="#0068FF"/></linearGradient>
-  </defs>
-  <rect width="128" height="128" rx="30" fill="url(#b)"/>
-  <path d="M26 32h76c9.4 0 17 7.6 17 17v28c0 9.4-7.6 17-17 17H70.5L44 111V94H26c-9.4 0-17-7.6-17-17V49c0-9.4 7.6-17 17-17z" fill="#fff"/>
-  <text x="64" y="75" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="800" fill="#0068FF">Zalo</text>
-</svg>
-<strong>Zalo</strong><em>›</em></a>
+      <article class="panel feature-card">
+        <div class="feature-icon">♡</div>
+        <div class="feature-main">
+          <h4>NHẸ TÂM</h4>
+          <p>Trạng thái nhẹ</p>
         </div>
-      </section>
+        <button class="toggle" data-feature="nhetam" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
+      </article>
 
-      <nav class="bottom-nav-v3" aria-label="Điều hướng chính">
-        <a id="homeNav" class="active" href="#top"><svg viewBox="0 0 24 24"><path d="M3 11 12 3l9 8"/><path d="M5 10v10h14V10"/></svg><span>Trang chủ</span></a>
-        <a href="./index.html"><svg viewBox="0 0 24 24"><path d="M13 2 4.5 13.4h6.3L9.7 22 20 9.3h-6.5L13 2Z"/></svg><span>Kích hoạt</span></a>
-        <button id="hubBtn" class="center-hub" type="button" aria-label="Hub"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg></button>
-        <a id="infoNav" href="#info"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><span>Thông tin</span></a>
-        <a id="accountNav" href="#account"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 22a8 8 0 0 1 16 0"/></svg><span>Tài khoản</span></a>
-      </nav>
+      <article class="panel feature-card">
+        <div class="feature-icon">⌂</div>
+        <div class="feature-main">
+          <h4>JAMELOCK</h4>
+          <p>Khóa bảo vệ</p>
+        </div>
+        <button class="toggle" data-feature="jamelock" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
+      </article>
 
-      <div id="modalOverlay" class="modal-overlay hidden"></div>
-      <aside id="sideDrawer" class="side-drawer hidden">
-        <div class="drawer-head"><strong>AIMLOCK MENU</strong><button data-close-ui type="button">×</button></div>
-        <button data-action="refresh-stats" type="button">Làm mới thống kê</button>
-        <button data-action="reset-features" type="button">Tắt toàn bộ module</button>
-        <a href="./index.html">Quay về kích hoạt</a>
-      </aside>
+      <article class="panel feature-card">
+        <div class="feature-icon">⬒</div>
+        <div class="feature-main">
+          <h4>AINTIBAN</h4>
+          <p>Kiểm tra kết nối</p>
+        </div>
+        <button class="toggle" data-feature="aintiban" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
+      </article>
 
-      <section id="infoModal" class="modal-card hidden" role="dialog" aria-modal="true">
-        <button class="modal-close" data-close-ui type="button">×</button>
-        <h2>THÔNG TIN HỆ THỐNG</h2>
-        <p>Giao diện gaming V4 đã kích hoạt đầy đủ hiệu ứng UI, toast, popup, menu, quick link và toggle lưu trạng thái.</p>
-        <button class="modal-primary" data-close-ui type="button">ĐÃ HIỂU</button>
-      </section>
+      <article class="panel feature-card">
+        <div class="feature-icon">☰</div>
+        <div class="feature-main">
+          <h4>REG FF</h4>
+          <p>Dọn dữ liệu tạm</p>
+        </div>
+        <button class="toggle" data-feature="regff" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
+      </article>
+    </section>
 
-      <section id="accountModal" class="modal-card hidden" role="dialog" aria-modal="true">
-        <button class="modal-close" data-close-ui type="button">×</button>
-        <h2>TÀI KHOẢN</h2>
-        <p><b>Device ID:</b> <span id="deviceIdText">---</span></p>
-        <p><b>Trạng thái:</b> VIP / Còn 30 ngày</p>
-        <button id="copyDeviceBtn" class="modal-primary" type="button">COPY DEVICE ID</button>
-      </section>
+    <section class="panel info-banner">
+      <div class="info-text">
+        <div class="info-caption">THÔNG TIN</div>
+        <h3>Cập nhật &amp; hỗ trợ</h3>
+        <p>Cập nhật chính sách, hướng dẫn sử dụng và hỗ trợ nhanh chóng.</p>
+      </div>
+      <button class="outline-btn interactive" data-toast="Đang mở khu vực thông tin...">XEM NGAY</button>
+    </section>
 
-      <section id="featureModal" class="modal-card hidden" role="dialog" aria-modal="true">
-        <button class="modal-close" data-close-ui type="button">×</button>
-        <h2 id="featureModalTitle">MODULE</h2>
-        <p id="featureModalDesc">Chi tiết module.</p>
-        <button id="featureModalToggle" class="modal-primary" type="button">BẬT / TẮT</button>
-      </section>
+    <section class="quick-links-card">
+      <h3>LIÊN KẾT NHANH</h3>
+      <div class="quick-links two-col">
+        <a class="quick-link" href="https://www.tiktok.com/" target="_blank" rel="noopener">
+          <span class="social-mark tiktok-mark">♪</span>
+          <span>TikTok</span>
+          <em>›</em>
+        </a>
+        <a class="quick-link" href="https://zalo.me/" target="_blank" rel="noopener">
+          <span class="social-mark zalo-mark">Z</span>
+          <span>Zalo</span>
+          <em>›</em>
+        </a>
+      </div>
+    </section>
 
-      <div id="toast" class="toast" role="status" aria-live="polite"></div>
-    </main>
-    <script src="./app.js"></script>
-  </body>
+    <nav class="bottom-nav">
+      <button class="nav-item active interactive" data-toast="Bạn đang ở Trang chủ.">
+        <span>⌂</span><small>Trang chủ</small>
+      </button>
+      <button class="nav-item interactive" data-toast="Mở tab Kích hoạt.">
+        <span>⚡</span><small>Kích hoạt</small>
+      </button>
+      <button class="nav-hub interactive" data-toast="Gaming hub đã sẵn sàng.">
+        <span>◎</span>
+      </button>
+      <button class="nav-item interactive" data-toast="Mở tab Thông tin.">
+        <span>ⓘ</span><small>Thông tin</small>
+      </button>
+      <button class="nav-item interactive" id="accountBtn" data-toast="Mở tab Tài khoản.">
+        <span>◌</span><small>Tài khoản</small>
+      </button>
+    </nav>
+  </main>
+
+  <div class="side-drawer" id="sideDrawer">
+    <div class="drawer-card">
+      <div class="drawer-head">
+        <strong>AIMLOCK MENU</strong>
+        <button id="closeDrawer" type="button">×</button>
+      </div>
+      <button class="drawer-link interactive" data-toast="Mục Trung tâm điều khiển.">Trung tâm điều khiển</button>
+      <button class="drawer-link interactive" data-toast="Mục Cài đặt giao diện.">Cài đặt giao diện</button>
+      <button class="drawer-link interactive" data-toast="Mục Hỗ trợ cộng đồng.">Hỗ trợ cộng đồng</button>
+      <button class="drawer-link danger" id="logoutBtn">Đăng xuất</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="app.js"></script>
+</body>
 </html>
