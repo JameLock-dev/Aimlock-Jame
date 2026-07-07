@@ -160,10 +160,10 @@ function toggleFeature(name) {
 function labelFeature(name) {
   return {
     boost: "Boost RAM",
-    crosshair: "Crosshair",
+    crosshair: "REG FF OB54",
     aimbody: "AIMBODY",
     nhetam: "NHẸ TÂM",
-    headlock: "HeadLock"
+    headlock: "JAMELOCK"
   }[name] || name;
 }
 
@@ -307,7 +307,9 @@ freeKeyBtn?.addEventListener("click", () => {
   window.open("https://www.tiktok.com/@jame.ff.11", "_blank", "noopener");
 });
 
-contactKeyBtn?.addEventListener("click", () => showToast("Liên hệ Zalo: 0333635135"));
+contactKeyBtn?.addEventListener("click", () => {
+  window.open("https://zalo.me/0333635135", "_blank", "noopener");
+});
 menuBtn?.addEventListener("click", openMenu);
 closeMenuBtn?.addEventListener("click", closeMenu);
 panelOverlay?.addEventListener("click", closeMenu);
@@ -336,13 +338,13 @@ document.addEventListener("click", (event) => {
 
 headlockOnBtn?.addEventListener("click", () => {
   setFeature("headlock", true);
-  showToast("HeadLock Was Successful!");
+  showToast("JAMELOCK Was Successful!");
   closeModals();
 });
 
 headlockOffBtn?.addEventListener("click", () => {
   setFeature("headlock", false);
-  showToast("Turn off HeadLock");
+  showToast("Turn off JAMELOCK");
   closeModals();
 });
 
@@ -393,7 +395,7 @@ crosshairColor?.addEventListener("change", renderCrosshairPreview);
 saveCrosshairBtn?.addEventListener("click", () => {
   setFeature("crosshair", true);
   renderCrosshairPreview();
-  showToast("Đã lưu Crosshair");
+  showToast("Đã lưu REG FF OB54");
   closeModals();
 });
 

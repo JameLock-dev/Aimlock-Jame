@@ -50,7 +50,7 @@
 
     <button class="menu-row" type="button" data-open-feature="crosshair">
       <span class="menu-ico">⊕</span>
-      <span><b>Crosshair</b><small>Tùy chỉnh tâm ngắm</small></span>
+      <span><b>REG FF OB54</b><small>Tùy chỉnh tâm ngắm</small></span>
       <em id="menuCrosshairState">OFF</em>
     </button>
 
@@ -68,7 +68,7 @@
 
     <button class="menu-row" type="button" data-open-feature="headlock">
       <span class="menu-ico">🔒</span>
-      <span><b>HeadLock</b><small>Bật / tắt chế độ</small></span>
+      <span><b>JAMELOCK</b><small>Bật / tắt chế độ</small></span>
       <em id="menuHeadlockState">OFF</em>
     </button>
 
@@ -133,7 +133,7 @@
         </button>
         <button class="feature-card" type="button" data-open-feature="crosshair">
           <span class="feature-icon">⊕</span>
-          <strong>Crosshair</strong>
+          <strong>REG FF OB54</strong>
           <small>Tùy chỉnh tâm ngắm</small>
           <em id="crosshairState">OFF</em>
         </button>
@@ -151,7 +151,7 @@
         </button>
         <button class="feature-card" type="button" data-open-feature="headlock">
           <span class="feature-icon">🔒</span>
-          <strong>HeadLock</strong>
+          <strong>JAMELOCK</strong>
           <small>Bật / tắt chế độ</small>
           <em id="headlockState">OFF</em>
         </button>
@@ -168,7 +168,7 @@
   <section id="headlockModal" class="modal-box hidden">
     <div class="modal-card">
       <button class="modal-close" type="button" data-close-modal>×</button>
-      <h3>HEADLOCK CONTROL</h3>
+      <h3>JAMELOCK CONTROL</h3>
       <p>Chọn phiên bản rồi bật/tắt trạng thái hiển thị trong panel.</p>
       <label class="modal-label">Phiên bản</label>
       <select id="ffVersion" class="modal-input">
@@ -176,8 +176,8 @@
         <option>Free Fire Max</option>
       </select>
       <div class="modal-actions">
-        <button id="headlockOnBtn" class="activate-btn small" type="button">HeadLock Was Successful!</button>
-        <button id="headlockOffBtn" class="secondary-login-btn center" type="button">Turn off HeadLock</button>
+        <button id="headlockOnBtn" class="activate-btn small" type="button">JAMELOCK Was Successful!</button>
+        <button id="headlockOffBtn" class="secondary-login-btn center" type="button">Turn off JAMELOCK</button>
       </div>
     </div>
   </section>
@@ -198,7 +198,7 @@
   <section id="crosshairModal" class="modal-box hidden">
     <div class="modal-card">
       <button class="modal-close" type="button" data-close-modal>×</button>
-      <h3>CROSSHAIR</h3>
+      <h3>REG FF OB54</h3>
       <p>Tùy chỉnh hiển thị tâm ngắm trong giao diện.</p>
       <label class="modal-label">Kích thước</label>
       <input id="crosshairSize" class="modal-input" type="range" min="12" max="42" value="24">
@@ -209,7 +209,7 @@
         <option value="white">White</option>
       </select>
       <div id="crosshairPreview" class="crosshair-preview">⊕</div>
-      <button id="saveCrosshairBtn" class="activate-btn small" type="button">Lưu Crosshair</button>
+      <button id="saveCrosshairBtn" class="activate-btn small" type="button">Lưu REG FF OB54</button>
     </div>
   </section>
 
@@ -219,9 +219,15 @@
       <h3>INFO</h3>
       <div class="info-list">
         <div><span>Device ID</span><b id="deviceText">--</b></div>
-        <div><span>Zalo</span><b>0333635135</b></div>
-        <div><span>FaceBook</span><b>Jame FF</b></div>
-        <div><span>TikTok</span><b>@jame.ff.11</b></div>
+        <a class="info-link" href="https://zalo.me/0333635135" target="_blank" rel="noopener">
+          <span>Zalo</span><b>0333635135 ↗</b>
+        </a>
+        <a class="info-link" href="https://www.facebook.com/" target="_blank" rel="noopener">
+          <span>FaceBook</span><b>Jame FF ↗</b>
+        </a>
+        <a class="info-link" href="https://www.tiktok.com/@jame.ff.11" target="_blank" rel="noopener">
+          <span>TikTok</span><b>@jame.ff.11 ↗</b>
+        </a>
       </div>
       <div class="modal-actions">
         <button id="copyDeviceBtn" class="secondary-login-btn center" type="button">Copy Device ID</button>
@@ -231,6 +237,6 @@
   </section>
 
   <div id="toast" class="toast">Thông báo</div>
-  <script src="script.js?v=3"></script>
+  <script src="script.js?v=5"></script>
 </body>
 </html>
