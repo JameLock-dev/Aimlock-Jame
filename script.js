@@ -32,6 +32,10 @@ const headlockOffBtn = document.getElementById("headlockOffBtn");
 const runBoostBtn = document.getElementById("runBoostBtn");
 const closeBoostBtn = document.getElementById("closeBoostBtn");
 const boostOutput = document.getElementById("boostOutput");
+const crosshairSize = document.getElementById("crosshairSize");
+const crosshairColor = document.getElementById("crosshairColor");
+const crosshairPreview = document.getElementById("crosshairPreview");
+const saveCrosshairBtn = document.getElementById("saveCrosshairBtn");
 const pingOutput = document.getElementById("pingOutput");
 const runPingBtn = document.getElementById("runPingBtn");
 const pingOffBtn = document.getElementById("pingOffBtn");
@@ -41,6 +45,7 @@ const cacheOffBtn = document.getElementById("cacheOffBtn");
 
 const featureMap = {
   boost: ["boostState", "menuBoostState"],
+  crosshair: ["crosshairState", "menuCrosshairState"],
   aimbody: ["aimbodyState", "menuAimbodyState"],
   nhetam: ["nhetamState", "menuNhetamState"],
   headlock: ["headlockState", "menuHeadlockState"],
@@ -177,6 +182,7 @@ function toggleFeature(name) {
 function labelFeature(name) {
   return {
     boost: "Boost RAM",
+    crosshair: "REG FF OB54",
     aimbody: "AIMBODY",
     nhetam: "NHẸ TÂM",
     headlock: "JAMELOCK",
@@ -218,6 +224,7 @@ function modalByFeature(name) {
   return {
     headlock: document.getElementById("headlockModal"),
     boost: document.getElementById("boostModal"),
+    crosshair: document.getElementById("crosshairModal"),
     ping: document.getElementById("pingModal"),
     cache: document.getElementById("cacheModal"),
     info: document.getElementById("infoModal")
@@ -408,6 +415,20 @@ copyDeviceBtn?.addEventListener("click", async () => {
   }
 });
 
+function renderCrosshairPreview() {
+  if (!crosshairPreview) return;
+  crosshairPreview.textContent = "> REG FF OB54 ready...\n> no crosshair customization.";
+}
+
+saveCrosshairBtn?.addEventListener("click", () => {
+  setFeature("crosshair", true);
+  if (crosshairPreview) {
+    crosshairPreview.textContent = "> activating REG FF OB54...\n> status saved: ON.";
+  }
+  showToast("REG FF OB54: ON");
+  setTimeout(closeModals, 450);
+});
+
 
 runPingBtn?.addEventListener("click", async () => {
   if (!pingOutput) return;
@@ -471,5 +492,6 @@ cacheOffBtn?.addEventListener("click", () => {
 
 initSavedLogin();
 renderFeatures();
+renderCrosshairPreview();
 updateStats();
 setInterval(updateStats, 4000);

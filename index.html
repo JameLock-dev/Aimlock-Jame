@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AIMLOCK JAME</title>
-  <link rel="stylesheet" href="styles.css?v=8" />
+  <link rel="stylesheet" href="styles.css?v=3" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -46,6 +46,12 @@
       <span class="menu-ico">⚡</span>
       <span><b>Boost RAM</b><small>Tối ưu hiệu suất</small></span>
       <em id="menuBoostState">OFF</em>
+    </button>
+
+    <button class="menu-row" type="button" data-open-feature="crosshair">
+      <span class="menu-ico">⊕</span>
+      <span><b>REG FF OB54</b><small>Tối ưu cấu hình OB54</small></span>
+      <em id="menuCrosshairState">OFF</em>
     </button>
 
     <button class="menu-row" type="button" data-toggle-feature="aimbody">
@@ -137,6 +143,12 @@
           <small>Tối ưu hiệu suất</small>
           <em id="boostState">OFF</em>
         </button>
+        <button class="feature-card" type="button" data-open-feature="crosshair">
+          <span class="feature-icon">⊕</span>
+          <strong>REG FF OB54</strong>
+          <small>Tối ưu cấu hình OB54</small>
+          <em id="crosshairState">OFF</em>
+        </button>
         <button class="feature-card" type="button" data-toggle-feature="aimbody">
           <span class="feature-icon">🎯</span>
           <strong>AIMBODY</strong>
@@ -207,6 +219,16 @@
     </div>
   </section>
 
+  <section id="crosshairModal" class="modal-box hidden">
+    <div class="modal-card">
+      <button class="modal-close" type="button" data-close-modal>×</button>
+      <h3>REG FF OB54</h3>
+      <p>Kích hoạt trạng thái REG FF OB54 trong web panel. Không còn phần tùy chỉnh tâm ngắm.</p>
+      <pre id="crosshairPreview" class="terminal-output">Ready...</pre>
+      <button id="saveCrosshairBtn" class="activate-btn small" type="button">Bật REG FF OB54</button>
+    </div>
+  </section>
+
   <section id="pingModal" class="modal-box hidden">
     <div class="modal-card">
       <button class="modal-close" type="button" data-close-modal>×</button>
@@ -257,6 +279,6 @@
   </section>
 
   <div id="toast" class="toast">Thông báo</div>
-  <script src="script.js?v=8"></script>
+  <script src="script.js?v=6-demo"></script>
 </body>
 </html>
