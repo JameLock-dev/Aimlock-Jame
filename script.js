@@ -1,148 +1,47 @@
-const features = [
-  {
-    title: "TỐI ƯU MẠNG",
-    desc: "Hiển thị và theo dõi chất lượng kết nối.",
-    icon: `
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="2"/>
-        <path d="M3.5 12h17M12 3.5c2.2 2.3 3.4 5.3 3.4 8.5s-1.2 6.2-3.4 8.5M12 3.5c-2.2 2.3-3.4 5.3-3.4 8.5s1.2 6.2 3.4 8.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-      </svg>`
-  },
-  {
-    title: "ANTIBAN",
-    desc: "Giảm nguy cơ bị phát hiện và khóa tài khoản.",
-    icon: `
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M12 3l7 3v5c0 4.5-2.8 7.8-7 10c-4.2-2.2-7-5.5-7-10V6l7-3Z" stroke="currentColor" stroke-width="2"/>
-        <path d="M12 7v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        <path d="M12 15h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      </svg>`
-  },
-  {
-    title: "REG OB54",
-    desc: "Tối ưu và chỉnh sửa registry cho phiên bản OB54.",
-    icon: `
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
-        <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2"/>
-        <path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      </svg>`
-  },
-  {
-    title: "GIÁM SÁT HỆ THỐNG",
-    desc: "Theo dõi CPU, RAM và độ trễ theo thời gian.",
-    icon: `
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M5 19V10M10 19V6M15 19v-8M20 19V4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
-        <path d="M3 19h18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
-      </svg>`
-  },
-  {
-    title: "HIỆU ỨNG GIAO DIỆN",
-    desc: "Bật hoặc tắt các hiệu ứng hiển thị.",
-    icon: `
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M8 9h.01M16 9h.01M8 15h.01M16 15h.01" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
-        <path d="M6.5 7.5h11a2.5 2.5 0 0 1 2.5 2.5v4a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 14v-4a2.5 2.5 0 0 1 2.5-2.5Z" stroke="currentColor" stroke-width="2"/>
-      </svg>`
-  },
-  {
-    title: "AIMDOY",
-    desc: "Làm mới dữ liệu mô phỏng của dashboard.",
-    icon: `
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M20 7v5h-5M4 17v-5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M7 8.5A8 8 0 0 1 20 12M17 15.5A8 8 0 0 1 4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      </svg>`
-  },
-  {
-    title: "THÔNG TIN THIẾT BỊ",
-    desc: "Hiển thị thông tin mô phỏng về thiết bị.",
-    icon: `
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <rect x="7" y="3.5" width="10" height="17" rx="2" stroke="currentColor" stroke-width="2"/>
-        <path d="M10 7h4M10 10h4M10 13h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-        <circle cx="12" cy="17.5" r="0.8" fill="currentColor"/>
-      </svg>`
-  },
-  {
-    title: "AIMLOCK",
-    desc: "Hỗ trợ ngắm chuẩn mục tiêu.",
-    icon: `
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
-        <circle cx="12" cy="12" r="7.5" stroke="currentColor" stroke-width="2"/>
-        <path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      </svg>`
-  },
-  {
-    title: "CHẨN ĐOÁN HỆ THỐNG",
-    desc: "Kiểm tra trạng thái hoạt động mô phỏng.",
-    icon: `
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M12 3l7 3v5c0 4.5-2.8 7.8-7 10c-4.2-2.2-7-5.5-7-10V6l7-3Z" stroke="currentColor" stroke-width="2"/>
-        <path d="M7.5 13h2l1.2-3l2.2 6l1.5-3H17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>`
-  }
-];
+const featureSteps = {
+  network: ["Kiểm tra độ trễ mạng", "Ổn định luồng kết nối", "Cập nhật trạng thái phản hồi"],
+  antiban: ["Kiểm tra phiên bảo vệ", "Đồng bộ trạng thái an toàn", "Ghi nhận báo cáo bảo vệ"],
+  reg: ["Nạp cấu hình OB54", "Kiểm tra registry mô phỏng", "Hoàn tất tối ưu phiên bản"],
+  monitor: ["Đọc CPU/RAM mô phỏng", "Kiểm tra độ trễ", "Cập nhật dashboard"],
+  effects: ["Kích hoạt hiệu ứng panel", "Làm mượt chuyển động", "Áp dụng hiệu ứng hiển thị"],
+  aimdoy: ["Làm mới dữ liệu", "Đồng bộ chỉ số", "Tạo báo cáo mới"],
+  device: ["Đọc thông tin trình duyệt", "Kiểm tra màn hình", "Cập nhật hồ sơ thiết bị"],
+  aimlock: ["Khởi tạo bộ ngắm mô phỏng", "Kiểm tra điểm neo tâm", "Hoàn tất trạng thái hỗ trợ"],
+  diagnose: ["Quét trạng thái panel", "Kiểm tra lỗi mô phỏng", "Xuất báo cáo hệ thống"]
+};
 
-const functionList = document.getElementById("functionList");
+const featureNames = {
+  network: "TỐI ƯU MẠNG",
+  antiban: "ANTIBAN",
+  reg: "REG OB54",
+  monitor: "GIÁM SÁT HỆ THỐNG",
+  effects: "HIỆU ỨNG GIAO DIỆN",
+  aimdoy: "AIMDOY",
+  device: "THÔNG TIN THIẾT BỊ",
+  aimlock: "AIMLOCK",
+  diagnose: "CHẨN ĐOÁN HỆ THỐNG"
+};
+
+const rows = [...document.querySelectorAll(".feature-row")];
+const runAllBtn = document.getElementById("runAllBtn");
 const refreshBtn = document.getElementById("refreshBtn");
+const clearLogBtn = document.getElementById("clearLogBtn");
 const onlineCount = document.getElementById("onlineCount");
 const keyActive = document.getElementById("keyActive");
-const todayCount = document.getElementById("todayCount");
+const activeCount = document.getElementById("activeCount");
 const railwayStatus = document.getElementById("railwayStatus");
 const updateTime = document.getElementById("updateTime");
+const activityLog = document.getElementById("activityLog");
+const activeTask = document.getElementById("activeTask");
+const progressPercent = document.getElementById("progressPercent");
+const progressFill = document.getElementById("progressFill");
+const toast = document.getElementById("toast");
+const deviceName = document.getElementById("deviceName");
+const networkInfo = document.getElementById("networkInfo");
+const batteryInfo = document.getElementById("batteryInfo");
 
-function renderFeatures() {
-  functionList.innerHTML = "";
-
-  features.forEach((item) => {
-    const row = document.createElement("article");
-    row.className = "feature-row";
-
-    row.innerHTML = `
-      <div class="feature-left">
-        <div class="feature-icon">${item.icon}</div>
-
-        <div class="feature-text">
-          <h4>${item.title}</h4>
-          <p>${item.desc}</p>
-        </div>
-      </div>
-
-      <div class="feature-right">
-        <span class="badge-state">BẬT</span>
-
-        <label class="switch" aria-label="Bật tắt ${item.title}">
-          <input type="checkbox" checked>
-          <span class="slider"></span>
-        </label>
-
-        <button class="go-btn" type="button" aria-label="Mở ${item.title}">
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M9 6l6 6l-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-      </div>
-    `;
-
-    const checkbox = row.querySelector("input");
-    const badge = row.querySelector(".badge-state");
-
-    checkbox.addEventListener("change", () => {
-      if (checkbox.checked) {
-        row.classList.remove("is-off");
-        badge.textContent = "BẬT";
-      } else {
-        row.classList.add("is-off");
-        badge.textContent = "TẮT";
-      }
-    });
-
-    functionList.appendChild(row);
-  });
-}
+let savedState = JSON.parse(localStorage.getItem("featureState") || "{}");
+let runningTimer = null;
 
 function pad(num) {
   return String(num).padStart(2, "0");
@@ -153,17 +52,228 @@ function nowTime() {
   return `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
 }
 
+function addLog(type, message) {
+  const line = document.createElement("div");
+  line.className = `log-line ${type.toLowerCase()}`;
+  line.textContent = `[${nowTime()}] [${type}] ${message}`;
+  activityLog.prepend(line);
+
+  const lines = activityLog.querySelectorAll(".log-line");
+  if (lines.length > 80) lines[lines.length - 1].remove();
+}
+
+function setProgress(percent, text) {
+  const value = Math.max(0, Math.min(100, percent));
+  progressFill.style.width = `${value}%`;
+  progressPercent.textContent = `${value}%`;
+  activeTask.textContent = text;
+}
+
+function showToast(message) {
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  if (navigator.vibrate) {
+    navigator.vibrate(35);
+  }
+
+  setTimeout(() => toast.classList.remove("show"), 2200);
+}
+
+function sendBrowserNotice(title, body) {
+  if (!("Notification" in window)) return;
+
+  if (Notification.permission === "granted") {
+    new Notification(title, { body });
+  } else if (Notification.permission !== "denied") {
+    Notification.requestPermission().then((permission) => {
+      if (permission === "granted") {
+        new Notification(title, { body });
+      }
+    });
+  }
+}
+
+function saveState() {
+  localStorage.setItem("featureState", JSON.stringify(savedState));
+}
+
 function updateDashboard() {
+  const enabled = rows.filter((row) => row.querySelector("input").checked).length;
   onlineCount.textContent = Math.floor(Math.random() * 3);
   keyActive.textContent = 4;
-  todayCount.textContent = Math.floor(Math.random() * 3);
+  activeCount.textContent = enabled;
   railwayStatus.textContent = "ONLINE";
   updateTime.textContent = nowTime();
   document.title = `AIMLOCK JAME • ${nowTime()}`;
 }
 
-refreshBtn.addEventListener("click", updateDashboard);
+function runFeature(row) {
+  const key = row.dataset.feature;
+  const name = featureNames[key];
+  const steps = featureSteps[key] || ["Đang chạy mô phỏng", "Cập nhật trạng thái", "Hoàn tất"];
 
-renderFeatures();
+  clearInterval(runningTimer);
+  rows.forEach((item) => item.classList.remove("running"));
+  row.classList.remove("done");
+  row.classList.add("running");
+
+  let progress = 0;
+  let stepIndex = 0;
+  const rowProgress = row.querySelector(".row-progress span");
+  rowProgress.style.width = "0%";
+
+  setProgress(0, `Đang khởi động ${name}...`);
+  addLog("RUN", `${name} bắt đầu chạy.`);
+  showToast(`${name} đang chạy...`);
+
+  runningTimer = setInterval(() => {
+    progress += Math.floor(Math.random() * 17) + 10;
+
+    if (stepIndex < steps.length) {
+      addLog("CHECK", steps[stepIndex]);
+      stepIndex++;
+    }
+
+    if (progress >= 100) {
+      progress = 100;
+      clearInterval(runningTimer);
+
+      row.classList.remove("running");
+      row.classList.add("done");
+      rowProgress.style.width = "100%";
+      setProgress(100, `${name} đã hoạt động.`);
+      addLog("OK", `${name} đã hoạt động và báo cáo về máy.`);
+      showToast(`${name} đã bật thành công`);
+      sendBrowserNotice("AIMLOCK JAME", `${name} đã bật thành công.`);
+      updateDashboard();
+      return;
+    }
+
+    rowProgress.style.width = `${progress}%`;
+    setProgress(progress, `Đang xử lý ${name}...`);
+  }, 480);
+}
+
+function setupRows() {
+  rows.forEach((row) => {
+    const key = row.dataset.feature;
+    const checkbox = row.querySelector("input");
+    const badge = row.querySelector(".badge-state");
+    const goBtn = row.querySelector(".go-btn");
+    const rowProgress = row.querySelector(".row-progress span");
+
+    if (savedState[key] === false) {
+      checkbox.checked = false;
+      badge.textContent = "TẮT";
+      row.classList.add("is-off");
+      rowProgress.style.width = "0%";
+    }
+
+    checkbox.addEventListener("change", () => {
+      savedState[key] = checkbox.checked;
+      saveState();
+
+      if (checkbox.checked) {
+        row.classList.remove("is-off");
+        badge.textContent = "BẬT";
+        runFeature(row);
+      } else {
+        row.classList.add("is-off");
+        row.classList.remove("running", "done");
+        badge.textContent = "TẮT";
+        rowProgress.style.width = "0%";
+        addLog("WARN", `${featureNames[key]} đã tắt. Trạng thái đã lưu vào máy.`);
+        showToast(`${featureNames[key]} đã tắt`);
+        updateDashboard();
+      }
+    });
+
+    goBtn.addEventListener("click", () => {
+      if (!checkbox.checked) {
+        checkbox.checked = true;
+        checkbox.dispatchEvent(new Event("change"));
+      } else {
+        runFeature(row);
+      }
+    });
+  });
+}
+
+function detectDevice() {
+  const platform = navigator.platform || "Unknown";
+  const width = window.screen?.width || window.innerWidth;
+  const height = window.screen?.height || window.innerHeight;
+  deviceName.textContent = `${platform} • ${width}x${height}`;
+
+  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  if (connection) {
+    const type = connection.effectiveType ? connection.effectiveType.toUpperCase() : "ONLINE";
+    const downlink = connection.downlink ? `${connection.downlink} Mbps` : "Đang kết nối";
+    networkInfo.textContent = `${type} • ${downlink}`;
+  } else {
+    networkInfo.textContent = navigator.onLine ? "ONLINE" : "OFFLINE";
+  }
+
+  if (navigator.getBattery) {
+    navigator.getBattery().then((battery) => {
+      const updateBattery = () => {
+        batteryInfo.textContent = `${Math.round(battery.level * 100)}%${battery.charging ? " • Sạc" : ""}`;
+      };
+      updateBattery();
+      battery.addEventListener("levelchange", updateBattery);
+      battery.addEventListener("chargingchange", updateBattery);
+    });
+  }
+}
+
+runAllBtn.addEventListener("click", () => {
+  const enabledRows = rows.filter((row) => row.querySelector("input").checked);
+  let index = 0;
+
+  addLog("SYNC", "Bắt đầu chạy tất cả tính năng đang bật.");
+  showToast("Đang chạy tất cả tính năng...");
+
+  function runNext() {
+    if (index >= enabledRows.length) {
+      addLog("OK", "Toàn bộ tính năng đang bật đã chạy xong.");
+      return;
+    }
+
+    runFeature(enabledRows[index]);
+    index++;
+    setTimeout(runNext, 1900);
+  }
+
+  runNext();
+});
+
+refreshBtn.addEventListener("click", () => {
+  updateDashboard();
+  addLog("SYNC", "Dashboard đã được làm mới thủ công.");
+  showToast("Đã làm mới dashboard");
+});
+
+clearLogBtn.addEventListener("click", () => {
+  activityLog.innerHTML = `<div class="log-line muted">[SYSTEM] Log đã được xóa. Panel sẵn sàng.</div>`;
+  setProgress(0, "Chờ bật tính năng...");
+  rows.forEach((row) => {
+    row.classList.remove("running", "done");
+    row.querySelector(".row-progress span").style.width = "0%";
+  });
+});
+
+window.addEventListener("online", () => {
+  networkInfo.textContent = "ONLINE";
+  addLog("NET", "Thiết bị đã online.");
+});
+
+window.addEventListener("offline", () => {
+  networkInfo.textContent = "OFFLINE";
+  addLog("NET", "Thiết bị mất kết nối.");
+});
+
+setupRows();
+detectDevice();
 updateDashboard();
 setInterval(updateDashboard, 3000);
