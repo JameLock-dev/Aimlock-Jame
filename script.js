@@ -337,3 +337,110 @@ document.addEventListener("keydown", (event) => {
     closeSupportMenu();
   }
 });
+
+/* LOGIN FLOW */
+
+const loginOverlay = document.getElementById("loginOverlay");
+const appShell = document.querySelector(".app-shell");
+const loginKeyInput = document.getElementById("loginKeyInput");
+const toggleKeyBtn = document.getElementById("toggleKeyBtn");
+const activateBtn = document.getElementById("activateBtn");
+const freeKeyBtn = document.getElementById("freeKeyBtn");
+const contactKeyBtn = document.getElementById("contactKeyBtn");
+const loginStatus = document.getElementById("loginStatus");
+
+function setLoginLockedState(isLocked) {
+  if (isLocked) {
+    appShell.classList.add("locked");
+    loginOverlay.classList.remove("hidden");
+  } else {
+    appShell.classList.remove("locked");
+    loginOverlay.classList.add("hidden");
+  }
+}
+
+const isUnlocked = localStorage.getItem("jameLoginUnlocked") === "true";
+setLoginLockedState(!isUnlocked);
+
+if (toggleKeyBtn) {
+  toggleKeyBtn.addEventListener("click", () => {
+    const isPassword = loginKeyInput.type === "password";
+    loginKeyInput.type = isPassword ? "text" : "password";
+    toggleKeyBtn.textContent = isPassword ? "🙈" : "👁";
+  });
+}
+
+function simulateLoginSuccess() {
+  loginStatus.textContent = "Key hợp lệ. Đang kích hoạt giao diện...";
+  loginStatus.className = "login-status success";
+  showToast("Đăng nhập thành công");
+  addLog("OK", "Người dùng đã đăng nhập thành công.");
+  localStorage.setItem("jameLoginUnlocked", "true");
+
+  setTimeout(() => {
+    setLoginLockedState(false);
+  }, 800);
+}
+
+function simulateLoginCheck() {
+  const rawValue = loginKeyInput.value.trim();
+
+  if (!rawValue) {
+    loginStatus.textContent = "Vui lòng nhập Password / Key.";
+    loginStatus.className = "login-status error";
+    showToast("Thiếu Password / Key");
+    return;
+  }
+
+  loginStatus.textContent = "Đang kiểm tra key...";
+  loginStatus.className = "login-status";
+  addLog("RUN", "Bắt đầu kiểm tra key đăng nhập.");
+
+  activateBtn.disabled = true;
+  activateBtn.textContent = "Đang kích hoạt...";
+
+  setTimeout(() => {
+    activateBtn.disabled = false;
+    activateBtn.textContent = "⚡ Kích Hoạt Jame";
+
+    // Demo logic: accept any non-empty key with length >= 4
+    if (rawValue.length >= 4) {
+      simulateLoginSuccess();
+    } else {
+      loginStatus.textContent = "Key không hợp lệ. Vui lòng thử lại.";
+      loginStatus.className = "login-status error";
+      showToast("Key không hợp lệ");
+      addLog("WARN", "Kiểm tra key thất bại.");
+    }
+  }, 1200);
+}
+
+if (activateBtn) {
+  activateBtn.addEventListener("click", simulateLoginCheck);
+}
+
+if (loginKeyInput) {
+  loginKeyInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      simulateLoginCheck();
+    }
+  });
+}
+
+if (freeKeyBtn) {
+  freeKeyBtn.addEventListener("click", () => {
+    showToast("Đang mở mục nhận key miễn phí...");
+    addLog("KEY", "Người dùng chọn nhận key miễn phí.");
+    setTimeout(() => {
+      window.open("https://www.tiktok.com/@jame.ff.11", "_blank", "noopener");
+    }, 300);
+  });
+}
+
+if (contactKeyBtn) {
+  contactKeyBtn.addEventListener("click", () => {
+    showToast("Đang mở liên hệ mua key...");
+    addLog("KEY", "Người dùng chọn liên hệ mua key.");
+    openSupportMenu();
+  });
+}
