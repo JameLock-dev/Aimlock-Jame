@@ -4,11 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AIMLOCK JAME</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=3" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="bg-grid"></div>
+  <div id="panelOverlay" class="panel-overlay hidden"></div>
 
   <section id="loginOverlay" class="login-overlay">
     <div class="login-card">
@@ -32,9 +33,55 @@
     </div>
   </section>
 
+  <aside id="simpleMenu" class="simple-menu hidden">
+    <div class="menu-head">
+      <div>
+        <strong>MENU FEATURE</strong>
+        <span>AIMLOCK JAME</span>
+      </div>
+      <button id="closeMenuBtn" class="icon-btn" type="button">×</button>
+    </div>
+
+    <button class="menu-row" type="button" data-open-feature="boost">
+      <span class="menu-ico">⚡</span>
+      <span><b>Boost RAM</b><small>Tối ưu hiệu suất</small></span>
+      <em id="menuBoostState">OFF</em>
+    </button>
+
+    <button class="menu-row" type="button" data-open-feature="crosshair">
+      <span class="menu-ico">⊕</span>
+      <span><b>Crosshair</b><small>Tùy chỉnh tâm ngắm</small></span>
+      <em id="menuCrosshairState">OFF</em>
+    </button>
+
+    <button class="menu-row" type="button" data-toggle-feature="aimbody">
+      <span class="menu-ico">🎯</span>
+      <span><b>AIMBODY</b><small>Hỗ trợ chế độ ngắm</small></span>
+      <em id="menuAimbodyState">OFF</em>
+    </button>
+
+    <button class="menu-row" type="button" data-toggle-feature="nhetam">
+      <span class="menu-ico">🧲</span>
+      <span><b>NHẸ TÂM</b><small>Ổn định thao tác</small></span>
+      <em id="menuNhetamState">OFF</em>
+    </button>
+
+    <button class="menu-row" type="button" data-open-feature="headlock">
+      <span class="menu-ico">🔒</span>
+      <span><b>HeadLock</b><small>Bật / tắt chế độ</small></span>
+      <em id="menuHeadlockState">OFF</em>
+    </button>
+
+    <button class="menu-row" type="button" data-open-feature="info">
+      <span class="menu-ico">ℹ️</span>
+      <span><b>THÔNG TIN</b><small>Liên hệ & thiết bị</small></span>
+      <em>OPEN</em>
+    </button>
+  </aside>
+
   <main id="appShell" class="app-shell locked">
     <header class="topbar frame">
-      <button class="menu-btn" type="button"><span></span><span></span><span></span></button>
+      <button id="menuBtn" class="menu-btn" type="button" aria-label="Mở menu"><span></span><span></span><span></span></button>
       <div class="brand">
         <div class="brand-mark"><img src="logo.png" alt="AIMLOCK JAME" onerror="this.style.display='none'"></div>
         <div class="brand-text"><h1>AIMLOCK</h1><p>JAME</p></div>
@@ -57,7 +104,10 @@
     </section>
 
     <section class="dashboard frame">
-      <div class="dashboard-head"><div><div class="section-label">LIVE DASHBOARD</div><h3>BÁO CÁO SERVER</h3></div><a class="admin-shortcut" href="/admin.html">Admin</a></div>
+      <div class="dashboard-head">
+        <div><div class="section-label">LIVE DASHBOARD</div><h3>BÁO CÁO SERVER</h3></div>
+        <a class="admin-shortcut" href="https://aimlock-jame-production.up.railway.app/admin.html" target="_blank" rel="noopener">Admin</a>
+      </div>
 
       <div class="stats-grid">
         <article class="stat-card"><span class="stat-name">ONLINE</span><strong id="onlineCount" class="stat-value">0</strong><span class="stat-sub">NGƯỜI DÙNG</span></article>
@@ -67,9 +117,120 @@
       </div>
       <div class="update-row">Cập nhật: <strong id="updateTime">--:--:--</strong></div>
     </section>
+
+    <section class="features-panel frame">
+      <div class="dashboard-head feature-title-row">
+        <div><div class="section-label">CONTROL CENTER</div><h3>TÍNH NĂNG</h3></div>
+        <button id="refreshStatsBtn" class="admin-shortcut" type="button">Refresh</button>
+      </div>
+
+      <div class="feature-grid">
+        <button class="feature-card" type="button" data-open-feature="boost">
+          <span class="feature-icon">⚡</span>
+          <strong>Boost RAM</strong>
+          <small>Tối ưu hiệu suất</small>
+          <em id="boostState">OFF</em>
+        </button>
+        <button class="feature-card" type="button" data-open-feature="crosshair">
+          <span class="feature-icon">⊕</span>
+          <strong>Crosshair</strong>
+          <small>Tùy chỉnh tâm ngắm</small>
+          <em id="crosshairState">OFF</em>
+        </button>
+        <button class="feature-card" type="button" data-toggle-feature="aimbody">
+          <span class="feature-icon">🎯</span>
+          <strong>AIMBODY</strong>
+          <small>Hỗ trợ chế độ ngắm</small>
+          <em id="aimbodyState">OFF</em>
+        </button>
+        <button class="feature-card" type="button" data-toggle-feature="nhetam">
+          <span class="feature-icon">🧲</span>
+          <strong>NHẸ TÂM</strong>
+          <small>Ổn định thao tác</small>
+          <em id="nhetamState">OFF</em>
+        </button>
+        <button class="feature-card" type="button" data-open-feature="headlock">
+          <span class="feature-icon">🔒</span>
+          <strong>HeadLock</strong>
+          <small>Bật / tắt chế độ</small>
+          <em id="headlockState">OFF</em>
+        </button>
+        <button class="feature-card" type="button" data-open-feature="info">
+          <span class="feature-icon">ℹ️</span>
+          <strong>THÔNG TIN</strong>
+          <small>Liên hệ & thiết bị</small>
+          <em>OPEN</em>
+        </button>
+      </div>
+    </section>
   </main>
 
+  <section id="headlockModal" class="modal-box hidden">
+    <div class="modal-card">
+      <button class="modal-close" type="button" data-close-modal>×</button>
+      <h3>HEADLOCK CONTROL</h3>
+      <p>Chọn phiên bản rồi bật/tắt trạng thái hiển thị trong panel.</p>
+      <label class="modal-label">Phiên bản</label>
+      <select id="ffVersion" class="modal-input">
+        <option>Free Fire</option>
+        <option>Free Fire Max</option>
+      </select>
+      <div class="modal-actions">
+        <button id="headlockOnBtn" class="activate-btn small" type="button">HeadLock Was Successful!</button>
+        <button id="headlockOffBtn" class="secondary-login-btn center" type="button">Turn off HeadLock</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="boostModal" class="modal-box hidden">
+    <div class="modal-card">
+      <button class="modal-close" type="button" data-close-modal>×</button>
+      <h3>BOOST RAM</h3>
+      <p>Chạy mô phỏng tối ưu giao diện và làm mới trạng thái panel.</p>
+      <pre id="boostOutput" class="terminal-output">Ready...</pre>
+      <div class="modal-actions">
+        <button id="runBoostBtn" class="activate-btn small" type="button">⚡ Run Boost</button>
+        <button id="closeBoostBtn" class="secondary-login-btn center" type="button">Done</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="crosshairModal" class="modal-box hidden">
+    <div class="modal-card">
+      <button class="modal-close" type="button" data-close-modal>×</button>
+      <h3>CROSSHAIR</h3>
+      <p>Tùy chỉnh hiển thị tâm ngắm trong giao diện.</p>
+      <label class="modal-label">Kích thước</label>
+      <input id="crosshairSize" class="modal-input" type="range" min="12" max="42" value="24">
+      <label class="modal-label">Màu</label>
+      <select id="crosshairColor" class="modal-input">
+        <option value="red">Red</option>
+        <option value="green">Green</option>
+        <option value="white">White</option>
+      </select>
+      <div id="crosshairPreview" class="crosshair-preview">⊕</div>
+      <button id="saveCrosshairBtn" class="activate-btn small" type="button">Lưu Crosshair</button>
+    </div>
+  </section>
+
+  <section id="infoModal" class="modal-box hidden">
+    <div class="modal-card">
+      <button class="modal-close" type="button" data-close-modal>×</button>
+      <h3>INFO</h3>
+      <div class="info-list">
+        <div><span>Device ID</span><b id="deviceText">--</b></div>
+        <div><span>Zalo</span><b>0333635135</b></div>
+        <div><span>FaceBook</span><b>Jame FF</b></div>
+        <div><span>TikTok</span><b>@jame.ff.11</b></div>
+      </div>
+      <div class="modal-actions">
+        <button id="copyDeviceBtn" class="secondary-login-btn center" type="button">Copy Device ID</button>
+        <button id="infoDoneBtn" class="activate-btn small" type="button">Done</button>
+      </div>
+    </div>
+  </section>
+
   <div id="toast" class="toast">Thông báo</div>
-  <script src="script.js"></script>
+  <script src="script.js?v=3"></script>
 </body>
 </html>

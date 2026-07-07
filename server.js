@@ -504,6 +504,15 @@ app.delete("/api/admin/keys/:key", requireDatabase, requireAdmin, async (req, re
   }
 });
 
+
+// Bắt mọi đường dẫn /api bị sai để frontend luôn nhận JSON, không nhận HTML.
+app.use("/api", (req, res) => {
+  return res.status(404).json({
+    ok: false,
+    message: `Không tìm thấy API ${req.method} ${req.originalUrl}. Hãy kiểm tra đã deploy đúng server.js chưa.`
+  });
+});
+
 initDb()
   .catch((error) => {
     console.error("❌ Database init failed:", dbErrorMessage(error));

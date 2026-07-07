@@ -27,6 +27,30 @@ function headers() {
   };
 }
 
+async function fetchJson(url, options = {}) {
+  const response = await fetch(url, options);
+  const text = await response.text();
+  const contentType = response.headers.get("content-type") || "";
+
+  if (!contentType.includes("application/json")) {
+    const shortText = text.replace(/\s+/g, " ").slice(0, 160);
+    throw new Error(`API chưa chạy đúng hoặc sai domain. ${url} trả HTML/Text thay vì JSON. Nội dung: ${shortText}`);
+  }
+
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch (_) {
+    throw new Error("API trả dữ liệu lỗi, không đọc được JSON.");
+  }
+
+  if (!response.ok && data?.message) {
+    throw new Error(data.message);
+  }
+
+  return data;
+}
+
 function formatExpire(value) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value || "--";
@@ -50,21 +74,18 @@ function toInputDateTime(value) {
 
 async function loadStats() {
   try {
-    const response = await fetch("/api/stats");
-    const data = await response.json();
-
+    const data = await fetchJson("/api/stats");
     statOnline.textContent = data.online ?? 0;
     statActive.textContent = data.activeKeys ?? 0;
     statToday.textContent = data.today ?? 0;
     statRailway.textContent = data.railway || "Online";
-  } catch {
+  } catch (error) {
     statRailway.textContent = "Offline";
   }
 }
 
 async function loadKeys() {
-  const response = await fetch("/api/admin/keys", { headers: headers() });
-  const data = await response.json();
+  const data = await fetchJson("/api/admin/keys", { headers: headers() });
 
   if (!data.ok) {
     throw new Error(data.message || "Không tải được danh sách key.");
@@ -135,38 +156,45 @@ async function saveKey() {
     status: "active"
   };
 
-  const response = await fetch("/api/admin/keys", {
-    method: "POST",
-    headers: headers(),
-    body: JSON.stringify(payload)
-  });
+  try {
+    const data = await fetchJson("/api/admin/keys", {
+      method: "POST",
+      headers: headers(),
+      body: JSON.stringify(payload)
+    });
 
-  const data = await response.json();
-  saveStatus.textContent = data.message || "Đã lưu key";
-  saveStatus.style.color = data.ok ? "#22e06e" : "#ef4444";
+    saveStatus.textContent = data.message || "Đã lưu key";
+    saveStatus.style.color = data.ok ? "#22e06e" : "#ef4444";
 
-  if (data.ok) {
-    keyInput.value = "";
-    typeInput.value = "";
-    expireInput.value = "";
-    slotLimitInput.value = "100";
-    loadKeys();
+    if (data.ok) {
+      keyInput.value = "";
+      typeInput.value = "";
+      expireInput.value = "";
+      slotLimitInput.value = "100";
+      loadKeys();
+    }
+  } catch (error) {
+    saveStatus.textContent = error.message || "Lỗi lưu key.";
+    saveStatus.style.color = "#ef4444";
   }
 }
 
 async function deleteKey(key) {
   if (!confirm(`Xóa key ${key}?`)) return;
 
-  const response = await fetch(`/api/admin/keys/${encodeURIComponent(key)}`, {
-    method: "DELETE",
-    headers: headers()
-  });
+  try {
+    const data = await fetchJson(`/api/admin/keys/${encodeURIComponent(key)}`, {
+      method: "DELETE",
+      headers: headers()
+    });
 
-  const data = await response.json();
-  saveStatus.textContent = data.message || "Đã xóa key";
-  saveStatus.style.color = data.ok ? "#22e06e" : "#ef4444";
-
-  loadKeys();
+    saveStatus.textContent = data.message || "Đã xóa key";
+    saveStatus.style.color = data.ok ? "#22e06e" : "#ef4444";
+    loadKeys();
+  } catch (error) {
+    saveStatus.textContent = error.message || "Lỗi xóa key.";
+    saveStatus.style.color = "#ef4444";
+  }
 }
 
 function editKey(row) {
