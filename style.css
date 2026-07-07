@@ -1178,3 +1178,149 @@ body.menu-open {
     font-size: 13px;
   }
 }
+
+
+/* COMPACT LOGIN OVERRIDES */
+.login-overlay {
+  padding: 14px 10px;
+  align-items: flex-start;
+}
+
+.login-card {
+  width: min(430px, 100%);
+  border-radius: 22px;
+  padding: 16px 16px 18px;
+}
+
+.login-logo-wrap {
+  width: min(150px, 42vw);
+  margin: 0 auto 10px;
+  border-radius: 18px;
+  box-shadow: 0 0 18px rgba(255, 24, 24, 0.14);
+}
+
+.login-sub {
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.login-title {
+  font-size: clamp(28px, 7vw, 48px);
+  line-height: 1.02;
+}
+
+.login-brand-line {
+  margin-top: 6px;
+  font-size: 15px;
+}
+
+.login-label {
+  margin-top: 14px;
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.login-input-wrap {
+  min-height: 56px;
+  border-radius: 16px;
+  padding: 0 10px 0 14px;
+}
+
+.login-input-icon {
+  font-size: 19px;
+}
+
+.login-input {
+  font-size: 17px;
+}
+
+.toggle-key-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  font-size: 18px;
+}
+
+.login-status {
+  min-height: 18px;
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+.activate-btn {
+  height: 56px;
+  margin-top: 12px;
+  border-radius: 16px;
+  font-size: 18px;
+}
+
+.login-divider {
+  gap: 10px;
+  margin: 14px 0 12px;
+  font-size: 16px;
+}
+
+.secondary-login-btn {
+  min-height: 50px;
+  border-radius: 14px;
+  font-size: 16px;
+  padding: 0 14px;
+  margin-top: 10px;
+}
+
+.login-security {
+  margin-top: 16px;
+  gap: 10px;
+}
+
+.login-security .shield {
+  font-size: 18px;
+}
+
+.login-security strong {
+  font-size: 16px;
+}
+
+.login-security p {
+  font-size: 12px;
+}
+
+/* Extra compact on smaller screens */
+@media (max-width: 700px) {
+  .login-card {
+    width: min(380px, 100%);
+    padding: 14px 14px 16px;
+  }
+
+  .login-logo-wrap {
+    width: min(128px, 40vw);
+    margin-bottom: 8px;
+  }
+
+  .login-title {
+    font-size: clamp(24px, 8vw, 40px);
+  }
+
+  .login-brand-line {
+    font-size: 14px;
+  }
+
+  .login-label {
+    font-size: 14px;
+    margin-top: 12px;
+  }
+
+  .login-input-wrap {
+    min-height: 52px;
+  }
+
+  .activate-btn {
+    height: 52px;
+    font-size: 17px;
+  }
+
+  .secondary-login-btn {
+    min-height: 46px;
+    font-size: 15px;
+  }
+}
