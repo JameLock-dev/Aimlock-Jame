@@ -5,7 +5,10 @@
 const APP_CONFIG = window.AIMLOCK_CONFIG || {};
 const FREE_KEY_URL = APP_CONFIG.freeKeyUrl || "https://link-cua-ban.com/lay-key";
 const API_BASE = APP_CONFIG.apiBase || "";
+// strictApi=true: bắt buộc dùng server thật. Mặc định false để GitHub Pages/static không bị lỗi HTML thay JSON.
+const STRICT_API = Boolean(APP_CONFIG.strictApi);
 const DEMO_MODE = APP_CONFIG.demoMode ?? (location.protocol === "file:");
+const LOCAL_KEYS = (APP_CONFIG.localKeys || ["Admin11", "JAME-FREE-KEY"]).map(k => String(k).trim().toLowerCase());
 
 const $ = (id) => document.getElementById(id);
 const licenseKey = $("licenseKey");
@@ -65,23 +68,76 @@ function deviceId(){
   return id;
 }
 function apiUrl(path){ return `${API_BASE}${path}`; }
+function readRequestBody(options={}){
+  try{return JSON.parse(options.body || "{}");}
+  catch{return {}; }
+}
+async function localApiResponse(path, options={}, reason=""){
+  await new Promise(r=>setTimeout(r, 220));
+
+  if(path === "/api/verify-key"){
+    const body = readRequestBody(options);
+    const input = String(body.key || "").trim();
+    const validLocal = DEMO_MODE || LOCAL_KEYS.includes(input.toLowerCase());
+
+    if(!input){
+      throw new Error("Vui lòng nhập mật khẩu hoặc key.");
+    }
+    if(!validLocal){
+      throw new Error("Không kết nối được API. Dùng Admin11 hoặc JAME-FREE-KEY để vào bản demo, hoặc chạy npm start để dùng server thật.");
+    }
+
+    return {
+      ok:true,
+      fallback:true,
+      message: reason ? "Đăng nhập bằng chế độ local fallback." : "Đăng nhập demo thành công.",
+      key:{
+        key: input,
+        type: input.toLowerCase() === "admin11" ? "admin-local" : "demo",
+        expire:"2099-12-31T23:59:59.000Z",
+        slotUsed:1,
+        slotLimit:1,
+        status:"active"
+      }
+    };
+  }
+
+  if(path === "/api/stats") return {ok:true,fallback:true,online:0,activeKeys:2,today:1,railway:"Local UI"};
+  if(path === "/api/health") return {ok:true,fallback:true,message:"Local UI mode"};
+
+  throw new Error("API chưa sẵn sàng.");
+}
 async function apiFetch(path, options={}){
   if(DEMO_MODE){
-    await new Promise(r=>setTimeout(r, 260));
-    if(path === "/api/verify-key") return {ok:true,key:{expire:"2100-01-01T06:59:59.000Z",slotUsed:1,slotLimit:1}};
-    if(path === "/api/stats") return {ok:true,online:0,activeKeys:2,today:1,railway:"Online"};
-    if(path === "/api/health") return {ok:true,message:"Server OK"};
+    return localApiResponse(path, options);
   }
-  const res = await fetch(apiUrl(path), {
-    ...options,
-    headers:{Accept:"application/json",...(options.headers||{})},
-    cache:"no-store"
-  });
-  const text = await res.text();
-  let data;
-  try{ data = JSON.parse(text); }catch{ throw new Error("API không trả về JSON hợp lệ."); }
-  if(!res.ok || data.ok === false) throw new Error(data.message || "Request thất bại.");
-  return data;
+
+  try{
+    const res = await fetch(apiUrl(path), {
+      ...options,
+      headers:{Accept:"application/json",...(options.headers||{})},
+      cache:"no-store"
+    });
+
+    const text = await res.text();
+    let data;
+    try{
+      data = JSON.parse(text);
+    }catch{
+      const error = new Error("API không trả về JSON hợp lệ.");
+      error.fallbackable = true;
+      throw error;
+    }
+
+    if(!res.ok || data.ok === false) throw new Error(data.message || "Request thất bại.");
+    return data;
+  }catch(error){
+    const fallbackable = error?.fallbackable || error?.name === "TypeError" || /Failed to fetch|NetworkError|JSON/i.test(error?.message || "");
+    if(!STRICT_API && fallbackable){
+      return localApiResponse(path, options, error.message);
+    }
+    throw error;
+  }
 }
 
 if(freeKeyBtn){ freeKeyBtn.href = FREE_KEY_URL; }
@@ -126,8 +182,8 @@ if(activateBtn && licenseKey){
       });
       localStorage.setItem("jameLoginUnlocked", "true");
       localStorage.setItem("jameKeyInfo", JSON.stringify(data.key || {}));
-      setLoginStatus("Kích hoạt thành công", "success");
-      showToast("Đăng nhập thành công");
+      setLoginStatus(data.fallback ? "Kích hoạt local thành công" : "Kích hoạt thành công", "success");
+      showToast(data.fallback ? "Đăng nhập local thành công" : "Đăng nhập thành công");
       setTimeout(()=>{ window.location.href = "./dashboard.html"; }, 520);
     }catch(err){
       setLoginStatus(err.message || "Key không hợp lệ", "error");
