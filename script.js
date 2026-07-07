@@ -1,7 +1,3 @@
-// ============================
-// FF SUPPORT PANEL - UI ONLY
-// ============================
-
 const functions = [
     {
         icon: "🌐",
@@ -52,66 +48,81 @@ const functions = [
 
 const functionList = document.getElementById("functionList");
 
-function createFunctionItem(itemData) {
-    const item = document.createElement("article");
-    item.className = "item";
+function renderFunctions() {
+    functionList.innerHTML = "";
 
-    item.innerHTML = `
-        <div class="item-left">
-            <div class="icon-wrap">
-                <div class="icon">${itemData.icon}</div>
+    functions.forEach((itemData) => {
+        const item = document.createElement("article");
+        item.className = "function-item";
+        item.innerHTML = `
+            <div class="function-left">
+                <div class="function-icon">${itemData.icon}</div>
+                <div class="function-text">
+                    <h4>${itemData.title}</h4>
+                    <p>${itemData.desc}</p>
+                </div>
             </div>
 
-            <div class="text">
-                <h3>${itemData.title}<span class="arrow">›</span></h3>
-                <p>${itemData.desc}</p>
+            <div class="function-state">
+                <span class="status-label online">BẬT</span>
+                <label class="switch" aria-label="Bật tắt ${itemData.title}">
+                    <input type="checkbox" checked />
+                    <span class="slider"></span>
+                </label>
             </div>
-        </div>
+        `;
 
-        <div class="state">
-            <span class="status-label online">BẬT</span>
+        const checkbox = item.querySelector("input");
+        const status = item.querySelector(".status-label");
 
-            <label class="switch" aria-label="Bật tắt ${itemData.title}">
-                <input type="checkbox" checked />
-                <span class="slider"></span>
-            </label>
-        </div>
-    `;
+        checkbox.addEventListener("change", () => {
+            if (checkbox.checked) {
+                status.textContent = "BẬT";
+                status.className = "status-label online";
+                item.classList.remove("disabled");
+            } else {
+                status.textContent = "TẮT";
+                status.className = "status-label offline";
+                item.classList.add("disabled");
+            }
+        });
 
-    const checkbox = item.querySelector("input");
-    const status = item.querySelector(".status-label");
-
-    checkbox.addEventListener("change", () => {
-        if (checkbox.checked) {
-            status.textContent = "BẬT";
-            status.className = "status-label online";
-            item.classList.remove("disabled");
-        } else {
-            status.textContent = "TẮT";
-            status.className = "status-label offline";
-            item.classList.add("disabled");
-        }
+        functionList.appendChild(item);
     });
-
-    return item;
 }
 
-functions.forEach((itemData) => {
-    functionList.appendChild(createFunctionItem(itemData));
-});
+const onlineCount = document.getElementById("onlineCount");
+const keyActive = document.getElementById("keyActive");
+const todayCount = document.getElementById("todayCount");
+const railwayStatus = document.getElementById("railwayStatus");
+const updateTime = document.getElementById("updateTime");
+const refreshBtn = document.getElementById("refreshBtn");
 
-function updateClock() {
+function pad(value) {
+    return String(value).padStart(2, "0");
+}
+
+function formatTime(date) {
+    return `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+}
+
+function randomBetween(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function updateDashboard() {
     const now = new Date();
-    const clock = document.getElementById("clock");
 
-    clock.textContent = now.toLocaleTimeString("vi-VN", {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit"
-    });
-
-    document.title = "Hỗ trợ FF • " + clock.textContent;
+    onlineCount.textContent = randomBetween(0, 8);
+    keyActive.textContent = 4;
+    todayCount.textContent = randomBetween(0, 9);
+    railwayStatus.textContent = "Online";
+    updateTime.textContent = formatTime(now);
+    document.title = `AIMLOCK JAME • ${formatTime(now)}`;
 }
 
-updateClock();
-setInterval(updateClock, 1000);
+refreshBtn.addEventListener("click", updateDashboard);
+
+renderFunctions();
+updateDashboard();
+setInterval(updateDashboard, 3000);
