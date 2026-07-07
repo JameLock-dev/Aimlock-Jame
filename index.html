@@ -7,9 +7,28 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=14">
+  <link rel="stylesheet" href="styles.css?v=15">
 </head>
 <body>
+  <svg aria-hidden="true" class="icon-sprite" width="0" height="0" style="position:absolute;left:-9999px;overflow:hidden">
+    <symbol id="i-rocket" viewBox="0 0 64 64"><path fill="currentColor" d="M39 8c7 1 13 7 16 17-6 3-12 5-18 7l-8 8-9-1 1-9 8-8c2-6 4-12 7-18 1 0 2 0 3 1ZM27 37l-8 8-6 1 1-6 8-8 5 5Zm20-20a5 5 0 1 1-7 7 5 5 0 0 1 7-7ZM19 47c3 1 5 3 6 6-4 3-9 5-15 6 1-6 3-11 6-15 3 1 2 1 3 3Z"/></symbol>
+    <symbol id="i-aimbody" viewBox="0 0 64 64"><circle cx="32" cy="32" r="17" stroke="currentColor" stroke-width="4" fill="none"/><path fill="currentColor" d="M32 19a6 6 0 1 1 0 12 6 6 0 0 1 0-12Zm0 14c9 0 14 8 14 15H18c0-7 5-15 14-15Z"/><path stroke="currentColor" stroke-width="4" d="M32 4v10M32 50v10M4 32h10M50 32h10"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 64 64"><path fill="currentColor" d="M32 56 10 34C2 26 2 13 12 8c7-4 15-1 20 6 5-7 13-10 20-6 10 5 10 18 2 26L32 56Z"/></symbol>
+    <symbol id="i-shield-j" viewBox="0 0 64 64"><path fill="currentColor" d="M32 4 54 11v16c0 16-8 27-22 33C18 54 10 43 10 27V11L32 4Zm-8 16h16v6H34v15c0 7-4 10-10 10-2 0-4 0-6-1v-6c2 1 3 1 5 1 2 0 3-1 3-4V20Z"/></symbol>
+    <symbol id="i-mask" viewBox="0 0 64 64"><path fill="currentColor" d="M32 6c14 0 24 10 24 24S46 58 32 58 8 46 8 30 18 6 32 6Zm-8 18a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm16 0a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm-8 14c-7 0-11 4-11 8h22c0-4-4-8-11-8Z"/></symbol>
+    <symbol id="i-doc" viewBox="0 0 64 64"><path fill="currentColor" d="M18 6h20l14 14v38H18V6Zm18 4v14h14"/><path d="M24 30h16M24 38h16M24 46h12" stroke="#000" stroke-opacity=".0" stroke-width="0"/><path stroke="currentColor" stroke-width="4" d="M24 30h16M24 38h16M24 46h12"/></symbol>
+    <symbol id="i-users" viewBox="0 0 64 64"><circle cx="22" cy="24" r="8" fill="currentColor"/><circle cx="42" cy="27" r="7" fill="currentColor" opacity=".85"/><path fill="currentColor" d="M8 49c0-8 7-14 16-14s16 6 16 14v3H8v-3Zm31 3c0-6 5-11 12-11 2 0 4 0 5 1v10H39Z"/></symbol>
+    <symbol id="i-shield-key" viewBox="0 0 64 64"><path fill="currentColor" d="M32 5 54 12v16c0 16-8 27-22 31C18 55 10 44 10 28V12L32 5Z"/><circle cx="31" cy="31" r="7" fill="#050505"/><path fill="#050505" d="M35 31h10v4h-3v3h-4v-3h-3z"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 64 64"><rect x="10" y="14" width="44" height="40" rx="6" fill="currentColor"/><path fill="#050505" d="M10 24h44v4H10zM22 8h4v10h-4zM38 8h4v10h-4zM30 34h4v12h-4zM26 38h12v4H26z"/></symbol>
+    <symbol id="i-info" viewBox="0 0 64 64"><circle cx="32" cy="32" r="27" stroke="currentColor" stroke-width="4" fill="none"/><circle cx="32" cy="20" r="4" fill="currentColor"/><path fill="currentColor" d="M29 28h6v17h-6z"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 64 64"><rect x="18" y="6" width="28" height="52" rx="6" stroke="currentColor" stroke-width="4" fill="none"/><circle cx="32" cy="49" r="2" fill="currentColor"/></symbol>
+    <symbol id="i-ios" viewBox="0 0 64 64"><rect x="10" y="14" width="44" height="36" rx="12" stroke="currentColor" stroke-width="4" fill="none"/><path fill="currentColor" d="M23 24h4v16h-4zm14 0h4v16h-4z"/></symbol>
+    <symbol id="i-wifi" viewBox="0 0 64 64"><path d="M10 24c14-12 30-12 44 0M18 32c10-8 18-8 28 0M26 40c4-4 8-4 12 0" stroke="currentColor" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="32" cy="48" r="3" fill="currentColor"/></symbol>
+    <symbol id="i-safe" viewBox="0 0 64 64"><path fill="currentColor" d="M32 6 52 12v14c0 15-8 25-20 32C20 51 12 41 12 26V12L32 6Zm-4 26 6 6 12-12-4-4-8 8-2-2-4 4Z"/></symbol>
+    <symbol id="i-tiktok" viewBox="0 0 64 64"><path fill="#25F4EE" d="M37 10c2 6 6 9 13 10v9c-5 0-9-1-13-4v14c0 9-7 16-16 16S5 48 5 39s7-16 16-16c1 0 2 0 3 1v10c-1-1-2-1-3-1-3 0-6 3-6 6s3 6 6 6 6-3 6-6V10h10Z"/><path fill="#FE2C55" d="M40 8c2 6 6 9 13 10v9c-5 0-9-1-13-4v14c0 9-7 16-16 16-4 0-8-2-11-4 3 2 6 3 9 3 9 0 16-7 16-16V22c4 3 8 4 13 4v-9c-7-1-11-4-13-9h2Z"/></symbol>
+    <symbol id="i-zalo" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="#fff"/><path fill="#1A73FF" d="M20 22h24v6L30 42h14v4H20v-5l14-14H20z"/></symbol>
+  </svg>
+
   <div class="bg-circuit"></div>
   <div class="red-frame red-frame-left"></div>
   <div class="red-frame red-frame-right"></div>
@@ -54,11 +73,11 @@
 
         <div class="quick-grid-v2">
           <button id="freeKeyBtn" type="button" class="quick-box">
-            <span class="quick-icon">🎵</span>
+            <svg class="brand-svg tiktok"><use href="#i-tiktok"/></svg>
             <b>TikTok</b>
           </button>
           <button id="contactKeyBtn" type="button" class="quick-box">
-            <span class="quick-icon">💬</span>
+            <svg class="brand-svg zalo"><use href="#i-zalo"/></svg>
             <b>Zalo</b>
           </button>
         </div>
@@ -118,19 +137,28 @@
 
       <section class="stats-cards-row">
         <article class="stat-card-v2 panel-card mini">
-          <div class="stat-label">ONLINE</div>
-          <div id="onlineCount" class="stat-big">0</div>
-          <div class="stat-desc">Người dùng</div>
+          <div class="stat-top-icon stat-users"><svg><use href="#i-users"/></svg></div>
+          <div class="stat-block">
+            <div class="stat-label">ONLINE</div>
+            <div id="onlineCount" class="stat-big">0</div>
+            <div class="stat-desc">Người dùng</div>
+          </div>
         </article>
         <article class="stat-card-v2 panel-card mini">
-          <div class="stat-label">ACTIVE KEYS</div>
-          <div id="keyActive" class="stat-big">0</div>
-          <div class="stat-desc">Đang hoạt động</div>
+          <div class="stat-top-icon stat-shield"><svg><use href="#i-shield-key"/></svg></div>
+          <div class="stat-block">
+            <div class="stat-label">ACTIVE KEYS</div>
+            <div id="keyActive" class="stat-big">0</div>
+            <div class="stat-desc">Đang hoạt động</div>
+          </div>
         </article>
         <article class="stat-card-v2 panel-card mini">
-          <div class="stat-label">TODAY</div>
-          <div id="todayCount" class="stat-big">0</div>
-          <div class="stat-desc">Lượt kích hoạt</div>
+          <div class="stat-top-icon stat-calendar"><svg><use href="#i-calendar"/></svg></div>
+          <div class="stat-block">
+            <div class="stat-label">TODAY</div>
+            <div id="todayCount" class="stat-big">0</div>
+            <div class="stat-desc">Lượt kích hoạt</div>
+          </div>
         </article>
       </section>
 
@@ -138,32 +166,32 @@
         <div class="section-header-decor">TÍNH NĂNG</div>
         <div class="features-grid-v2">
           <button class="feature-card-v2" type="button" data-toggle-feature="boost">
-            <div class="feature-emoji">🚀</div>
+            <div class="feature-icon-badge"><svg><use href="#i-rocket"/></svg></div>
             <div class="feature-name-v2">Boost RAM</div>
             <div class="switch-wrap"><span id="boostState" class="switch-state">OFF</span><span class="switch-track"></span></div>
           </button>
           <button class="feature-card-v2" type="button" data-toggle-feature="aimbody">
-            <div class="feature-emoji">🎯</div>
+            <div class="feature-icon-badge"><svg><use href="#i-aimbody"/></svg></div>
             <div class="feature-name-v2">AIMBODY</div>
             <div class="switch-wrap"><span id="aimbodyState" class="switch-state">OFF</span><span class="switch-track"></span></div>
           </button>
           <button class="feature-card-v2" type="button" data-toggle-feature="nhetam">
-            <div class="feature-emoji">❤️</div>
+            <div class="feature-icon-badge"><svg><use href="#i-heart"/></svg></div>
             <div class="feature-name-v2">NHẸ TÂM</div>
             <div class="switch-wrap"><span id="nhetamState" class="switch-state">OFF</span><span class="switch-track"></span></div>
           </button>
           <button class="feature-card-v2" type="button" data-toggle-feature="headlock">
-            <div class="feature-emoji">🛡️</div>
+            <div class="feature-icon-badge"><svg><use href="#i-shield-j"/></svg></div>
             <div class="feature-name-v2">JAMELOCK</div>
             <div class="switch-wrap"><span id="headlockState" class="switch-state">OFF</span><span class="switch-track"></span></div>
           </button>
           <button class="feature-card-v2" type="button" data-toggle-feature="ping">
-            <div class="feature-emoji">🎭</div>
+            <div class="feature-icon-badge"><svg><use href="#i-mask"/></svg></div>
             <div class="feature-name-v2">AINTIBAN</div>
             <div class="switch-wrap"><span id="pingState" class="switch-state">OFF</span><span class="switch-track"></span></div>
           </button>
           <button class="feature-card-v2" type="button" data-toggle-feature="cache">
-            <div class="feature-emoji">📄</div>
+            <div class="feature-icon-badge"><svg><use href="#i-doc"/></svg></div>
             <div class="feature-name-v2">REG FF</div>
             <div class="switch-wrap"><span id="cacheState" class="switch-state">OFF</span><span class="switch-track"></span></div>
           </button>
@@ -172,7 +200,7 @@
 
       <section class="panel-card info-panel-v2">
         <div class="info-left">
-          <div class="big-info-icon">i</div>
+          <div class="big-info-icon"><svg><use href="#i-info"/></svg></div>
           <div>
             <div class="info-title-v2">THÔNG TIN</div>
             <div class="info-desc-v2">Cập nhật chính sách, hướng dẫn sử dụng và hỗ trợ nhanh chóng.</div>
@@ -184,18 +212,22 @@
       <section class="panel-card quick-panel-v2">
         <div class="section-header-decor">LIÊN KẾT NHANH</div>
         <div class="quick-row-links">
-          <a href="https://www.tiktok.com/@jame.ff.11" target="_blank" rel="noopener" class="quick-link-v2"><span>🎵</span><b>TikTok</b><em>›</em></a>
-          <a href="https://zalo.me/0333635135" target="_blank" rel="noopener" class="quick-link-v2"><span>💬</span><b>Zalo</b><em>›</em></a>
+          <a href="https://www.tiktok.com/@jame.ff.11" target="_blank" rel="noopener" class="quick-link-v2">
+            <svg class="brand-svg tiktok"><use href="#i-tiktok"/></svg><b>TikTok</b><em>›</em>
+          </a>
+          <a href="https://zalo.me/0333635135" target="_blank" rel="noopener" class="quick-link-v2">
+            <svg class="brand-svg zalo"><use href="#i-zalo"/></svg><b>Zalo</b><em>›</em>
+          </a>
         </div>
       </section>
 
       <section class="panel-card device-panel-v2">
         <div class="section-header-decor">THIẾT BỊ &amp; TRẠNG THÁI</div>
         <div class="device-status-grid">
-          <div class="device-item-v2"><span>Thiết bị</span><b id="deviceNameText">iPhone 14 Pro</b></div>
-          <div class="device-item-v2"><span>Hệ điều hành</span><b id="osText">iOS</b></div>
-          <div class="device-item-v2"><span>Kết nối</span><b id="connectionText">Wi‑Fi</b></div>
-          <div class="device-item-v2"><span>Trạng thái</span><b class="safe-green">An toàn</b></div>
+          <div class="device-item-v2"><span class="device-mini-icon"><svg><use href="#i-phone"/></svg></span><div><span>Thiết bị</span><b id="deviceNameText">iPhone 14 Pro</b></div></div>
+          <div class="device-item-v2"><span class="device-mini-icon"><svg><use href="#i-ios"/></svg></span><div><span>Hệ điều hành</span><b id="osText">iOS</b></div></div>
+          <div class="device-item-v2"><span class="device-mini-icon"><svg><use href="#i-wifi"/></svg></span><div><span>Kết nối</span><b id="connectionText">Wi‑Fi</b></div></div>
+          <div class="device-item-v2"><span class="device-mini-icon"><svg><use href="#i-safe"/></svg></span><div><span>Trạng thái</span><b class="safe-green">An toàn</b></div></div>
         </div>
         <div class="meta-row">
           <span>Device ID: <b id="deviceText">--</b></span>
@@ -233,6 +265,6 @@
     </div>
   </section>
 
-  <script src="script.js?v=14"></script>
+  <script src="script.js?v=15"></script>
 </body>
 </html>
