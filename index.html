@@ -4,259 +4,223 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AIMLOCK JAME</title>
-  <link rel="stylesheet" href="styles.css?v=10" />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=13" />
 </head>
 <body>
-  <div class="bg-grid"></div>
+  <div class="screen-glow"></div>
   <div id="panelOverlay" class="panel-overlay hidden"></div>
+  <div id="toast" class="toast"></div>
 
   <section id="loginOverlay" class="login-overlay">
-    <div class="login-card">
-      <div class="login-logo-wrap"><img src="logo.png" alt="AIMLOCK JAME" onerror="this.style.display='none'"></div>
-      <div class="login-sub">SECURE ACCESS</div>
-      <h2 class="login-title">AIMLOCK <span>JAME</span></h2>
-      <div class="login-brand-line">BY JAME FF</div>
-
-      <label class="login-label" for="loginKeyInput">Nhập mật khẩu hoặc Key Mua</label>
-      <div class="login-input-wrap">
-        <span class="login-input-icon">🔒</span>
-        <input id="loginKeyInput" class="login-input" type="password" placeholder="Password / Key" autocomplete="off">
-        <button id="toggleKeyBtn" class="toggle-key-btn" type="button">👁</button>
+    <div class="phone-shell login-shell">
+      <div class="phone-status">
+        <span>9:41</span>
+        <div class="status-icons"><span>◖◗◖</span><span>◔</span><span class="battery"></span></div>
       </div>
 
-      <div id="loginStatus" class="login-status">Sẵn sàng kích hoạt</div>
-      <button id="activateBtn" class="activate-btn" type="button">⚡ Kích Hoạt Jame</button>
-      <div class="login-divider"><span>HOẶC</span></div>
-      <button id="freeKeyBtn" class="secondary-login-btn" type="button">🔑 Nhận Key Miễn Phí</button>
-      <button id="contactKeyBtn" class="secondary-login-btn" type="button">💬 Liên hệ mua key</button>
+      <div class="login-hero">
+        <div class="hero-logo">
+          <img src="logo.png" alt="AIMLOCK JAME" onerror="this.style.display='none'">
+          <h1>AIMLOCK</h1>
+          <p>J A M E</p>
+        </div>
+      </div>
+
+      <div class="secure-tag">SECURE ACCESS</div>
+
+      <div class="login-card-new neon-card">
+        <div class="brand-lockup">
+          <h2>AIMLOCK <span>JAME</span></h2>
+          <div class="brand-line">BY JAME FF</div>
+        </div>
+
+        <div class="input-shell">
+          <span class="input-icon">🔒</span>
+          <input id="loginKeyInput" class="login-input" type="password" placeholder="Nhập mật khẩu hoặc Key Mua" autocomplete="off">
+          <button id="toggleKeyBtn" class="eye-btn" type="button" aria-label="Ẩn hiện mật khẩu">👁</button>
+        </div>
+
+        <button id="activateBtn" class="main-activate" type="button">⚡ KÍCH HOẠT JAME</button>
+        <div id="loginStatus" class="login-status"><span class="status-bullet"></span> Sẵn sàng kích hoạt</div>
+
+        <div class="quick-connect-title">KẾT NỐI NHANH</div>
+        <div class="login-links-grid">
+          <button id="freeKeyBtn" class="quick-link-card" type="button"><span class="quick-ico">🎵</span><b>TikTok</b></button>
+          <button id="contactKeyBtn" class="quick-link-card" type="button"><span class="quick-ico">💬</span><b>Zalo</b></button>
+        </div>
+
+        <div class="login-footer-points">
+          <span>Bảo mật cao</span>
+          <span>Key chính hãng</span>
+          <span>Hỗ trợ nhanh</span>
+        </div>
+      </div>
     </div>
   </section>
 
-  <aside id="simpleMenu" class="simple-menu hidden">
-    <div class="menu-head">
+  <aside id="simpleMenu" class="side-menu hidden">
+    <div class="side-menu-head">
       <div>
-        <strong>MENU FEATURE</strong>
-        <span>AIMLOCK JAME</span>
+        <strong>AIMLOCK JAME</strong>
+        <span>Cyber Control</span>
       </div>
-      <button id="closeMenuBtn" class="icon-btn" type="button">×</button>
+      <button id="closeMenuBtn" class="square-btn" type="button">×</button>
     </div>
 
-    <button class="menu-row" type="button" data-open-feature="boost">
-      <span class="menu-ico">⚡</span>
-      <span><b>Boost RAM</b><small>Tối ưu hiệu suất</small></span>
-      <em id="menuBoostState">OFF</em>
-    </button>
+    <button class="side-link active" type="button" data-nav-target="home">🏠 <span>Trang chủ</span></button>
+    <button class="side-link" type="button" data-open-feature="info">ℹ️ <span>Thông tin</span></button>
+    <button class="side-link" type="button" id="refreshStatsBtn">🔄 <span>Làm mới thống kê</span></button>
+    <a class="side-link" href="admin.html" target="_blank" rel="noopener">🛠️ <span>Admin Panel</span></a>
+    <button class="side-link danger" type="button" id="logoutBtn">↩ <span>Đăng xuất</span></button>
 
-    <button class="menu-row" type="button" data-toggle-feature="aimbody">
-      <span class="menu-ico">🎯</span>
-      <span><b>AIMBODY</b><small>Hỗ trợ chế độ ngắm</small></span>
-      <em id="menuAimbodyState">OFF</em>
-    </button>
-
-    <button class="menu-row" type="button" data-toggle-feature="nhetam">
-      <span class="menu-ico">🧲</span>
-      <span><b>NHẸ TÂM</b><small>Ổn định thao tác</small></span>
-      <em id="menuNhetamState">OFF</em>
-    </button>
-
-    <button class="menu-row" type="button" data-open-feature="headlock">
-      <span class="menu-ico">🔒</span>
-      <span><b>JAMELOCK</b><small>Bật / tắt chế độ</small></span>
-      <em id="menuHeadlockState">OFF</em>
-    </button>
-
-    <button class="menu-row" type="button" data-open-feature="ping">
-      <span class="menu-ico">📡</span>
-      <span><b>AINTIBAN</b><small>Bật trạng thái bảo vệ</small></span>
-      <em id="menuPingState">OFF</em>
-    </button>
-
-    <button class="menu-row" type="button" data-open-feature="cache">
-      <span class="menu-ico">🧹</span>
-      <span><b>REG FF</b><small>Kích hoạt REG FF</small></span>
-      <em id="menuCacheState">OFF</em>
-    </button>
-
-    <button class="menu-row" type="button" data-open-feature="info">
-      <span class="menu-ico">ℹ️</span>
-      <span><b>THÔNG TIN</b><small>Liên hệ & thiết bị</small></span>
-      <em>OPEN</em>
-    </button>
+    <div class="side-feature-list">
+      <div class="side-feature-title">Tính năng</div>
+      <button class="side-feature" type="button" data-toggle-feature="boost">Boost RAM <em id="menuBoostState">OFF</em></button>
+      <button class="side-feature" type="button" data-toggle-feature="aimbody">AIMBODY <em id="menuAimbodyState">OFF</em></button>
+      <button class="side-feature" type="button" data-toggle-feature="nhetam">NHẸ TÂM <em id="menuNhetamState">OFF</em></button>
+      <button class="side-feature" type="button" data-toggle-feature="headlock">JAMELOCK <em id="menuHeadlockState">OFF</em></button>
+      <button class="side-feature" type="button" data-toggle-feature="ping">AINTIBAN <em id="menuPingState">OFF</em></button>
+      <button class="side-feature" type="button" data-toggle-feature="cache">REG FF <em id="menuCacheState">OFF</em></button>
+    </div>
   </aside>
 
   <main id="appShell" class="app-shell locked">
-    <header class="topbar frame">
-      <button id="menuBtn" class="menu-btn" type="button" aria-label="Mở menu"><span></span><span></span><span></span></button>
-      <div class="brand">
-        <div class="brand-mark"><img src="logo.png" alt="AIMLOCK JAME" onerror="this.style.display='none'"></div>
-        <div class="brand-text"><h1>AIMLOCK</h1><p>JAME</p></div>
-      </div>
-      <div class="top-actions"><div class="status-chip"><span class="status-dot"></span> Online</div><button id="logoutBtn" class="logout-btn" type="button">Đăng xuất</button></div>
-    </header>
-
-    <section class="premium-card frame">
-      <div class="logo-card"><img src="logo.png" alt="AIMLOCK JAME" onerror="this.style.display='none'"></div>
-      <div class="premium-center">
-        <div class="section-label">PREMIUM PANEL</div>
-        <h2>AIMLOCK JAME</h2>
-        <div class="key-row">
-          <span>Key hết hạn: <strong id="keyExpireText">--</strong></span>
-          <span class="divider"></span>
-          <span>Slot: <strong id="keySlotText">--</strong></span>
+    <div class="phone-shell app-screen">
+      <header class="app-topbar">
+        <button id="menuBtn" class="square-btn" type="button" aria-label="Mở menu"><span></span><span></span><span></span></button>
+        <div class="top-logo-wrap">
+          <img src="logo.png" alt="AIMLOCK JAME" onerror="this.style.display='none'">
+          <div class="top-logo-text">
+            <h1>AIMLOCK JAME</h1>
+            <p>BY JAME FF</p>
+          </div>
         </div>
-      </div>
-      <div class="premium-pattern"></div>
-    </section>
+        <button id="infoBellBtn" class="square-btn notify-btn" type="button" data-open-feature="info">🔔<i></i></button>
+      </header>
 
-    <section class="dashboard frame">
-      <div class="dashboard-head">
-        <div><div class="section-label">LIVE DASHBOARD</div><h3>BÁO CÁO SERVER</h3></div>
-        <a class="admin-shortcut" href="https://aimlock-jame-production.up.railway.app/admin.html" target="_blank" rel="noopener">Admin</a>
-      </div>
+      <section class="hero-status">
+        <div class="online-pill"><span class="dot"></span> <span id="railwayStatusHero">ONLINE</span></div>
+      </section>
 
-      <div class="stats-grid">
-        <article class="stat-card"><span class="stat-name">ONLINE</span><strong id="onlineCount" class="stat-value">0</strong><span class="stat-sub">NGƯỜI DÙNG</span></article>
-        <article class="stat-card"><span class="stat-name">ACTIVE KEYS</span><strong id="keyActive" class="stat-value">0</strong><span class="stat-sub">BẢN QUYỀN</span></article>
-        <article class="stat-card"><span class="stat-name">TODAY</span><strong id="todayCount" class="stat-value">0</strong><span class="stat-sub">LƯỢT SỬ DỤNG</span></article>
-        <article class="stat-card"><span class="stat-name">POSTGRES</span><strong id="railwayStatus" class="stat-value large">ONLINE</strong><span class="stat-sub">TRẠNG THÁI</span></article>
-      </div>
-      <div class="update-row">Cập nhật: <strong id="updateTime">--:--:--</strong></div>
-    </section>
+      <section class="stats-row">
+        <article class="stat-box neon-card">
+          <div class="stat-head">ONLINE</div>
+          <div id="onlineCount" class="stat-number">0</div>
+          <div class="stat-caption">Người dùng</div>
+        </article>
+        <article class="stat-box neon-card">
+          <div class="stat-head">ACTIVE KEYS</div>
+          <div id="keyActive" class="stat-number">0</div>
+          <div class="stat-caption">Đang hoạt động</div>
+        </article>
+        <article class="stat-box neon-card">
+          <div class="stat-head">TODAY</div>
+          <div id="todayCount" class="stat-number">0</div>
+          <div class="stat-caption">Lượt kích hoạt</div>
+        </article>
+      </section>
 
-    <section class="features-panel frame">
-      <div class="dashboard-head feature-title-row">
-        <div><div class="section-label">CONTROL CENTER</div><h3>TÍNH NĂNG</h3></div>
-        <button id="refreshStatsBtn" class="admin-shortcut" type="button">Refresh</button>
-      </div>
+      <section class="features-wrap neon-card" id="homeSection">
+        <div class="section-title">TÍNH NĂNG</div>
+        <div class="feature-grid-new">
+          <button class="feature-box" type="button" data-toggle-feature="boost">
+            <div class="feature-icon">🚀</div>
+            <div class="feature-name">Boost RAM</div>
+            <div class="feature-switch"><span class="switch-label" id="boostState">OFF</span><span class="switch-ui"></span></div>
+          </button>
+          <button class="feature-box" type="button" data-toggle-feature="aimbody">
+            <div class="feature-icon">🎯</div>
+            <div class="feature-name">AIMBODY</div>
+            <div class="feature-switch"><span class="switch-label" id="aimbodyState">OFF</span><span class="switch-ui"></span></div>
+          </button>
+          <button class="feature-box" type="button" data-toggle-feature="nhetam">
+            <div class="feature-icon">❤️</div>
+            <div class="feature-name">NHẸ TÂM</div>
+            <div class="feature-switch"><span class="switch-label" id="nhetamState">OFF</span><span class="switch-ui"></span></div>
+          </button>
+          <button class="feature-box" type="button" data-toggle-feature="headlock">
+            <div class="feature-icon">🛡️</div>
+            <div class="feature-name">JAMELOCK</div>
+            <div class="feature-switch"><span class="switch-label" id="headlockState">OFF</span><span class="switch-ui"></span></div>
+          </button>
+          <button class="feature-box" type="button" data-toggle-feature="ping">
+            <div class="feature-icon">🎭</div>
+            <div class="feature-name">AINTIBAN</div>
+            <div class="feature-switch"><span class="switch-label" id="pingState">OFF</span><span class="switch-ui"></span></div>
+          </button>
+          <button class="feature-box" type="button" data-toggle-feature="cache">
+            <div class="feature-icon">📄</div>
+            <div class="feature-name">REG FF</div>
+            <div class="feature-switch"><span class="switch-label" id="cacheState">OFF</span><span class="switch-ui"></span></div>
+          </button>
+        </div>
+      </section>
 
-      <div class="feature-grid">
-        <button class="feature-card" type="button" data-open-feature="boost">
-          <span class="feature-icon">⚡</span>
-          <strong>Boost RAM</strong>
-          <small>Tối ưu hiệu suất</small>
-          <em id="boostState">OFF</em>
-        </button>
-        <button class="feature-card" type="button" data-toggle-feature="aimbody">
-          <span class="feature-icon">🎯</span>
-          <strong>AIMBODY</strong>
-          <small>Hỗ trợ chế độ ngắm</small>
-          <em id="aimbodyState">OFF</em>
-        </button>
-        <button class="feature-card" type="button" data-toggle-feature="nhetam">
-          <span class="feature-icon">🧲</span>
-          <strong>NHẸ TÂM</strong>
-          <small>Ổn định thao tác</small>
-          <em id="nhetamState">OFF</em>
-        </button>
-        <button class="feature-card" type="button" data-open-feature="headlock">
-          <span class="feature-icon">🔒</span>
-          <strong>JAMELOCK</strong>
-          <small>Bật / tắt chế độ</small>
-          <em id="headlockState">OFF</em>
-        </button>
-        <button class="feature-card" type="button" data-open-feature="ping">
-          <span class="feature-icon">📡</span>
-          <strong>AINTIBAN</strong>
-          <small>Bật trạng thái bảo vệ</small>
-          <em id="pingState">OFF</em>
-        </button>
-        <button class="feature-card" type="button" data-open-feature="cache">
-          <span class="feature-icon">🧹</span>
-          <strong>REG FF</strong>
-          <small>Kích hoạt REG FF</small>
-          <em id="cacheState">OFF</em>
-        </button>
-        <button class="feature-card" type="button" data-open-feature="info">
-          <span class="feature-icon">ℹ️</span>
-          <strong>THÔNG TIN</strong>
-          <small>Liên hệ & thiết bị</small>
-          <em>OPEN</em>
-        </button>
-      </div>
-    </section>
+      <section class="info-banner neon-card">
+        <div class="info-banner-left">
+          <div class="info-icon">i</div>
+          <div>
+            <h3>THÔNG TIN</h3>
+            <p>Cập nhật chính sách, hướng dẫn sử dụng và hỗ trợ nhanh chóng.</p>
+          </div>
+        </div>
+        <button class="view-btn" type="button" data-open-feature="info">XEM NGAY ›</button>
+      </section>
+
+      <section class="quick-section neon-card">
+        <div class="section-title">LIÊN KẾT NHANH</div>
+        <div class="quick-grid">
+          <a class="quick-link-bar" href="https://www.tiktok.com/@jame.ff.11" target="_blank" rel="noopener"><span>🎵</span><b>TikTok</b><em>›</em></a>
+          <a class="quick-link-bar" href="https://zalo.me/0333635135" target="_blank" rel="noopener"><span>💬</span><b>Zalo</b><em>›</em></a>
+        </div>
+      </section>
+
+      <section class="device-section neon-card">
+        <div class="section-title">THIẾT BỊ &amp; TRẠNG THÁI</div>
+        <div class="device-grid">
+          <div class="device-item"><span>Thiết bị</span><b id="deviceNameText">iPhone 14 Pro</b></div>
+          <div class="device-item"><span>Hệ điều hành</span><b id="osText">iOS</b></div>
+          <div class="device-item"><span>Kết nối</span><b id="connectionText">Wi‑Fi</b></div>
+          <div class="device-item"><span>Trạng thái</span><b class="safe-text">An toàn</b></div>
+        </div>
+        <div class="device-subrow">
+          <span>Device ID: <b id="deviceText">--</b></span>
+          <button id="copyDeviceBtn" class="mini-btn" type="button">Copy</button>
+        </div>
+        <div class="device-subrow secondary">
+          <span>Key hết hạn: <b id="keyExpireText">--</b></span>
+          <span>Slot: <b id="keySlotText">--</b></span>
+          <span>Cập nhật: <b id="updateTime">--:--:--</b></span>
+        </div>
+      </section>
+
+      <nav class="bottom-nav neon-card">
+        <button class="nav-item active" type="button">🏠<span>TRANG CHỦ</span></button>
+        <button class="nav-item" type="button">🔑<span>KEYS</span></button>
+        <button class="nav-item nav-center" type="button"><img src="logo.png" alt=""></button>
+        <button class="nav-item" type="button">📋<span>LỊCH SỬ</span></button>
+        <button class="nav-item" type="button" data-open-feature="info">👤<span>TÀI KHOẢN</span></button>
+      </nav>
+    </div>
   </main>
 
-  <section id="headlockModal" class="modal-box hidden">
-    <div class="modal-card">
-      <button class="modal-close" type="button" data-close-modal>×</button>
-      <h3>JAMELOCK CONTROL</h3>
-      <p>Chọn phiên bản rồi bật/tắt trạng thái hiển thị trong panel.</p>
-      <label class="modal-label">Phiên bản</label>
-      <select id="ffVersion" class="modal-input">
-        <option>Free Fire</option>
-        <option>Free Fire Max</option>
-      </select>
-      <div class="modal-actions">
-        <button id="headlockOnBtn" class="activate-btn small" type="button">JAMELOCK Was Successful!</button>
-        <button id="headlockOffBtn" class="secondary-login-btn center" type="button">Turn off JAMELOCK</button>
-      </div>
-    </div>
-  </section>
-
-  <section id="boostModal" class="modal-box hidden">
-    <div class="modal-card">
-      <button class="modal-close" type="button" data-close-modal>×</button>
-      <h3>BOOST RAM</h3>
-      <p>Chạy mô phỏng tối ưu giao diện và làm mới trạng thái panel.</p>
-      <pre id="boostOutput" class="terminal-output">Ready...</pre>
-      <div class="modal-actions">
-        <button id="runBoostBtn" class="activate-btn small" type="button">⚡ Run Boost</button>
-        <button id="closeBoostBtn" class="secondary-login-btn center" type="button">Done</button>
-      </div>
-    </div>
-  </section>
-
-  <section id="pingModal" class="modal-box hidden">
-    <div class="modal-card">
-      <button class="modal-close" type="button" data-close-modal>×</button>
-      <h3>AINTIBAN</h3>
-      <p>Bật trạng thái AINTIBAN trong web panel và kiểm tra kết nối API Railway.</p>
-      <pre id="pingOutput" class="terminal-output">Ready...</pre>
-      <div class="modal-actions">
-        <button id="runPingBtn" class="activate-btn small" type="button">🛡️ Bật AINTIBAN</button>
-        <button id="pingOffBtn" class="secondary-login-btn center" type="button">Tắt AINTIBAN</button>
-      </div>
-    </div>
-  </section>
-
-  <section id="cacheModal" class="modal-box hidden">
-    <div class="modal-card">
-      <button class="modal-close" type="button" data-close-modal>×</button>
-      <h3>REG FF</h3>
-      <p>Kích hoạt trạng thái REG FF trong web panel, lưu trạng thái ON/OFF và làm mới dashboard.</p>
-      <pre id="cacheOutput" class="terminal-output">Ready...</pre>
-      <div class="modal-actions">
-        <button id="runCacheBtn" class="activate-btn small" type="button">🔥 Bật REG FF</button>
-        <button id="cacheOffBtn" class="secondary-login-btn center" type="button">Tắt REG FF</button>
-      </div>
-    </div>
-  </section>
-
   <section id="infoModal" class="modal-box hidden">
-    <div class="modal-card">
+    <div class="modal-card neon-card">
       <button class="modal-close" type="button" data-close-modal>×</button>
-      <h3>INFO</h3>
-      <div class="info-list">
-        <div><span>Device ID</span><b id="deviceText">--</b></div>
-        <a class="info-link" href="https://zalo.me/0333635135" target="_blank" rel="noopener">
-          <span>Zalo</span><b>0333635135 ↗</b>
-        </a>
-        <a class="info-link" href="https://www.facebook.com/" target="_blank" rel="noopener">
-          <span>FaceBook</span><b>Jame FF ↗</b>
-        </a>
-        <a class="info-link" href="https://www.tiktok.com/@jame.ff.11" target="_blank" rel="noopener">
-          <span>TikTok</span><b>@jame.ff.11 ↗</b>
-        </a>
+      <h3>THÔNG TIN & HỖ TRỢ</h3>
+      <div class="modal-info-list">
+        <a class="modal-link" href="https://www.tiktok.com/@jame.ff.11" target="_blank" rel="noopener"><span>TikTok</span><b>@jame.ff.11</b></a>
+        <a class="modal-link" href="https://zalo.me/0333635135" target="_blank" rel="noopener"><span>Zalo</span><b>0333635135</b></a>
+        <div class="modal-row"><span>Device ID</span><b id="modalDeviceText">--</b></div>
+        <div class="modal-row"><span>Server</span><b id="railwayStatus">Online</b></div>
       </div>
-      <div class="modal-actions">
-        <button id="copyDeviceBtn" class="secondary-login-btn center" type="button">Copy Device ID</button>
-        <button id="infoDoneBtn" class="activate-btn small" type="button">Done</button>
-      </div>
+      <button id="infoDoneBtn" class="main-activate small-btn" type="button">ĐÃ HIỂU</button>
     </div>
   </section>
 
-  <div id="toast" class="toast">Thông báo</div>
-  <script src="script.js?v=10"></script>
+  <script src="script.js?v=13"></script>
 </body>
 </html>

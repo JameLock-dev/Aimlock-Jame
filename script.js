@@ -1,45 +1,39 @@
-const API_BASE = "https://aimlock-jame-production.up.railway.app";
-// API_BASE chỉ là domain backend Railway. KHÔNG thêm /admin.html và KHÔNG thêm dấu / cuối link.
-const DEMO_MODE = false; // Bản chạy chính: dùng login/API thật.
-const DEMO_FORCE_LOGIN = false;
+const APP_CONFIG = window.AIMLOCK_CONFIG || {};
+const API_BASE = APP_CONFIG.apiBase || "https://aimlock-jame-production.up.railway.app";
+const DEMO_MODE = Boolean(APP_CONFIG.demoMode);
+const DEMO_FORCE_LOGIN = Boolean(APP_CONFIG.forceLogin);
 
-const appShell = document.getElementById("appShell");
-const loginOverlay = document.getElementById("loginOverlay");
-const loginKeyInput = document.getElementById("loginKeyInput");
-const toggleKeyBtn = document.getElementById("toggleKeyBtn");
-const activateBtn = document.getElementById("activateBtn");
-const loginStatus = document.getElementById("loginStatus");
-const freeKeyBtn = document.getElementById("freeKeyBtn");
-const contactKeyBtn = document.getElementById("contactKeyBtn");
-const keyExpireText = document.getElementById("keyExpireText");
-const keySlotText = document.getElementById("keySlotText");
-const onlineCount = document.getElementById("onlineCount");
-const keyActive = document.getElementById("keyActive");
-const todayCount = document.getElementById("todayCount");
-const railwayStatus = document.getElementById("railwayStatus");
-const updateTime = document.getElementById("updateTime");
-const toast = document.getElementById("toast");
-
-const panelOverlay = document.getElementById("panelOverlay");
-const menuBtn = document.getElementById("menuBtn");
-const simpleMenu = document.getElementById("simpleMenu");
-const closeMenuBtn = document.getElementById("closeMenuBtn");
-const refreshStatsBtn = document.getElementById("refreshStatsBtn");
-const deviceText = document.getElementById("deviceText");
-const copyDeviceBtn = document.getElementById("copyDeviceBtn");
-const infoDoneBtn = document.getElementById("infoDoneBtn");
-const headlockOnBtn = document.getElementById("headlockOnBtn");
-const headlockOffBtn = document.getElementById("headlockOffBtn");
-const runBoostBtn = document.getElementById("runBoostBtn");
-const closeBoostBtn = document.getElementById("closeBoostBtn");
-const boostOutput = document.getElementById("boostOutput");
-const pingOutput = document.getElementById("pingOutput");
-const runPingBtn = document.getElementById("runPingBtn");
-const pingOffBtn = document.getElementById("pingOffBtn");
-const cacheOutput = document.getElementById("cacheOutput");
-const runCacheBtn = document.getElementById("runCacheBtn");
-const cacheOffBtn = document.getElementById("cacheOffBtn");
-const logoutBtn = document.getElementById("logoutBtn");
+const $ = (id) => document.getElementById(id);
+const appShell = $("appShell");
+const loginOverlay = $("loginOverlay");
+const loginKeyInput = $("loginKeyInput");
+const toggleKeyBtn = $("toggleKeyBtn");
+const activateBtn = $("activateBtn");
+const loginStatus = $("loginStatus");
+const freeKeyBtn = $("freeKeyBtn");
+const contactKeyBtn = $("contactKeyBtn");
+const keyExpireText = $("keyExpireText");
+const keySlotText = $("keySlotText");
+const onlineCount = $("onlineCount");
+const keyActive = $("keyActive");
+const todayCount = $("todayCount");
+const railwayStatus = $("railwayStatus");
+const railwayStatusHero = $("railwayStatusHero");
+const updateTime = $("updateTime");
+const toast = $("toast");
+const panelOverlay = $("panelOverlay");
+const menuBtn = $("menuBtn");
+const closeMenuBtn = $("closeMenuBtn");
+const simpleMenu = $("simpleMenu");
+const refreshStatsBtn = $("refreshStatsBtn");
+const logoutBtn = $("logoutBtn");
+const deviceText = $("deviceText");
+const modalDeviceText = $("modalDeviceText");
+const copyDeviceBtn = $("copyDeviceBtn");
+const infoDoneBtn = $("infoDoneBtn");
+const deviceNameText = $("deviceNameText");
+const osText = $("osText");
+const connectionText = $("connectionText");
 
 const featureMap = {
   boost: ["boostState", "menuBoostState"],
@@ -50,32 +44,22 @@ const featureMap = {
   cache: ["cacheState", "menuCacheState"]
 };
 
-function pad(n) {
-  return String(n).padStart(2, "0");
-}
-
 function nowTime() {
   const n = new Date();
-  return `${pad(n.getHours())}:${pad(n.getMinutes())}:${pad(n.getSeconds())}`;
+  return n.toLocaleTimeString("vi-VN", { hour12: false });
 }
 
 function showToast(msg) {
   if (!toast) return;
   toast.textContent = msg;
   toast.classList.add("show");
-  setTimeout(() => toast.classList.remove("show"), 2200);
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => toast.classList.remove("show"), 2200);
 }
 
 function lockApp(lock) {
-  if (!appShell || !loginOverlay) return;
-
-  if (lock) {
-    appShell.classList.add("locked");
-    loginOverlay.classList.remove("hidden");
-  } else {
-    appShell.classList.remove("locked");
-    loginOverlay.classList.add("hidden");
-  }
+  appShell?.classList.toggle("locked", lock);
+  loginOverlay?.classList.toggle("hidden", !lock);
 }
 
 function deviceId() {
@@ -90,15 +74,20 @@ function deviceId() {
 function formatExpire(expire) {
   const d = new Date(expire);
   if (Number.isNaN(d.getTime())) return expire || "--";
-
   return d.toLocaleString("vi-VN", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric"
+    hour: "2-digit", minute: "2-digit", second: "2-digit",
+    day: "2-digit", month: "2-digit", year: "numeric"
   });
+}
+
+function detectDeviceInfo() {
+  const ua = navigator.userAgent || "";
+  let device = /iPhone/i.test(ua) ? "iPhone" : /Android/i.test(ua) ? "Android" : /Windows/i.test(ua) ? "Windows PC" : /Mac/i.test(ua) ? "Mac" : "Thiết bị web";
+  let os = /iPhone OS ([\d_]+)/i.test(ua) ? `iOS ${RegExp.$1.replace(/_/g, ".")}` : /Android ([\d.]+)/i.test(ua) ? `Android ${RegExp.$1}` : /Windows NT 10/i.test(ua) ? "Windows 10/11" : /Mac OS X ([\d_]+)/i.test(ua) ? `macOS ${RegExp.$1.replace(/_/g, ".")}` : "Web";
+  let conn = navigator.connection?.effectiveType ? navigator.connection.effectiveType.toUpperCase() : "Wi‑Fi";
+  if (deviceNameText) deviceNameText.textContent = device;
+  if (osText) osText.textContent = os;
+  if (connectionText) connectionText.textContent = conn;
 }
 
 function apiUrl(path) {
@@ -107,244 +96,221 @@ function apiUrl(path) {
 
 async function apiFetch(path, options = {}) {
   if (DEMO_MODE) {
-    await new Promise((resolve) => setTimeout(resolve, 180));
-
-    let demoData = { ok: true };
-
-    if (path === "/api/stats") {
-      demoData = { ok: true, online: 7, activeKeys: 2, today: 14, railway: "Online" };
-    }
-
-    if (path === "/api/health") {
-      demoData = { ok: true, message: "API OK" };
-    }
-
+    await new Promise((r) => setTimeout(r, 150));
     if (path === "/api/verify-key") {
-      let body = {};
-      try { body = JSON.parse(options.body || "{}"); } catch (_) {}
-      const demoKey = String(body.key || "").trim();
-
-      if (demoKey.length > 0) {
-        demoData = { ok: true, key: { expire: "2100-01-01T23:59:59.000Z", slotUsed: 1, slotLimit: 1 } };
-      } else {
-        demoData = { ok: false, message: "Vui lòng nhập key." };
-      }
+      const body = JSON.parse(options.body || "{}");
+      if (!String(body.key || "").trim()) throw new Error("Vui lòng nhập key.");
+      return { ok: true, key: { expire: "2100-01-01T06:59:59.000Z", slotUsed: 1, slotLimit: 1 } };
     }
-
-    if (demoData.ok === false) throw new Error(demoData.message || "Request thất bại.");
-    return demoData;
+    if (path === "/api/stats") return { ok: true, online: 1248, activeKeys: 328, today: 3562, railway: "Online" };
+    if (path === "/api/health") return { ok: true, message: "Server + Postgres OK" };
   }
 
   let res;
-
   try {
     res = await fetch(apiUrl(path), {
       ...options,
-      headers: {
-        Accept: "application/json",
-        ...(options.headers || {})
-      },
+      headers: { Accept: "application/json", ...(options.headers || {}) },
       cache: "no-store"
     });
-  } catch (error) {
-    throw new Error("Không kết nối được API Railway. Hãy kiểm tra API_BASE hoặc domain backend.");
+  } catch (_) {
+    throw new Error("Không kết nối được API Railway.");
   }
 
   const text = await res.text();
   let data;
-
-  try {
-    data = JSON.parse(text);
-  } catch (error) {
-    console.error("API returned non-JSON:", text);
-    throw new Error("API đang trả về HTML, không phải JSON. Kiểm tra lại API_BASE, không được thêm /admin.html.");
-  }
-
-  if (!res.ok || data.ok === false) {
-    throw new Error(data.message || "Request thất bại.");
-  }
-
+  try { data = JSON.parse(text); }
+  catch (_) { throw new Error("API đang trả về HTML, không phải JSON."); }
+  if (!res.ok || data.ok === false) throw new Error(data.message || "Request thất bại.");
   return data;
 }
 
 function getFeatures() {
-  try {
-    return JSON.parse(localStorage.getItem("aimlockFeatureState") || "{}");
-  } catch (_) {
-    return {};
-  }
+  try { return JSON.parse(localStorage.getItem("aimlockFeatureState") || "{}"); }
+  catch { return {}; }
 }
 
 function saveFeatures(state) {
   localStorage.setItem("aimlockFeatureState", JSON.stringify(state));
 }
 
-function setFeature(name, value) {
-  const state = getFeatures();
-  state[name] = Boolean(value);
-  saveFeatures(state);
-  renderFeatures();
-}
-
-function toggleFeature(name) {
-  const state = getFeatures();
-  setFeature(name, !state[name]);
-  showToast(`${labelFeature(name)}: ${!state[name] ? "ON" : "OFF"}`);
-}
-
 function labelFeature(name) {
-  return {
-    boost: "Boost RAM",
-    aimbody: "AIMBODY",
-    nhetam: "NHẸ TÂM",
-    headlock: "JAMELOCK",
-    ping: "AINTIBAN",
-    cache: "REG FF"
-  }[name] || name;
+  return ({ boost: "Boost RAM", aimbody: "AIMBODY", nhetam: "NHẸ TÂM", headlock: "JAMELOCK", ping: "AINTIBAN", cache: "REG FF" })[name] || name;
 }
 
 function renderFeatures() {
   const state = getFeatures();
-
   Object.keys(featureMap).forEach((name) => {
-    const isOn = Boolean(state[name]);
-
+    const on = Boolean(state[name]);
     featureMap[name].forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) el.textContent = isOn ? "ON" : "OFF";
+      const el = $(id);
+      if (el) el.textContent = on ? "ON" : "OFF";
     });
-
-    document.querySelectorAll(`[data-toggle-feature="${name}"], [data-open-feature="${name}"]`).forEach((el) => {
-      el.classList.toggle("is-on", isOn);
-    });
+    document.querySelectorAll(`[data-toggle-feature="${name}"]`).forEach((el) => el.classList.toggle("is-on", on));
   });
-
   if (deviceText) deviceText.textContent = deviceId();
+  if (modalDeviceText) modalDeviceText.textContent = deviceId();
 }
 
-function openMenu() {
-  simpleMenu?.classList.remove("hidden");
-  panelOverlay?.classList.remove("hidden");
+async function applyFeatureAction(name, value) {
+  if (!value) return;
+  if (name === "boost") {
+    await new Promise((r) => setTimeout(r, 220));
+    showToast("Boost RAM đã được tối ưu");
+  }
+  if (name === "ping") {
+    const start = performance.now();
+    const data = await apiFetch("/api/health");
+    const ms = Math.max(1, Math.round(performance.now() - start));
+    showToast(`AINTIBAN hoạt động • ${data.message} • ${ms}ms`);
+  }
+  if (name === "cache") {
+    let removed = 0;
+    Object.keys(localStorage).forEach((key) => {
+      if (key.startsWith("aimlockTemp_") || key.startsWith("tmp_")) {
+        localStorage.removeItem(key);
+        removed += 1;
+      }
+    });
+    try {
+      if ("caches" in window) {
+        const names = await caches.keys();
+        await Promise.all(names.map((n) => caches.delete(n)));
+        removed += names.length;
+      }
+    } catch {}
+    showToast(`REG FF hoàn tất • ${removed} mục tạm`);
+  }
 }
 
-function closeMenu() {
-  simpleMenu?.classList.add("hidden");
-  panelOverlay?.classList.add("hidden");
-}
-
-function modalByFeature(name) {
-  return {
-    headlock: document.getElementById("headlockModal"),
-    boost: document.getElementById("boostModal"),
-    ping: document.getElementById("pingModal"),
-    cache: document.getElementById("cacheModal"),
-    info: document.getElementById("infoModal")
-  }[name] || null;
-}
-
-function openModal(name) {
-  closeMenu();
-  modalByFeature(name)?.classList.remove("hidden");
+async function setFeature(name, value) {
+  const state = getFeatures();
+  state[name] = Boolean(value);
+  saveFeatures(state);
   renderFeatures();
+  try {
+    await applyFeatureAction(name, value);
+  } catch (err) {
+    state[name] = false;
+    saveFeatures(state);
+    renderFeatures();
+    throw err;
+  }
 }
 
-function closeModals() {
-  document.querySelectorAll(".modal-box").forEach((modal) => modal.classList.add("hidden"));
+async function toggleFeature(name) {
+  const state = getFeatures();
+  const next = !state[name];
+  try {
+    await setFeature(name, next);
+    showToast(`${labelFeature(name)}: ${next ? "ON" : "OFF"}`);
+  } catch (err) {
+    showToast(err.message || `${labelFeature(name)} thất bại`);
+  }
 }
 
 async function verifyKey() {
-  const key = loginKeyInput.value.trim();
-
+  const key = loginKeyInput?.value.trim();
   if (!key) {
-    loginStatus.textContent = "Vui lòng nhập Password / Key.";
+    loginStatus.innerHTML = `<span class="status-bullet"></span> Vui lòng nhập Password / Key.`;
     loginStatus.className = "login-status error";
     showToast("Thiếu key");
     return;
   }
-
-  loginStatus.textContent = "Đang kiểm tra Postgres key server...";
+  loginStatus.innerHTML = `<span class="status-bullet"></span> Đang kiểm tra Postgres key server...`;
   loginStatus.className = "login-status";
   activateBtn.disabled = true;
-  activateBtn.textContent = "Đang kích hoạt...";
-
+  activateBtn.textContent = "ĐANG KÍCH HOẠT...";
   try {
     const data = await apiFetch("/api/verify-key", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ key, deviceId: deviceId() })
     });
-
     localStorage.setItem("jameLoginUnlocked", "true");
     localStorage.setItem("jameKeyInfo", JSON.stringify(data.key));
-
     if (keyExpireText) keyExpireText.textContent = formatExpire(data.key.expire);
     if (keySlotText) keySlotText.textContent = `${data.key.slotUsed}/${data.key.slotLimit}`;
-
-    loginStatus.textContent = "Key hợp lệ. Đang vào app...";
+    loginStatus.innerHTML = `<span class="status-bullet"></span> Kích hoạt thành công`;
     loginStatus.className = "login-status success";
     showToast("Đăng nhập thành công");
-
-    setTimeout(() => lockApp(false), 650);
+    setTimeout(() => lockApp(false), 500);
     updateStats();
   } catch (err) {
-    loginStatus.textContent = err.message || "Key không hợp lệ. Vui lòng thử lại.";
+    loginStatus.innerHTML = `<span class="status-bullet"></span> ${err.message || "Key không hợp lệ"}`;
     loginStatus.className = "login-status error";
-    showToast("Key không hợp lệ");
+    showToast("Kích hoạt thất bại");
   } finally {
     activateBtn.disabled = false;
-    activateBtn.textContent = "⚡ Kích Hoạt Jame";
+    activateBtn.textContent = "⚡ KÍCH HOẠT JAME";
   }
 }
 
 async function updateStats() {
   try {
     const d = await apiFetch("/api/stats");
-    if (onlineCount) onlineCount.textContent = d.online ?? 0;
-    if (keyActive) keyActive.textContent = d.activeKeys ?? 0;
-    if (todayCount) todayCount.textContent = d.today ?? 0;
+    if (onlineCount) onlineCount.textContent = Number(d.online ?? 0).toLocaleString("vi-VN");
+    if (keyActive) keyActive.textContent = Number(d.activeKeys ?? 0).toLocaleString("vi-VN");
+    if (todayCount) todayCount.textContent = Number(d.today ?? 0).toLocaleString("vi-VN");
     if (railwayStatus) railwayStatus.textContent = d.railway || "Online";
+    if (railwayStatusHero) railwayStatusHero.textContent = (d.railway || "Online").toUpperCase();
   } catch (err) {
-    console.warn("Stats error:", err.message);
     if (railwayStatus) railwayStatus.textContent = "OFFLINE";
+    if (railwayStatusHero) railwayStatusHero.textContent = "OFFLINE";
   }
-
   if (updateTime) updateTime.textContent = nowTime();
+}
+
+function openMenu() {
+  simpleMenu?.classList.remove("hidden");
+  panelOverlay?.classList.remove("hidden");
+}
+function closeMenu() {
+  simpleMenu?.classList.add("hidden");
+  panelOverlay?.classList.add("hidden");
+}
+function openModal(name) {
+  closeMenu();
+  if (name === "info") $("infoModal")?.classList.remove("hidden");
+}
+function closeModals() {
+  document.querySelectorAll(".modal-box").forEach((el) => el.classList.add("hidden"));
 }
 
 function initSavedLogin() {
   if (DEMO_MODE && DEMO_FORCE_LOGIN) {
     localStorage.removeItem("jameLoginUnlocked");
     localStorage.removeItem("jameKeyInfo");
-    if (keyExpireText) keyExpireText.textContent = "--";
-    if (keySlotText) keySlotText.textContent = "--";
     lockApp(true);
     return;
   }
-
-  if (DEMO_MODE) {
+  if (DEMO_MODE && !DEMO_FORCE_LOGIN) {
     localStorage.setItem("jameLoginUnlocked", "true");
-    localStorage.setItem("jameKeyInfo", JSON.stringify({ expire: "2100-01-01T23:59:59.000Z", slotUsed: 1, slotLimit: 1 }));
-    if (keyExpireText) keyExpireText.textContent = formatExpire("2100-01-01T23:59:59.000Z");
-    if (keySlotText) keySlotText.textContent = "1/1";
-    lockApp(false);
-    return;
+    localStorage.setItem("jameKeyInfo", JSON.stringify({ expire: "2100-01-01T06:59:59.000Z", slotUsed: 1, slotLimit: 1 }));
   }
-
   try {
-    const savedInfo = JSON.parse(localStorage.getItem("jameKeyInfo") || "null");
-
-    if (localStorage.getItem("jameLoginUnlocked") === "true" && savedInfo) {
-      if (keyExpireText) keyExpireText.textContent = formatExpire(savedInfo.expire);
-      if (keySlotText) keySlotText.textContent = `${savedInfo.slotUsed}/${savedInfo.slotLimit}`;
+    const saved = JSON.parse(localStorage.getItem("jameKeyInfo") || "null");
+    if (localStorage.getItem("jameLoginUnlocked") === "true" && saved) {
+      if (keyExpireText) keyExpireText.textContent = formatExpire(saved.expire);
+      if (keySlotText) keySlotText.textContent = `${saved.slotUsed}/${saved.slotLimit}`;
       lockApp(false);
       return;
     }
-  } catch (_) {
-    localStorage.removeItem("jameLoginUnlocked");
-    localStorage.removeItem("jameKeyInfo");
-  }
-
+  } catch {}
   lockApp(true);
+}
+
+function logout() {
+  localStorage.removeItem("jameLoginUnlocked");
+  localStorage.removeItem("jameKeyInfo");
+  if (loginKeyInput) loginKeyInput.value = "";
+  if (loginStatus) {
+    loginStatus.innerHTML = `<span class="status-bullet"></span> Sẵn sàng kích hoạt`;
+    loginStatus.className = "login-status";
+  }
+  lockApp(true);
+  closeMenu();
+  showToast("Đã đăng xuất");
 }
 
 toggleKeyBtn?.addEventListener("click", () => {
@@ -352,164 +318,34 @@ toggleKeyBtn?.addEventListener("click", () => {
   loginKeyInput.type = isPass ? "text" : "password";
   toggleKeyBtn.textContent = isPass ? "🙈" : "👁";
 });
-
 activateBtn?.addEventListener("click", verifyKey);
-loginKeyInput?.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") verifyKey();
-});
-
-freeKeyBtn?.addEventListener("click", () => {
-  window.open("https://www.tiktok.com/@jame.ff.11", "_blank", "noopener");
-});
-
-contactKeyBtn?.addEventListener("click", () => {
-  window.open("https://zalo.me/0333635135", "_blank", "noopener");
-});
+loginKeyInput?.addEventListener("keydown", (e) => { if (e.key === "Enter") verifyKey(); });
+freeKeyBtn?.addEventListener("click", () => window.open("https://www.tiktok.com/@jame.ff.11", "_blank", "noopener"));
+contactKeyBtn?.addEventListener("click", () => window.open("https://zalo.me/0333635135", "_blank", "noopener"));
 menuBtn?.addEventListener("click", openMenu);
 closeMenuBtn?.addEventListener("click", closeMenu);
 panelOverlay?.addEventListener("click", closeMenu);
-refreshStatsBtn?.addEventListener("click", () => {
-  updateStats();
-  showToast("Đã làm mới server");
-});
-
-document.addEventListener("click", (event) => {
-  const toggleBtn = event.target.closest("[data-toggle-feature]");
-  const openBtn = event.target.closest("[data-open-feature]");
-  const closeBtn = event.target.closest("[data-close-modal]");
-
-  if (toggleBtn) {
-    toggleFeature(toggleBtn.dataset.toggleFeature);
-    return;
-  }
-
-  if (openBtn) {
-    openModal(openBtn.dataset.openFeature);
-    return;
-  }
-
-  if (closeBtn) closeModals();
-});
-
-headlockOnBtn?.addEventListener("click", () => {
-  setFeature("headlock", true);
-  showToast("JAMELOCK Was Successful!");
-  closeModals();
-});
-
-headlockOffBtn?.addEventListener("click", () => {
-  setFeature("headlock", false);
-  showToast("Turn off JAMELOCK");
-  closeModals();
-});
-
-runBoostBtn?.addEventListener("click", () => {
-  const lines = [
-    "> checking device...",
-    "> clearing temporary UI cache...",
-    "> refreshing dashboard...",
-    "> boost complete."
-  ];
-  boostOutput.textContent = "";
-  let i = 0;
-  const timer = setInterval(() => {
-    boostOutput.textContent += lines[i] + "\n";
-    i += 1;
-    if (i >= lines.length) {
-      clearInterval(timer);
-      setFeature("boost", true);
-      showToast("Boost RAM: ON");
-    }
-  }, 280);
-});
-
-closeBoostBtn?.addEventListener("click", closeModals);
-infoDoneBtn?.addEventListener("click", closeModals);
+refreshStatsBtn?.addEventListener("click", () => { updateStats(); closeMenu(); showToast("Đã làm mới server"); });
+logoutBtn?.addEventListener("click", logout);
 copyDeviceBtn?.addEventListener("click", async () => {
-  const id = deviceId();
-  try {
-    await navigator.clipboard.writeText(id);
-    showToast("Đã copy Device ID");
-  } catch (_) {
-    showToast(id);
-  }
+  try { await navigator.clipboard.writeText(deviceId()); showToast("Đã copy Device ID"); }
+  catch { showToast(deviceId()); }
 });
+infoDoneBtn?.addEventListener("click", closeModals);
 
-
-runPingBtn?.addEventListener("click", async () => {
-  if (!pingOutput) return;
-  pingOutput.textContent = "> activating AINTIBAN panel status...\n";
-  const start = performance.now();
-  try {
-    const data = await apiFetch("/api/health");
-    const ms = Math.max(1, Math.round(performance.now() - start));
-    pingOutput.textContent += `> response: ${data.message || "OK"}\n`;
-    pingOutput.textContent += `> api check: ${ms}ms\n`;
-    pingOutput.textContent += "> AINTIBAN status active.\n";
-    setFeature("ping", true);
-    showToast(`AINTIBAN: ON`);
-  } catch (err) {
-    pingOutput.textContent += `> error: ${err.message}\n`;
-    setFeature("ping", false);
-    showToast("AINTIBAN thất bại");
-  }
-});
-
-pingOffBtn?.addEventListener("click", () => {
-  setFeature("ping", false);
-  if (pingOutput) pingOutput.textContent = "AINTIBAN stopped.";
-  showToast("AINTIBAN: OFF");
-});
-
-runCacheBtn?.addEventListener("click", async () => {
-  if (!cacheOutput) return;
-  cacheOutput.textContent = "> activating REG FF panel status...\n";
-  let removed = 0;
-
-  Object.keys(localStorage).forEach((key) => {
-    if (key.startsWith("aimlockTemp_") || key.startsWith("tmp_")) {
-      localStorage.removeItem(key);
-      removed += 1;
-    }
-  });
-
-  try {
-    if ("caches" in window) {
-      const names = await caches.keys();
-      await Promise.all(names.map((name) => caches.delete(name)));
-      removed += names.length;
-    }
-  } catch (_) {}
-
-  await new Promise((resolve) => setTimeout(resolve, 280));
-  cacheOutput.textContent += `> cleaned temporary panel cache: ${removed} item(s)\n`;
-  cacheOutput.textContent += "> keeping login key and device id safe.\n";
-  cacheOutput.textContent += "> REG FF status active.\n";
-  setFeature("cache", true);
-  showToast("REG FF: ON");
-  updateStats();
-});
-
-cacheOffBtn?.addEventListener("click", () => {
-  setFeature("cache", false);
-  if (cacheOutput) cacheOutput.textContent = "REG FF stopped.";
-  showToast("REG FF: OFF");
-});
-
-
-logoutBtn?.addEventListener("click", () => {
-  localStorage.removeItem("jameLoginUnlocked");
-  localStorage.removeItem("jameKeyInfo");
-  if (loginKeyInput) loginKeyInput.value = "";
-  if (loginStatus) {
-    loginStatus.textContent = "Đã đăng xuất. Vui lòng nhập lại key.";
-    loginStatus.className = "login-status";
-  }
-  lockApp(true);
-  showToast("Đã đăng xuất");
+document.addEventListener("click", async (e) => {
+  const toggleBtn = e.target.closest("[data-toggle-feature]");
+  const openBtn = e.target.closest("[data-open-feature]");
+  const navBtn = e.target.closest("[data-nav-target]");
+  const closeBtn = e.target.closest("[data-close-modal]");
+  if (toggleBtn) return toggleFeature(toggleBtn.dataset.toggleFeature);
+  if (openBtn) return openModal(openBtn.dataset.openFeature);
+  if (navBtn) return closeMenu();
+  if (closeBtn) return closeModals();
 });
 
 initSavedLogin();
+detectDeviceInfo();
 renderFeatures();
 updateStats();
 setInterval(updateStats, 4000);
