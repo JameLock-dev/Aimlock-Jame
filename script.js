@@ -277,3 +277,63 @@ setupRows();
 detectDevice();
 updateDashboard();
 setInterval(updateDashboard, 3000);
+
+/* SUPPORT MENU ACTIONS */
+
+const sideMenu = document.getElementById("sideMenu");
+const menuBtn = document.querySelector(".menu-btn");
+const closeMenuBtn = document.getElementById("closeMenuBtn");
+const getKeyBtn = document.getElementById("getKeyBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+
+function openSupportMenu() {
+  sideMenu.classList.add("open");
+  document.body.classList.add("menu-open");
+  sideMenu.setAttribute("aria-hidden", "false");
+}
+
+function closeSupportMenu() {
+  sideMenu.classList.remove("open");
+  document.body.classList.remove("menu-open");
+  sideMenu.setAttribute("aria-hidden", "true");
+}
+
+if (menuBtn) {
+  menuBtn.addEventListener("click", openSupportMenu);
+}
+
+if (closeMenuBtn) {
+  closeMenuBtn.addEventListener("click", closeSupportMenu);
+}
+
+if (sideMenu) {
+  sideMenu.addEventListener("click", (event) => {
+    if (event.target === sideMenu) {
+      closeSupportMenu();
+    }
+  });
+}
+
+if (getKeyBtn) {
+  getKeyBtn.addEventListener("click", () => {
+    addLog("KEY", "Người dùng bấm Get Key Free.");
+    showToast("Đang mở Get Key Free...");
+    setTimeout(() => {
+      window.open("https://www.tiktok.com/@jame.ff.11", "_blank", "noopener");
+    }, 350);
+  });
+}
+
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", () => {
+    addLog("WARN", "Người dùng đã chọn đăng xuất app.");
+    showToast("Đã đăng xuất App");
+    closeSupportMenu();
+  });
+}
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeSupportMenu();
+  }
+});
