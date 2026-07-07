@@ -184,3 +184,427 @@ input{outline:none;border:0;background:none;color:var(--txt)}
   .info-banner{flex-direction:column;align-items:flex-start}
   .quick-links.two-col{grid-template-columns:1fr 1fr}
 }
+
+
+/* ===========================
+   V8 DASHBOARD GAMING REDESIGN
+   Login page is intentionally untouched.
+   =========================== */
+
+.page-dashboard{
+  background:
+    radial-gradient(circle at 50% 0%, rgba(220,22,48,.16), transparent 22%),
+    radial-gradient(circle at 12% 42%, rgba(210,20,45,.08), transparent 28%),
+    linear-gradient(180deg, #05070b 0%, #080b11 42%, #05070a 100%);
+}
+
+.page-dashboard::before{
+  opacity:.28;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.035) 0 12%, transparent 12% 100%),
+    repeating-linear-gradient(135deg, rgba(255,255,255,.028) 0 2px, transparent 2px 8px);
+  background-size:100% 100%, 18px 18px;
+  mask-image:linear-gradient(180deg, black 0%, rgba(0,0,0,.75) 62%, transparent 100%);
+}
+
+.page-dashboard .dashboard-shell{
+  padding-top:12px;
+  padding-bottom:22px;
+}
+
+.page-dashboard .topbar{
+  grid-template-columns:58px 1fr 58px;
+  margin-bottom:4px;
+  position:relative;
+}
+
+.page-dashboard .topbar::after{
+  content:"";
+  position:absolute;
+  left:70px;
+  right:70px;
+  bottom:-5px;
+  height:1px;
+  background:linear-gradient(90deg, transparent, rgba(239,34,59,.75), transparent);
+  box-shadow:0 0 16px rgba(239,34,59,.36);
+}
+
+.page-dashboard .header-logo{
+  width:132px;
+  max-height:72px;
+  object-fit:contain;
+  filter:drop-shadow(0 10px 18px rgba(239,34,59,.22));
+}
+
+.page-dashboard .icon-square{
+  width:54px;
+  height:54px;
+  border-radius:16px;
+  background:
+    linear-gradient(180deg, rgba(19,24,32,.96), rgba(6,9,14,.98)),
+    linear-gradient(135deg, rgba(255,255,255,.05), transparent);
+  border-color:rgba(255,255,255,.08);
+  color:#d9dde7;
+  box-shadow:0 10px 24px rgba(0,0,0,.42), inset 0 0 0 1px rgba(255,255,255,.035);
+}
+
+.page-dashboard .user-panel{
+  margin-top:22px;
+  padding:18px;
+  border-radius:22px;
+  grid-template-columns:1fr 138px;
+  background:
+    linear-gradient(90deg, rgba(18,22,31,.98), rgba(8,11,17,.98)),
+    radial-gradient(circle at 12% 30%, rgba(239,34,59,.13), transparent 34%);
+  border-color:rgba(255,255,255,.08);
+  box-shadow:
+    0 18px 34px rgba(0,0,0,.45),
+    inset 0 1px 0 rgba(255,255,255,.05),
+    0 0 0 1px rgba(239,34,59,.12);
+}
+
+.page-dashboard .gem-icon{
+  width:70px;
+  height:70px;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(239,34,59,.38), transparent 31%),
+    linear-gradient(180deg, #141924, #06090e);
+  border:1px solid rgba(255,64,88,.32);
+}
+.page-dashboard .gem-icon::before{
+  width:24px;
+  height:24px;
+  transform:translate(-50%,-50%) rotate(45deg);
+  border-radius:3px;
+}
+
+.page-dashboard .hello{
+  color:#c9cfda;
+  font-size:1rem;
+}
+.page-dashboard .hello strong{
+  display:block;
+  color:#f3f5fa;
+  font-size:1.55rem;
+  letter-spacing:.02em;
+  margin-top:2px;
+}
+
+.page-dashboard .vip-row{
+  margin-top:10px;
+  font-size:.94rem;
+}
+.page-dashboard .vip-row span:last-child{
+  color:#d6d9e2;
+}
+.page-dashboard .vip-row span:last-child::first-letter{
+  color:var(--red);
+}
+
+.page-dashboard .key-box{
+  border-radius:18px;
+  background:
+    linear-gradient(180deg, rgba(16,19,27,.96), rgba(9,12,18,.98)),
+    radial-gradient(circle at 15% 20%, rgba(239,34,59,.14), transparent 42%);
+  border:1px solid rgba(255,255,255,.07);
+  min-height:94px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+.page-dashboard .key-value strong{
+  color:#ff425a;
+  text-shadow:0 0 18px rgba(255,66,90,.28);
+}
+
+.page-dashboard .stats-grid{
+  gap:12px;
+  margin-top:16px;
+}
+.page-dashboard .stat-card{
+  min-height:148px;
+  border-radius:18px;
+  background:
+    linear-gradient(180deg, rgba(17,22,30,.96), rgba(7,10,16,.98));
+  border:1px solid rgba(255,255,255,.075);
+  box-shadow:
+    0 12px 28px rgba(0,0,0,.36),
+    inset 0 1px 0 rgba(255,255,255,.04);
+}
+.page-dashboard .stat-icon{
+  font-size:1.45rem;
+  color:#ff435b;
+  filter:none;
+}
+.page-dashboard .stat-title{
+  font-size:.83rem;
+}
+.page-dashboard .stat-value{
+  font-size:3.05rem;
+  line-height:.95;
+}
+.page-dashboard .stat-sub{
+  font-size:.9rem;
+}
+
+.page-dashboard .section-title{
+  margin:26px 0 16px;
+}
+.page-dashboard .section-title h3{
+  font-size:1.7rem;
+  letter-spacing:.08em;
+  color:#ff4057;
+  text-shadow:0 0 18px rgba(255,64,87,.22);
+}
+.page-dashboard .section-title span{
+  width:80px;
+  background:linear-gradient(90deg, transparent, rgba(255,64,87,.85), transparent);
+}
+
+/* New feature rows: no cramped two-column cards */
+.page-dashboard .feature-grid.gaming-feature-list{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.page-dashboard .feature-card.feature-row{
+  min-height:86px;
+  padding:12px 14px;
+  display:grid;
+  grid-template-columns:66px minmax(0,1fr) 96px;
+  gap:14px;
+  align-items:center;
+  border-radius:18px;
+  overflow:hidden;
+  background:
+    linear-gradient(90deg, rgba(14,18,26,.98), rgba(5,8,13,.98)),
+    repeating-linear-gradient(135deg, rgba(255,255,255,.035) 0 1px, transparent 1px 8px);
+  border:1px solid rgba(255,255,255,.07);
+  box-shadow:
+    0 12px 26px rgba(0,0,0,.32),
+    inset 0 0 0 1px rgba(255,255,255,.025);
+}
+
+.page-dashboard .feature-card.feature-row::after{
+  content:"";
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:0;
+  width:4px;
+  background:linear-gradient(180deg, transparent, rgba(239,34,59,.78), transparent);
+}
+
+.page-dashboard .feature-icon{
+  width:58px;
+  height:58px;
+  border-radius:14px;
+  background:
+    linear-gradient(135deg, rgba(239,34,59,.20), rgba(95,14,27,.28)),
+    linear-gradient(180deg, rgba(255,255,255,.035), transparent);
+  border:1px solid rgba(239,34,59,.32);
+  color:#ff4b63;
+  font-size:0;
+  display:grid;
+  place-items:center;
+}
+.page-dashboard .feature-icon svg{
+  width:30px;
+  height:30px;
+}
+.page-dashboard .feature-icon.ff-icon{
+  font-size:1.25rem;
+  font-weight:950;
+  font-style:italic;
+  letter-spacing:-.08em;
+  color:#ff4057;
+  text-shadow:0 0 16px rgba(239,34,59,.26);
+}
+
+.page-dashboard .feature-main{
+  min-width:0;
+}
+.page-dashboard .feature-main h4{
+  font-size:1.02rem;
+  line-height:1.1;
+  margin:0;
+  color:#f4f6fb;
+  letter-spacing:.02em;
+  white-space:nowrap;
+}
+.page-dashboard .feature-main p{
+  margin:6px 0 0;
+  color:#9da4b3;
+  font-size:.9rem;
+  line-height:1.25;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+/* Polished dashboard toggles */
+.page-dashboard .toggle{
+  justify-self:end;
+  width:88px;
+  height:40px;
+  padding:4px;
+  gap:0;
+  position:relative;
+  border-radius:999px;
+  background:linear-gradient(180deg, rgba(18,22,29,.96), rgba(5,7,11,.98));
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.04),
+    inset 0 -8px 18px rgba(0,0,0,.35);
+}
+.page-dashboard .toggle .thumb{
+  width:30px;
+  height:30px;
+  background:#d6d9df;
+  box-shadow:0 0 14px rgba(255,255,255,.25);
+}
+.page-dashboard .toggle .label{
+  position:absolute;
+  right:13px;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:.76rem;
+  letter-spacing:.04em;
+  color:#aeb5c2;
+}
+.page-dashboard .toggle.is-on{
+  background:linear-gradient(180deg, rgba(103,8,23,.95), rgba(42,5,12,.98));
+  border-color:rgba(255,55,78,.45);
+  box-shadow:0 0 16px rgba(239,34,59,.16), inset 0 1px 0 rgba(255,255,255,.06);
+}
+.page-dashboard .toggle.is-on .thumb{
+  transform:translateX(48px);
+  background:#ff4057;
+  box-shadow:0 0 18px rgba(255,64,87,.45);
+}
+.page-dashboard .toggle.is-on .label{
+  left:14px;
+  right:auto;
+  color:#f5f6fb;
+}
+
+/* Information banner more gaming */
+.page-dashboard .info-banner{
+  margin-top:16px;
+  min-height:170px;
+  border-radius:20px;
+  background:
+    linear-gradient(90deg, rgba(17,21,29,.98), rgba(8,10,15,.95) 48%, rgba(47,10,18,.75)),
+    radial-gradient(circle at 82% 50%, rgba(239,34,59,.16), transparent 32%);
+  border:1px solid rgba(255,64,87,.22);
+  overflow:hidden;
+}
+.page-dashboard .info-banner::after{
+  content:"";
+  position:absolute;
+  right:18px;
+  top:30px;
+  width:118px;
+  height:118px;
+  opacity:.38;
+  border-radius:50%;
+  border:1px solid rgba(255,64,87,.45);
+  box-shadow:
+    0 0 0 18px rgba(255,64,87,.035),
+    0 0 0 38px rgba(255,64,87,.025),
+    inset 0 0 25px rgba(255,64,87,.15);
+}
+.page-dashboard .info-banner h3{
+  font-size:1.75rem;
+}
+.page-dashboard .outline-btn{
+  min-width:120px;
+  background:linear-gradient(180deg, rgba(131,14,28,.75), rgba(50,7,15,.82));
+  color:#fff;
+  border-color:rgba(255,70,92,.55);
+  box-shadow:0 0 18px rgba(239,34,59,.15);
+  z-index:2;
+}
+
+/* Quick links and nav aligned with the new demo */
+.page-dashboard .quick-links-card{
+  margin-top:22px;
+}
+.page-dashboard .quick-link{
+  border-radius:16px;
+  min-height:66px;
+  background:linear-gradient(180deg, rgba(16,20,28,.96), rgba(6,9,14,.98));
+  border-color:rgba(255,255,255,.08);
+}
+.page-dashboard .quick-link span:nth-child(2){
+  font-weight:800;
+}
+.page-dashboard .bottom-nav{
+  border-radius:22px 22px 0 0;
+  border-color:rgba(255,255,255,.08);
+}
+
+@media (max-width:430px){
+  .page-dashboard .dashboard-shell{
+    padding-left:12px;
+    padding-right:12px;
+  }
+  .page-dashboard .user-panel{
+    grid-template-columns:1fr;
+  }
+  .page-dashboard .key-box{
+    min-height:auto;
+  }
+  .page-dashboard .stats-grid{
+    gap:8px;
+  }
+  .page-dashboard .stat-card{
+    min-height:134px;
+    padding-left:6px;
+    padding-right:6px;
+  }
+  .page-dashboard .stat-title{
+    font-size:.72rem;
+  }
+  .page-dashboard .stat-value{
+    font-size:2.65rem;
+  }
+  .page-dashboard .stat-sub{
+    font-size:.8rem;
+  }
+  .page-dashboard .feature-card.feature-row{
+    grid-template-columns:58px minmax(0,1fr) 84px;
+    gap:10px;
+    min-height:82px;
+    padding:12px;
+  }
+  .page-dashboard .feature-icon{
+    width:52px;
+    height:52px;
+  }
+  .page-dashboard .feature-main h4{
+    font-size:.94rem;
+  }
+  .page-dashboard .feature-main p{
+    font-size:.82rem;
+  }
+  .page-dashboard .toggle{
+    width:78px;
+    height:38px;
+  }
+  .page-dashboard .toggle .thumb{
+    width:28px;
+    height:28px;
+  }
+  .page-dashboard .toggle.is-on .thumb{
+    transform:translateX(40px);
+  }
+  .page-dashboard .toggle .label{
+    right:10px;
+    font-size:.7rem;
+  }
+  .page-dashboard .toggle.is-on .label{
+    left:10px;
+  }
+}
