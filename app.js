@@ -1,5 +1,12 @@
 const toastEl = document.getElementById("toast");
 
+const API_BASE_URL = String(window.AIMLOCK_API_BASE_URL || "").replace(/\/+$/, "");
+
+function apiUrl(path) {
+  const cleanPath = String(path || "").startsWith("/") ? path : `/${path}`;
+  return `${API_BASE_URL}${cleanPath}`;
+}
+
 function showToast(message) {
   if (!toastEl) return;
   toastEl.textContent = message;
@@ -24,14 +31,35 @@ function getDeviceId() {
 }
 
 async function fetchJson(url, options = {}) {
-  const response = await fetch(url, options);
+  const finalUrl = apiUrl(url);
+  let response;
+
+  try {
+    response = await fetch(finalUrl, options);
+  } catch (_) {
+    throw new Error(
+      API_BASE_URL
+        ? "Không kết nối được API. Hãy kiểm tra URL Railway backend trong api-config.js."
+        : "Không kết nối được API. Hãy mở web bằng domain Railway chạy server.js, không mở bằng file local/GitHub Pages."
+    );
+  }
+
   const text = await response.text();
+  const contentType = response.headers.get("content-type") || "";
+
+  if (!contentType.includes("application/json")) {
+    throw new Error(
+      API_BASE_URL
+        ? "API URL trong api-config.js chưa đúng hoặc backend chưa deploy server.js."
+        : "Bạn đang mở frontend không cùng server API. Hãy mở domain Railway chạy server.js hoặc cấu hình AIMLOCK_API_BASE_URL trong api-config.js."
+    );
+  }
 
   let data;
   try {
     data = JSON.parse(text);
   } catch (_) {
-    throw new Error("API chưa chạy đúng hoặc server đang trả HTML thay vì JSON.");
+    throw new Error("API trả dữ liệu lỗi, không đọc được JSON.");
   }
 
   if (!response.ok) {

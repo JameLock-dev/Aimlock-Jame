@@ -1,3 +1,10 @@
+const API_BASE_URL = String(window.AIMLOCK_API_BASE_URL || "").replace(/\/+$/, "");
+
+function apiUrl(path) {
+  const cleanPath = String(path || "").startsWith("/") ? path : `/${path}`;
+  return `${API_BASE_URL}${cleanPath}`;
+}
+
 const loginBox = document.getElementById("loginBox");
 const adminContent = document.getElementById("adminContent");
 const adminPassword = document.getElementById("adminPassword");
@@ -28,13 +35,22 @@ function headers() {
 }
 
 async function fetchJson(url, options = {}) {
-  const response = await fetch(url, options);
+  let response;
+  try {
+    response = await fetch(apiUrl(url), options);
+  } catch (_) {
+    throw new Error(
+      API_BASE_URL
+        ? "Không kết nối được API. Hãy kiểm tra URL Railway backend trong api-config.js."
+        : "Không kết nối được API. Hãy mở admin bằng domain Railway chạy server.js, không mở bằng file local/GitHub Pages."
+    );
+  }
   const text = await response.text();
   const contentType = response.headers.get("content-type") || "";
 
   if (!contentType.includes("application/json")) {
     const shortText = text.replace(/\s+/g, " ").slice(0, 160);
-    throw new Error(`API chưa chạy đúng hoặc sai domain. ${url} trả HTML/Text thay vì JSON. Nội dung: ${shortText}`);
+    throw new Error(`Sai domain API hoặc backend chưa chạy server.js. ${url} trả HTML/Text thay vì JSON. Nội dung: ${shortText}`);
   }
 
   let data;
