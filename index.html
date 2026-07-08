@@ -1,198 +1,824 @@
 <!doctype html>
 <html lang="vi">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Aimlock Jame UI Demo</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Aimlock Jame UI V2</title>
 <style>
 :root{
-  --bg:#030304;--panel:#10080a;--panel2:#171010;--red:#ff1717;--red2:#9e0000;
-  --text:#f7f7f7;--muted:#9b9b9b;--green:#00e46b;--line:rgba(255,23,23,.45);
-  --glow:0 0 18px rgba(255,0,0,.65),0 0 42px rgba(255,0,0,.25);
-  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  --bg:#030000;
+  --deep:#090101;
+  --card:#120606;
+  --card2:#1b0b0b;
+  --red:#ff161f;
+  --red2:#a90008;
+  --red3:#5d0004;
+  --white:#f5f5f5;
+  --muted:#8f8f8f;
+  --green:#00f06a;
+  --stroke:rgba(255,22,31,.58);
+  --stroke2:rgba(255,22,31,.24);
+  --glow:0 0 16px rgba(255,22,31,.78),0 0 46px rgba(255,22,31,.26);
+  --font:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
 }
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;background:#050505;color:var(--text)}
+html,body{margin:0;min-height:100%;background:#050000;color:var(--white);font-family:var(--font)}
 body{
-  display:grid;place-items:center;
-  background:radial-gradient(circle at 50% 0%,rgba(255,0,0,.22),transparent 35%),#050505;
+  min-height:100svh;
+  display:flex;
+  justify-content:center;
+  background:
+    radial-gradient(circle at 50% -10%,rgba(255,22,31,.28),transparent 34%),
+    linear-gradient(90deg,#020000,#070000 50%,#020000);
 }
 button,input,a{font:inherit}
-a{text-decoration:none;color:inherit}
-.app{
-  width:min(100vw,430px);min-height:100vh;position:relative;overflow:hidden;background:
-  linear-gradient(180deg,rgba(125,0,0,.24),transparent 27%),
-  radial-gradient(circle at top,rgba(255,0,0,.28),transparent 24%),
-  var(--bg);
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+svg{display:block}
+
+.phone{
+  width:min(100vw,430px);
+  min-height:100svh;
+  position:relative;
+  overflow:hidden;
+  background:
+    linear-gradient(180deg,rgba(255,0,0,.14),transparent 26%),
+    radial-gradient(circle at 50% 9%,rgba(255,0,0,.30),transparent 22%),
+    linear-gradient(180deg,#050000 0%,#090000 52%,#050000 100%);
   box-shadow:0 0 80px rgba(255,0,0,.28);
 }
-.app:before{
-  content:"";position:absolute;inset:0;pointer-events:none;opacity:.8;
+.phone::before{
+  content:"";
+  position:absolute;inset:0;
+  pointer-events:none;
+  opacity:.9;
   background:
-  linear-gradient(135deg,transparent 0 7%,rgba(255,0,0,.48) 7.2% 7.55%,transparent 7.8% 92.2%,rgba(255,0,0,.48) 92.45% 92.8%,transparent 93%),
-  repeating-linear-gradient(90deg,transparent 0 23px,rgba(255,0,0,.035) 24px 25px);
+    linear-gradient(135deg,transparent 0 6.5%,rgba(255,22,31,.7) 6.7% 7.1%,transparent 7.35% 92.65%,rgba(255,22,31,.65) 92.9% 93.25%,transparent 93.5%),
+    linear-gradient(225deg,transparent 0 8%,rgba(255,22,31,.32) 8.2% 8.55%,transparent 8.8% 91.2%,rgba(255,22,31,.32) 91.45% 91.8%,transparent 92%),
+    repeating-linear-gradient(90deg,transparent 0 26px,rgba(255,0,0,.04) 27px 28px);
 }
-.app:after{
-  content:"";position:absolute;inset:12px;border:1px solid rgba(255,0,0,.25);border-radius:24px;pointer-events:none;
+.phone::after{
+  content:"";
+  position:absolute;inset:14px;
+  pointer-events:none;
+  border:1px solid rgba(255,22,31,.30);
+  border-radius:22px;
   clip-path:polygon(0 8%,8% 0,92% 0,100% 8%,100% 92%,92% 100%,8% 100%,0 92%);
 }
-.screen{display:none;position:relative;z-index:2;min-height:100vh;padding:14px 18px 104px}
+.screen{
+  position:relative;
+  z-index:2;
+  display:none;
+  min-height:100svh;
+  padding:12px 18px 104px;
+}
 .screen.active{display:block}
-.status{height:30px;display:flex;justify-content:space-between;align-items:center;font-weight:900;color:#fff}
-.icons{font-size:13px;letter-spacing:2px}
-.hero,.brand{text-align:center}
-.hero{padding:50px 0 26px}
-.brand{padding:28px 0 14px}
+
+.status{
+  height:28px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:#fff;
+  font-size:14px;
+  font-weight:900;
+  letter-spacing:.2px;
+}
+.status-icons{
+  display:flex;gap:5px;align-items:center;
+}
+.bar{width:4px;border-radius:2px;background:#fff;display:block}
+.bar.one{height:7px}.bar.two{height:10px}.bar.three{height:13px}
+.wifi{
+  width:14px;height:10px;border:2px solid #fff;border-bottom:0;border-radius:12px 12px 0 0;
+  transform:scale(.9);
+}
+.battery{width:22px;height:11px;border:2px solid #fff;border-radius:3px;position:relative}
+.battery::after{content:"";position:absolute;right:-5px;top:2px;width:3px;height:5px;background:#fff;border-radius:0 2px 2px 0}
+.battery::before{content:"";position:absolute;left:2px;top:2px;width:14px;height:5px;background:#fff;border-radius:1px}
+
+.hud-top{
+  position:absolute;top:48px;left:0;right:0;height:150px;pointer-events:none;z-index:-1;
+  background:
+    linear-gradient(135deg,transparent 0 16%,rgba(255,22,31,.45) 16.3% 17.2%,transparent 17.5%),
+    linear-gradient(225deg,transparent 0 16%,rgba(255,22,31,.45) 16.3% 17.2%,transparent 17.5%),
+    radial-gradient(circle at 50% 0,rgba(255,0,0,.38),transparent 46%);
+  opacity:.9;
+}
+.hud-top::before,.hud-top::after{
+  content:"";position:absolute;top:28px;width:118px;height:58px;border-top:1px solid var(--stroke2);
+  border-bottom:1px solid var(--stroke2);
+}
+.hud-top::before{left:12px;border-left:2px solid var(--stroke);transform:skewY(-20deg)}
+.hud-top::after{right:12px;border-right:2px solid var(--stroke);transform:skewY(20deg)}
+
 .logo{
-  width:92px;height:92px;margin:0 auto 8px;position:relative;display:grid;place-items:center;color:var(--red);
-  filter:drop-shadow(0 0 16px rgba(255,0,0,.75));
+  width:102px;height:102px;
+  margin:0 auto;
+  color:var(--red);
+  filter:drop-shadow(0 0 14px rgba(255,0,0,.9));
 }
-.logo.small{width:74px;height:74px;margin-bottom:2px}.logo.mini{width:44px;height:44px;margin:0}
-.logo .letter{font-size:76px;font-weight:1000;line-height:1;text-shadow:var(--glow);transform:scaleX(1.08)}
-.logo.small .letter{font-size:60px}.logo.mini .letter{font-size:36px}
-.scope{position:absolute;width:38px;height:38px;border:3px solid var(--red);border-radius:50%;left:50%;top:42%;transform:translate(-50%,-50%)}
-.scope:before,.scope:after{content:"";position:absolute;background:var(--red);left:50%;top:50%;transform:translate(-50%,-50%)}
-.scope:before{width:50px;height:2px}.scope:after{width:2px;height:50px}
-h1,h2,h3,p{margin:0}
-.hero h1,.brand h1{font-size:38px;line-height:1;color:var(--red);text-shadow:var(--glow);letter-spacing:1px}
-.hero p,.brand p{margin-top:8px;font-size:14px;font-weight:900;letter-spacing:9px;color:#eee}
-.card,.stats,.f-card,.info,.link a,.device,.bottom{
-  background:linear-gradient(180deg,rgba(38,16,16,.92),rgba(6,6,6,.96));
-  border:1px solid var(--line);box-shadow:0 22px 60px rgba(0,0,0,.75),inset 0 0 25px rgba(255,0,0,.08)
+.logo.small{width:78px;height:78px}
+.logo.mini{width:48px;height:48px}
+.logo-svg{width:100%;height:100%}
+
+.brand-login{text-align:center;padding-top:48px;padding-bottom:20px}
+.brand-home{text-align:center;padding-top:24px;padding-bottom:12px}
+.brand-login h1,.brand-home h1{
+  margin:6px 0 0;
+  font-size:38px;
+  line-height:1;
+  color:var(--red);
+  letter-spacing:1px;
+  text-shadow:var(--glow);
 }
-.card{position:relative;margin:0 10px;border-radius:25px;padding:54px 24px 28px}
-.label{
-  position:absolute;left:50%;top:-18px;transform:translateX(-50%);padding:10px 28px;border-radius:0 0 15px 15px;
-  border:1px solid var(--line);background:#130d0f;color:var(--red);font-weight:1000;box-shadow:var(--glow);white-space:nowrap
+.brand-login .jame,.brand-home .jame{
+  margin-top:9px;
+  font-size:12px;
+  font-weight:1000;
+  letter-spacing:10px;
+  color:#fff;
 }
-.card h2{font-size:35px;letter-spacing:1px}.card h2 span{color:var(--red);text-shadow:var(--glow)}
-.by{text-align:center;color:var(--red);font-weight:1000;letter-spacing:2px;margin:14px 0 28px}
-.input{
-  height:58px;border:1px solid var(--line);border-radius:14px;background:#101010;display:grid;grid-template-columns:42px 1fr 42px;
-  align-items:center;gap:8px;padding:0 10px;box-shadow:inset 0 0 22px rgba(255,0,0,.16)
+.brand-home h1{font-size:34px}
+
+.panel{
+  position:relative;
+  background:
+    linear-gradient(180deg,rgba(38,14,14,.92),rgba(7,0,0,.98));
+  border:1px solid var(--stroke);
+  box-shadow:
+    inset 0 0 28px rgba(255,0,0,.09),
+    0 20px 60px rgba(0,0,0,.62);
 }
-.input input{border:0;outline:0;background:transparent;color:#fff;min-width:0;font-size:16px}.input input::placeholder{color:#777}
-.input b{font-size:24px;color:var(--red)}.eye{border:0;background:transparent;color:#eee;cursor:pointer}
+.login-card{
+  margin:0 10px;
+  border-radius:24px;
+  padding:52px 22px 24px;
+}
+.notch{
+  position:absolute;
+  left:50%;top:-17px;
+  transform:translateX(-50%);
+  padding:9px 25px;
+  min-width:142px;
+  text-align:center;
+  background:#100303;
+  color:var(--red);
+  border:1px solid var(--stroke);
+  border-radius:0 0 13px 13px;
+  box-shadow:var(--glow);
+  font-size:13px;
+  font-weight:1000;
+  white-space:nowrap;
+}
+.login-card h2{
+  margin:0;
+  font-size:31px;
+  line-height:1;
+  letter-spacing:.5px;
+  color:#fff;
+}
+.login-card h2 span{color:var(--red);text-shadow:var(--glow)}
+.byline{
+  margin:16px 0 25px;
+  text-align:center;
+  color:var(--red);
+  font-size:13px;
+  letter-spacing:2px;
+  font-weight:1000;
+}
+.input-row{
+  height:56px;
+  display:grid;
+  grid-template-columns:34px 1fr 28px;
+  gap:8px;
+  align-items:center;
+  padding:0 10px;
+  border:1px solid var(--stroke);
+  border-radius:12px;
+  background:#0b0505;
+  box-shadow:inset 0 0 18px rgba(255,0,0,.13);
+}
+.input-row input{
+  width:100%;
+  min-width:0;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:#fff;
+  font-size:14px;
+}
+.input-row input::placeholder{color:#7d7d7d}
+.eye-btn{
+  border:0;background:transparent;color:#d8d8d8;padding:0;display:grid;place-items:center
+}
+.ico{width:24px;height:24px;color:var(--red);fill:none;stroke:currentColor;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}
+.ico.fill{fill:currentColor;stroke:none}
+
 .primary{
-  width:100%;height:64px;margin-top:24px;border-radius:13px;border:1px solid rgba(255,255,255,.24);cursor:pointer;color:#fff;
-  background:linear-gradient(180deg,#ff3030,#b60000);box-shadow:0 0 25px rgba(255,0,0,.75),inset 0 0 24px rgba(255,255,255,.15);
-  font-weight:1000;font-size:20px;letter-spacing:2px
+  width:100%;
+  height:62px;
+  margin-top:20px;
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:11px;
+  background:
+    linear-gradient(180deg,#ff333b 0%,#df070f 48%,#9b0005 100%);
+  color:#fff;
+  box-shadow:
+    0 0 22px rgba(255,0,0,.70),
+    inset 0 0 22px rgba(255,255,255,.14);
+  font-size:18px;
+  font-weight:1000;
+  letter-spacing:2px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:10px;
 }
-.ready,.online{display:flex;align-items:center;justify-content:center;gap:10px}
-.ready{margin:25px 0;color:#bbb}.dot{width:12px;height:12px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)}
-.divider{display:flex;align-items:center;gap:12px;margin:8px 0 18px;color:var(--red)}
-.divider:before,.divider:after{content:"";height:1px;background:var(--line);flex:1}
-.quick-title,.title{text-align:center;color:var(--red);font-weight:1000}
-.quick-title{margin-bottom:18px}
-.quick,.link{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.quick a,.link a{
-  height:58px;border:1px solid var(--line);background:rgba(255,255,255,.035);border-radius:12px;
-  display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px
+.green-line{
+  margin:22px 0 22px;
+  color:#bdbdbd;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  font-size:14px;
 }
-.foot{margin:28px 18px 0;color:#aaa;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}.foot b{color:var(--red)}
-.top{position:absolute;left:18px;right:18px;top:58px;display:flex;justify-content:space-between}
-.iconbtn{width:48px;height:48px;border-radius:14px;border:1px solid var(--line);background:rgba(15,15,15,.8);color:#fff;font-size:23px}
-.bell{position:relative}.bell i{position:absolute;right:8px;top:8px;width:9px;height:9px;background:var(--red);border:2px solid #fff;border-radius:50%}
-.online{width:max-content;margin:10px auto 0;padding:6px 18px;border:1px solid var(--line);border-radius:18px;background:#090909;color:#21f57a;font-weight:1000}
-.stats{border-radius:22px;padding:14px;margin:0 8px 25px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.stats article{border:1px solid rgba(255,0,0,.22);background:rgba(0,0,0,.3);border-radius:12px;padding:12px 6px;text-align:center}
-.stats span{font-size:24px;display:block}.stats b{font-size:25px;display:block}.stats small{font-size:12px;color:var(--muted)}
-.title{width:max-content;margin:18px auto 14px;position:relative;padding:0 22px}.title:before,.title:after{content:"";position:absolute;top:50%;width:44px;height:2px;background:linear-gradient(90deg,transparent,var(--red))}
-.title:before{right:100%}.title:after{left:100%;transform:scaleX(-1)}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.f-card{min-height:118px;border-radius:14px;padding:13px 7px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
-.f-card .fi{font-size:29px;filter:drop-shadow(0 0 10px rgba(255,0,0,.7))}.f-card h3{font-size:14px;text-align:center;color:#e2e2e2}
-.switch{position:relative;width:58px;height:28px;display:block}.switch input{display:none}
-.switch i{position:absolute;inset:0;border-radius:99px;background:#333;border:1px solid rgba(255,255,255,.18);transition:.2s}
-.switch i:after{content:"";position:absolute;width:24px;height:24px;right:2px;top:1px;border-radius:50%;background:#eee;transition:.2s}
-.switch input:checked+i{background:linear-gradient(180deg,var(--red),var(--red2));box-shadow:0 0 12px rgba(255,0,0,.6)}
-.switch input:not(:checked)+i:after{right:31px}
-.info{margin-top:12px;border-radius:14px;padding:16px;display:grid;grid-template-columns:50px 1fr auto;gap:12px;align-items:center}
-.info-icon{width:44px;height:44px;border:3px solid var(--red);color:var(--red);border-radius:50%;display:grid;place-items:center;font-size:24px;font-weight:1000}
-.info h3{color:var(--red);font-size:15px}.info p{font-size:12px;color:#aaa;line-height:1.45}
-.info button{height:44px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:#130d0d;color:#ddd;font-weight:900}
-.link a{justify-content:space-between;padding:0 18px}.link a span{font-size:30px;color:#aaa}
-.device{border-radius:14px;padding:10px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-.device article{display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;border-right:1px solid rgba(255,255,255,.08)}
-.device article:last-child{border-right:0}.device span{font-weight:1000}.device small{font-size:10px;color:#888}.device b{font-size:11px}.safe{color:#21f57a}
-.bottom{position:absolute;left:0;right:0;bottom:0;min-height:88px;border-radius:18px 18px 0 0;display:grid;grid-template-columns:1fr 1fr 1.2fr 1fr 1fr;align-items:center;padding:8px 10px 12px}
-.bottom a{text-align:center;color:#8e8e8e;font-size:22px;font-weight:900}.bottom a span{display:block;font-size:11px;margin-top:4px}.bottom .active{color:var(--red)}
-.bottom .center{width:74px;height:74px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;justify-self:center;background:radial-gradient(circle,rgba(255,0,0,.35),#130909 60%);box-shadow:var(--glow)}
-.toast{position:absolute;z-index:20;left:24px;right:24px;bottom:106px;padding:12px;border-radius:12px;background:#141414;border:1px solid var(--line);text-align:center;opacity:0;transform:translateY(20px);transition:.24s;pointer-events:none}
+.dot{
+  width:11px;height:11px;border-radius:99px;
+  background:var(--green);
+  box-shadow:0 0 12px var(--green);
+  display:inline-block;
+}
+.divider{
+  display:flex;align-items:center;gap:12px;
+  color:var(--red);
+  margin:0 0 20px;
+}
+.divider::before,.divider::after{
+  content:"";
+  flex:1;
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--stroke),transparent);
+}
+.quick-title,.title-line{
+  text-align:center;
+  color:var(--red);
+  font-weight:1000;
+  font-size:14px;
+  letter-spacing:.4px;
+}
+.quick-title{margin-bottom:14px}
+.quick-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.quick-btn{
+  height:56px;
+  border:1px solid var(--stroke);
+  border-radius:11px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:8px;
+  font-size:16px;
+  font-weight:900;
+  background:rgba(0,0,0,.26);
+  box-shadow:inset 0 0 16px rgba(255,0,0,.08);
+}
+.footer-note{
+  margin:22px 0 0;
+  color:#909090;
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:9px;
+  font-size:13px;
+}
+.footer-note b{color:var(--red)}
+
+.top-actions{
+  position:absolute;
+  top:55px;left:18px;right:18px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.icon-box{
+  width:46px;height:46px;
+  border:1px solid var(--stroke);
+  border-radius:13px;
+  background:rgba(7,0,0,.72);
+  color:#fff;
+  display:grid;place-items:center;
+  box-shadow:inset 0 0 18px rgba(255,0,0,.10);
+}
+.bell{position:relative}
+.bell::after{
+  content:"";
+  position:absolute;right:7px;top:7px;
+  width:8px;height:8px;border-radius:99px;
+  background:var(--red);
+  border:2px solid #fff;
+}
+.online-pill{
+  width:max-content;
+  margin:10px auto 0;
+  padding:6px 18px;
+  display:flex;align-items:center;gap:8px;
+  border:1px solid var(--stroke);
+  border-radius:999px;
+  background:#080202;
+  color:#1dff7d;
+  font-size:13px;
+  font-weight:1000;
+  box-shadow:inset 0 0 14px rgba(255,0,0,.10);
+}
+
+.stats-panel{
+  margin:0 10px 22px;
+  border-radius:18px;
+  padding:12px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+.stat{
+  min-height:83px;
+  border:1px solid var(--stroke2);
+  border-radius:12px;
+  background:rgba(0,0,0,.26);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+}
+.stat .ico{width:26px;height:26px;color:var(--red);margin-bottom:5px}
+.stat b{font-size:24px;line-height:1;color:#fff}
+.stat small{margin-top:4px;color:#a7a7a7;font-size:11px}
+
+.title-line{
+  width:max-content;
+  margin:17px auto 13px;
+  padding:0 28px;
+  position:relative;
+}
+.title-line::before,.title-line::after{
+  content:"";position:absolute;top:50%;width:44px;height:2px;background:linear-gradient(90deg,transparent,var(--red));
+}
+.title-line::before{right:100%}
+.title-line::after{left:100%;transform:scaleX(-1)}
+
+.feature-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+.feature{
+  min-height:116px;
+  border-radius:13px;
+  padding:12px 7px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:8px;
+}
+.feature .ico{width:33px;height:33px;color:var(--red);filter:drop-shadow(0 0 10px rgba(255,0,0,.72))}
+.feature h3{
+  margin:0;
+  font-size:12.5px;
+  text-align:center;
+  color:#e9e9e9;
+  line-height:1.15;
+}
+.switch{position:relative;width:58px;height:28px;display:block}
+.switch input{display:none}
+.switch i{
+  position:absolute;inset:0;
+  border-radius:999px;
+  background:linear-gradient(180deg,#3a3a3a,#111);
+  border:1px solid rgba(255,255,255,.14);
+}
+.switch i::after{
+  content:"";
+  position:absolute;top:2px;right:2px;
+  width:23px;height:23px;
+  border-radius:99px;
+  background:#f4f4f4;
+  box-shadow:0 2px 6px rgba(0,0,0,.6);
+  transition:.18s;
+}
+.switch input:checked+i{
+  background:linear-gradient(180deg,#ff272f,#a80007);
+  box-shadow:0 0 12px rgba(255,0,0,.68);
+}
+.switch input:not(:checked)+i::after{right:31px}
+
+.info-card{
+  margin-top:13px;
+  min-height:91px;
+  border-radius:13px;
+  padding:13px;
+  display:grid;
+  grid-template-columns:46px 1fr 105px;
+  gap:12px;
+  align-items:center;
+}
+.info-round{
+  width:43px;height:43px;
+  border-radius:99px;
+  border:3px solid var(--red);
+  color:var(--red);
+  display:grid;place-items:center;
+  font-size:24px;font-weight:1000;
+}
+.info-card h3{margin:0 0 4px;color:var(--red);font-size:14px}
+.info-card p{margin:0;color:#aaa;font-size:11.5px;line-height:1.35}
+.outline-btn{
+  height:46px;border-radius:10px;
+  border:1px solid var(--stroke);
+  background:rgba(0,0,0,.28);
+  color:#fff;
+  font-size:13px;font-weight:1000;
+}
+.link-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.link-row .quick-btn{
+  justify-content:space-between;
+  padding:0 18px;
+}
+
+.device-panel{
+  border-radius:13px;
+  padding:10px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:4px;
+}
+.device-panel article{
+  text-align:center;
+  padding:4px 2px;
+  border-right:1px solid rgba(255,255,255,.08);
+}
+.device-panel article:last-child{border-right:0}
+.device-panel .ico{width:20px;height:20px;margin:0 auto 2px;color:#fff}
+.device-panel small{display:block;color:#8b8b8b;font-size:9.8px}
+.device-panel b{display:block;color:#f5f5f5;font-size:10.5px}
+.device-panel .safe{color:#20f27a}
+
+.bottom-nav{
+  position:absolute;
+  z-index:4;
+  left:0;right:0;bottom:0;
+  min-height:86px;
+  border-radius:19px 19px 0 0;
+  border:1px solid var(--stroke);
+  background:
+    linear-gradient(180deg,rgba(55,10,10,.95),rgba(7,0,0,.98));
+  display:grid;
+  grid-template-columns:1fr 1fr 1.22fr 1fr 1fr;
+  align-items:center;
+  padding:7px 10px 12px;
+  box-shadow:0 -12px 45px rgba(255,0,0,.18), inset 0 0 24px rgba(255,0,0,.10);
+}
+.nav-item{
+  border:0;background:transparent;color:#929292;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  font-size:10px;font-weight:1000;
+}
+.nav-item .ico{width:21px;height:21px;color:currentColor}
+.nav-item.active{color:var(--red)}
+.nav-center{
+  width:72px;height:72px;
+  justify-self:center;
+  border-radius:999px;
+  border:1px solid var(--stroke);
+  background:radial-gradient(circle,rgba(255,0,0,.40),#110303 60%);
+  box-shadow:var(--glow);
+  display:grid;place-items:center;
+}
+.subscreen{display:none}
+.subscreen.active{display:block}
+
+.key-card,.history-card,.account-card{
+  margin-top:8px;
+  border-radius:16px;
+  padding:16px;
+}
+.key-main{
+  display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;
+  padding-bottom:14px;border-bottom:1px solid var(--stroke2);
+}
+.key-main h2{margin:0;color:#fff;font-size:24px}
+.key-main p{margin:5px 0 0;color:#aaa;font-size:12px}
+.vip{
+  color:#fff;background:linear-gradient(180deg,#ff3038,#a90008);
+  border-radius:999px;padding:7px 12px;font-size:12px;font-weight:1000;box-shadow:var(--glow)
+}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:13px}
+.kv div{
+  border:1px solid var(--stroke2);border-radius:11px;padding:10px;background:rgba(0,0,0,.22)
+}
+.kv small{display:block;color:#8d8d8d;font-size:11px}
+.kv b{display:block;margin-top:3px;font-size:13px}
+.copy-row{display:grid;grid-template-columns:1fr 92px;gap:10px;margin-top:13px}
+.fake-key{
+  border:1px solid var(--stroke);border-radius:10px;height:44px;display:flex;align-items:center;padding:0 12px;color:#cfcfcf;background:#090303;font-size:12px;overflow:hidden
+}
+.history-list{display:grid;gap:10px;margin-top:12px}
+.history-list article{
+  border:1px solid var(--stroke2);border-radius:12px;padding:12px;background:rgba(0,0,0,.22);display:flex;justify-content:space-between;gap:12px
+}
+.history-list b{font-size:13px}.history-list small{color:#888}.ok{color:#20f27a}
+.avatar{
+  width:70px;height:70px;border-radius:50%;border:2px solid var(--stroke);display:grid;place-items:center;margin:0 auto 12px;
+  background:radial-gradient(circle,rgba(255,0,0,.33),#090000 70%)
+}
+.avatar .ico{width:36px;height:36px;color:var(--red)}
+.toast{
+  position:absolute;
+  z-index:20;
+  left:24px;right:24px;bottom:98px;
+  min-height:42px;padding:11px 14px;border-radius:11px;
+  background:#0b0505;
+  border:1px solid var(--stroke);
+  color:#fff;
+  font-size:13px;
+  display:grid;place-items:center;text-align:center;
+  opacity:0;transform:translateY(18px);
+  transition:.22s ease;
+  box-shadow:var(--glow);
+  pointer-events:none;
+}
 .toast.show{opacity:1;transform:translateY(0)}
-@media(max-width:380px){.grid{gap:8px}.f-card{min-height:106px}.hero h1,.brand h1{font-size:31px}.card h2{font-size:29px}.stats b{font-size:21px}}
+
+@media(max-width:380px){
+  .screen{padding-left:14px;padding-right:14px}
+  .brand-login h1,.brand-home h1{font-size:32px}
+  .login-card h2{font-size:27px}
+  .feature-grid{gap:8px}
+  .feature{min-height:108px}
+  .info-card{grid-template-columns:42px 1fr 92px}
+  .outline-btn{font-size:12px}
+}
 </style>
 </head>
 <body>
-<main class="app">
-  <section class="screen active" id="login">
-    <div class="status"><span>9:41</span><span class="icons">▰ ▰ ◔</span></div>
-    <div class="hero">
-      <div class="logo"><span class="letter">A</span><span class="scope"></span></div>
-      <h1>AIMLOCK</h1><p>J A M E</p>
+<main class="phone">
+  <svg width="0" height="0" style="position:absolute">
+    <symbol id="logoA" viewBox="0 0 180 180">
+      <path d="M90 12 L142 154 L113 154 L102 122 H78 L67 154 H38 Z" fill="currentColor"/>
+      <path d="M62 48 L90 15 L118 48 L106 54 L90 34 L74 54 Z" fill="#300000"/>
+      <circle cx="90" cy="88" r="34" fill="none" stroke="currentColor" stroke-width="8"/>
+      <path d="M90 43 V133 M45 88 H135" stroke="currentColor" stroke-width="8" stroke-linecap="round"/>
+      <circle cx="90" cy="88" r="7" fill="#300000"/>
+    </symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M10 14h4v4h-4z"/></symbol>
+    <symbol id="i-rocket" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.3-2 3-2 5 2 0 3.7-.5 5-2"/><path d="M9 15 4 20"/><path d="M14 4c4 0 6-2 6-2s0 2-2 6c-2.2 4.4-6 8-10 10l-4-4c2-4 5.6-7.8 10-10z"/><circle cx="15" cy="9" r="2"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></symbol>
+    <symbol id="i-mask" viewBox="0 0 24 24"><path d="M4 10c0-4 3-7 8-7s8 3 8 7v5c0 4-3 6-8 6s-8-2-8-6z"/><path d="M8 11h2M14 11h2M9 16c2 1 4 1 6 0"/></symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8M8 9h2"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></symbol>
+    <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0M12 20h.01"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11 12 3l9 8"/><path d="M5 10v10h14V10"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24"><circle cx="7.5" cy="14.5" r="4.5"/><path d="M11 11 21 1M16 6l2 2M14 8l2 2"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><rect x="2" y="2" width="13" height="13" rx="2"/></symbol>
+  </svg>
+
+  <section class="screen active" id="loginScreen">
+    <div class="hud-top"></div>
+    <div class="status">
+      <span>9:41</span>
+      <span class="status-icons"><i class="bar one"></i><i class="bar two"></i><i class="bar three"></i><i class="wifi"></i><i class="battery"></i></span>
     </div>
-    <section class="card">
-      <div class="label">SECURE ACCESS</div>
+
+    <header class="brand-login">
+      <div class="logo"><svg class="logo-svg"><use href="#logoA"/></svg></div>
+      <h1>AIMLOCK</h1>
+      <p class="jame">JAME</p>
+    </header>
+
+    <section class="panel login-card">
+      <div class="notch">SECURE ACCESS</div>
       <h2>AIMLOCK <span>JAME</span></h2>
-      <p class="by">BY JAME FF</p>
-      <label class="input"><b>🔒</b><input id="key" type="password" placeholder="Nhập mật khẩu hoặc Key Mua"><button class="eye" type="button">👁</button></label>
-      <button class="primary" id="activate" type="button">⚡ KÍCH HOẠT JAME</button>
-      <p class="ready"><span class="dot"></span>Sẵn sàng kích hoạt</p>
-      <div class="divider"><span>⌖</span></div>
+      <p class="byline">BY JAME FF</p>
+
+      <label class="input-row">
+        <svg class="ico"><use href="#i-lock"/></svg>
+        <input id="keyInput" type="password" placeholder="Nhập mật khẩu hoặc Key Mua">
+        <button class="eye-btn" type="button" aria-label="show password"><svg class="ico" style="width:19px;height:19px;color:#ddd"><use href="#i-eye"/></svg></button>
+      </label>
+
+      <button class="primary" id="activateBtn" type="button">⚡ KÍCH HOẠT JAME</button>
+      <p class="green-line"><span class="dot"></span> Sẵn sàng kích hoạt</p>
+
+      <div class="divider">✦</div>
       <p class="quick-title">KẾT NỐI NHANH</p>
-      <div class="quick"><a href="#">♪ TikTok</a><a href="#">💬 Zalo</a></div>
+      <div class="quick-grid">
+        <a class="quick-btn" href="#">♪ TikTok</a>
+        <a class="quick-btn" href="#">▣ Zalo</a>
+      </div>
     </section>
-    <footer class="foot"><span>🛡 Bảo mật cao</span><b>•</b><span>Key chính hãng</span><b>•</b><span>Hỗ trợ nhanh</span></footer>
+
+    <footer class="footer-note">
+      <span>♡ Bảo mật cao</span><b>•</b><span>Key chính hãng</span><b>•</b><span>Hỗ trợ nhanh</span>
+    </footer>
   </section>
 
-  <section class="screen" id="home">
-    <div class="status"><span>9:41</span><span class="icons">▰ ▰ ◔</span></div>
-    <nav class="top"><button class="iconbtn">☰</button><button class="iconbtn bell">🔔<i></i></button></nav>
-    <div class="brand">
-      <div class="logo small"><span class="letter">A</span><span class="scope"></span></div>
-      <h1>AIMLOCK JAME</h1><p>BY JAME FF</p>
-      <div class="online"><span class="dot"></span>ONLINE</div>
+  <section class="screen" id="appScreen">
+    <div class="hud-top"></div>
+    <div class="status">
+      <span>9:41</span>
+      <span class="status-icons"><i class="bar one"></i><i class="bar two"></i><i class="bar three"></i><i class="wifi"></i><i class="battery"></i></span>
     </div>
-    <section class="stats">
-      <article><span>👥</span><b>1.248</b><small>Người dùng</small></article>
-      <article><span>🛡</span><b>328</b><small>Đang hoạt động</small></article>
-      <article><span>🗓</span><b>3.562</b><small>Lượt kích hoạt</small></article>
+
+    <div class="top-actions">
+      <button class="icon-box" type="button"><svg class="ico" style="color:#fff"><use href="#i-menu"/></svg></button>
+      <button class="icon-box bell" type="button"><svg class="ico" style="color:#fff"><use href="#i-bell"/></svg></button>
+    </div>
+
+    <section class="subscreen active" id="homePage">
+      <header class="brand-home">
+        <div class="logo small"><svg class="logo-svg"><use href="#logoA"/></svg></div>
+        <h1>AIMLOCK JAME</h1>
+        <p class="jame">BY JAME FF</p>
+        <div class="online-pill"><span class="dot"></span> ONLINE</div>
+      </header>
+
+      <section class="panel stats-panel">
+        <article class="stat"><svg class="ico"><use href="#i-users"/></svg><b>1.248</b><small>Người dùng</small></article>
+        <article class="stat"><svg class="ico"><use href="#i-shield"/></svg><b>328</b><small>Đang hoạt động</small></article>
+        <article class="stat"><svg class="ico"><use href="#i-calendar"/></svg><b>3.562</b><small>Lượt kích hoạt</small></article>
+      </section>
+
+      <p class="title-line">TÍNH NĂNG</p>
+      <section class="feature-grid">
+        <article class="panel feature"><svg class="ico"><use href="#i-rocket"/></svg><h3>Boost RAM</h3><label class="switch"><input type="checkbox" checked><i></i></label></article>
+        <article class="panel feature"><svg class="ico"><use href="#i-target"/></svg><h3>AIMBODY</h3><label class="switch"><input type="checkbox" checked><i></i></label></article>
+        <article class="panel feature"><svg class="ico fill"><use href="#i-heart"/></svg><h3>NHẸ TÂM</h3><label class="switch"><input type="checkbox" checked><i></i></label></article>
+        <article class="panel feature"><svg class="ico"><use href="#i-shield"/></svg><h3>JAMELOCK</h3><label class="switch"><input type="checkbox" checked><i></i></label></article>
+        <article class="panel feature"><svg class="ico"><use href="#i-mask"/></svg><h3>AINTIBAN</h3><label class="switch"><input type="checkbox" checked><i></i></label></article>
+        <article class="panel feature"><svg class="ico"><use href="#i-doc"/></svg><h3>REG FF</h3><label class="switch"><input type="checkbox" checked><i></i></label></article>
+      </section>
+
+      <section class="panel info-card">
+        <div class="info-round">i</div>
+        <div><h3>THÔNG TIN</h3><p>Cập nhật chính sách, hướng dẫn sử dụng và hỗ trợ nhanh chóng.</p></div>
+        <button class="outline-btn" type="button">XEM NGAY ›</button>
+      </section>
+
+      <p class="title-line">LIÊN KẾT NHANH</p>
+      <section class="link-row">
+        <a class="quick-btn" href="#">♪ TikTok <span>›</span></a>
+        <a class="quick-btn" href="#">▣ Zalo <span>›</span></a>
+      </section>
+
+      <p class="title-line">THIẾT BỊ & TRẠNG THÁI</p>
+      <section class="panel device-panel">
+        <article><svg class="ico"><use href="#i-phone"/></svg><small>Thiết bị</small><b>iPhone 14 Pro</b></article>
+        <article><b>iOS</b><small>Hệ điều hành</small><b>iOS 17.5.1</b></article>
+        <article><svg class="ico"><use href="#i-wifi"/></svg><small>Kết nối</small><b>Wi‑Fi</b></article>
+        <article><svg class="ico"><use href="#i-check"/></svg><small>Trạng thái</small><b class="safe">An toàn</b></article>
+      </section>
     </section>
-    <p class="title">TÍNH NĂNG</p>
-    <section class="grid">
-      <article class="f-card"><span class="fi">🚀</span><h3>Boost RAM</h3><label class="switch"><input type="checkbox" checked><i></i></label></article>
-      <article class="f-card"><span class="fi">🎯</span><h3>Aim Trainer</h3><label class="switch"><input type="checkbox" checked><i></i></label></article>
-      <article class="f-card"><span class="fi">❤️</span><h3>Nhẹ Tâm</h3><label class="switch"><input type="checkbox" checked><i></i></label></article>
-      <article class="f-card"><span class="fi">🛡</span><h3>JameLock</h3><label class="switch"><input type="checkbox" checked><i></i></label></article>
-      <article class="f-card"><span class="fi">👤</span><h3>Safe UI</h3><label class="switch"><input type="checkbox" checked><i></i></label></article>
-      <article class="f-card"><span class="fi">📄</span><h3>Reg FF</h3><label class="switch"><input type="checkbox" checked><i></i></label></article>
+
+    <section class="subscreen" id="keysPage">
+      <header class="brand-home">
+        <div class="logo small"><svg class="logo-svg"><use href="#logoA"/></svg></div>
+        <h1>ACTIVE KEYS</h1>
+        <p class="jame">LICENSE UI</p>
+      </header>
+      <section class="panel key-card">
+        <div class="key-main">
+          <div><h2>JAME VIP</h2><p>Trạng thái key demo đang hoạt động</p></div>
+          <span class="vip">ACTIVE</span>
+        </div>
+        <div class="kv">
+          <div><small>Gói</small><b>Premium Demo</b></div>
+          <div><small>Hạn dùng</small><b>29 ngày</b></div>
+          <div><small>Thiết bị</small><b>1 / 1</b></div>
+          <div><small>Bảo mật</small><b class="safe">An toàn</b></div>
+        </div>
+        <div class="copy-row">
+          <div class="fake-key">JAME-XXXX-XXXX-DEMO</div>
+          <button class="outline-btn" type="button" id="copyKeyBtn">COPY</button>
+        </div>
+      </section>
+      <p class="title-line">LỊCH SỬ KEY</p>
+      <section class="history-list">
+        <article class="panel"><div><b>Kích hoạt demo</b><br><small>Hôm nay • iPhone 14 Pro</small></div><b class="ok">OK</b></article>
+        <article class="panel"><div><b>Kiểm tra trạng thái</b><br><small>Vừa xong • Wi‑Fi</small></div><b class="ok">OK</b></article>
+      </section>
     </section>
-    <section class="info">
-      <div class="info-icon">i</div><div><h3>THÔNG TIN</h3><p>Cập nhật chính sách, hướng dẫn sử dụng và hỗ trợ nhanh chóng.</p></div><button>XEM NGAY ›</button>
+
+    <section class="subscreen" id="historyPage">
+      <header class="brand-home">
+        <div class="logo small"><svg class="logo-svg"><use href="#logoA"/></svg></div>
+        <h1>LỊCH SỬ</h1>
+        <p class="jame">ACTIVITY</p>
+      </header>
+      <section class="history-list">
+        <article class="panel"><div><b>Mở giao diện</b><br><small>9:41 • Trang chủ</small></div><b class="ok">DONE</b></article>
+        <article class="panel"><div><b>Đồng bộ thiết bị</b><br><small>9:40 • Demo status</small></div><b class="ok">SAFE</b></article>
+        <article class="panel"><div><b>Cập nhật thông tin</b><br><small>Hôm qua • UI demo</small></div><b class="ok">OK</b></article>
+      </section>
     </section>
-    <p class="title">LIÊN KẾT NHANH</p>
-    <section class="link"><a href="#">♪ TikTok <span>›</span></a><a href="#">💬 Zalo <span>›</span></a></section>
-    <p class="title">THIẾT BỊ & TRẠNG THÁI</p>
-    <section class="device">
-      <article><span>📱</span><small>Thiết bị</small><b>iPhone 14 Pro</b></article>
-      <article><span>iOS</span><small>Hệ điều hành</small><b>iOS 17.5.1</b></article>
-      <article><span>Wi‑Fi</span><small>Kết nối</small><b>Wi‑Fi</b></article>
-      <article><span>✓</span><small>Trạng thái</small><b class="safe">An toàn</b></article>
+
+    <section class="subscreen" id="accountPage">
+      <header class="brand-home">
+        <div class="logo small"><svg class="logo-svg"><use href="#logoA"/></svg></div>
+        <h1>TÀI KHOẢN</h1>
+        <p class="jame">PROFILE</p>
+      </header>
+      <section class="panel account-card" style="text-align:center">
+        <div class="avatar"><svg class="ico"><use href="#i-user"/></svg></div>
+        <h2 style="margin:0;color:#fff">JAME USER</h2>
+        <p style="margin:7px 0 16px;color:#999;font-size:13px">Tài khoản giao diện demo</p>
+        <div class="kv">
+          <div><small>Rank</small><b>VIP Demo</b></div>
+          <div><small>Status</small><b class="safe">Online</b></div>
+        </div>
+      </section>
     </section>
-    <nav class="bottom">
-      <a class="active" href="#">⌂<span>TRANG CHỦ</span></a><a href="#">🔑<span>KEYS</span></a>
-      <a class="center" href="#"><span class="logo mini"><span class="letter">A</span><span class="scope"></span></span></a>
-      <a href="#">📋<span>LỊCH SỬ</span></a><a href="#">👤<span>TÀI KHOẢN</span></a>
+
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-page="homePage" type="button"><svg class="ico"><use href="#i-home"/></svg><span>TRANG CHỦ</span></button>
+      <button class="nav-item" data-page="keysPage" type="button"><svg class="ico"><use href="#i-key"/></svg><span>KEYS</span></button>
+      <div class="nav-center"><div class="logo mini"><svg class="logo-svg"><use href="#logoA"/></svg></div></div>
+      <button class="nav-item" data-page="historyPage" type="button"><svg class="ico"><use href="#i-list"/></svg><span>LỊCH SỬ</span></button>
+      <button class="nav-item" data-page="accountPage" type="button"><svg class="ico"><use href="#i-user"/></svg><span>TÀI KHOẢN</span></button>
     </nav>
   </section>
-  <div class="toast" id="toast">Demo UI</div>
+
+  <div class="toast" id="toast">Đây là giao diện demo.</div>
 </main>
+
 <script>
-const login=document.getElementById("login"),home=document.getElementById("home"),key=document.getElementById("key"),toast=document.getElementById("toast");
-function pop(t){toast.textContent=t;toast.classList.add("show");clearTimeout(pop.t);pop.t=setTimeout(()=>toast.classList.remove("show"),2300)}
-document.getElementById("activate").onclick=()=>{if(!key.value.trim()){pop("Nhập key demo để xem giao diện.");return}pop("Đã mở giao diện demo.");setTimeout(()=>{login.classList.remove("active");home.classList.add("active")},550)}
-document.querySelector(".eye").onclick=()=>{key.type=key.type==="password"?"text":"password"}
-document.querySelectorAll("a, .iconbtn, .info button, .switch input").forEach(el=>el.addEventListener("click",e=>{if(el.tagName==="A")e.preventDefault();pop("Đây là chức năng demo giao diện.")}))
+const loginScreen = document.getElementById("loginScreen");
+const appScreen = document.getElementById("appScreen");
+const keyInput = document.getElementById("keyInput");
+const toast = document.getElementById("toast");
+
+function showToast(text){
+  toast.textContent = text;
+  toast.classList.add("show");
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(()=>toast.classList.remove("show"),2200);
+}
+
+document.getElementById("activateBtn").addEventListener("click",()=>{
+  if(!keyInput.value.trim()){
+    showToast("Nhập key demo để mở giao diện.");
+    return;
+  }
+  showToast("Đã mở UI demo.");
+  setTimeout(()=>{
+    loginScreen.classList.remove("active");
+    appScreen.classList.add("active");
+  },500);
+});
+
+document.querySelector(".eye-btn").addEventListener("click",()=>{
+  keyInput.type = keyInput.type === "password" ? "text" : "password";
+});
+
+document.querySelectorAll(".nav-item").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".nav-item").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    document.querySelectorAll(".subscreen").forEach(p=>p.classList.remove("active"));
+    document.getElementById(btn.dataset.page).classList.add("active");
+  });
+});
+
+document.querySelectorAll("a,.icon-box,.outline-btn,.switch input").forEach(el=>{
+  el.addEventListener("click",e=>{
+    if(el.tagName === "A") e.preventDefault();
+    if(el.id === "copyKeyBtn"){
+      navigator.clipboard?.writeText("JAME-XXXX-XXXX-DEMO");
+      showToast("Đã copy key demo.");
+      return;
+    }
+    if(el.matches(".switch input")){
+      showToast("Công tắc chỉ là hiệu ứng giao diện demo.");
+      return;
+    }
+    showToast("Đây là chức năng demo giao diện.");
+  });
+});
 </script>
 </body>
 </html>
