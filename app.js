@@ -1,3 +1,7 @@
+const API_BASE_URL = String(window.AIMLOCK_API_BASE_URL || "").trim().replace(/\/+$/, "");
+const IS_GITHUB_PAGES = /github\.io$/i.test(location.hostname);
+const STATIC_PREVIEW_MODE = IS_GITHUB_PAGES && !API_BASE_URL;
+
 const VALID_KEYS = ["Admin11", "JAME-FREE-KEY"];
 const DEMO_KEYS = {
   "Admin11": {
@@ -20,13 +24,18 @@ const DEMO_KEYS = {
 
 const toastEl = document.getElementById("toast");
 
+function apiUrl(path) {
+  const cleanPath = String(path || "").startsWith("/") ? path : `/${path}`;
+  return API_BASE_URL ? `${API_BASE_URL}${cleanPath}` : cleanPath;
+}
+
 function showToast(message, type = "info") {
   if (!toastEl) return;
   toastEl.textContent = message;
   toastEl.dataset.type = type;
   toastEl.classList.add("show");
   clearTimeout(showToast._t);
-  showToast._t = setTimeout(() => toastEl.classList.remove("show"), 2400);
+  showToast._t = setTimeout(() => toastEl.classList.remove("show"), 2600);
 }
 
 function setStoredFeature(key, value) {
@@ -48,8 +57,8 @@ function getDeviceId() {
   return deviceId;
 }
 
-async function fetchJson(url, options = {}) {
-  const response = await fetch(url, options);
+async function fetchJson(path, options = {}) {
+  const response = await fetch(apiUrl(path), options);
   const text = await response.text();
   const contentType = response.headers.get("content-type") || "";
 
@@ -57,7 +66,13 @@ async function fetchJson(url, options = {}) {
     throw new Error("API chưa sẵn sàng hoặc đang trả HTML/Text.");
   }
 
-  const data = JSON.parse(text);
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch (_) {
+    throw new Error("API trả dữ liệu lỗi, không đọc được JSON.");
+  }
+
   if (!response.ok || data?.ok === false) {
     throw new Error(data?.message || "Không thể kết nối API.");
   }
@@ -65,8 +80,21 @@ async function fetchJson(url, options = {}) {
   return data;
 }
 
+function createStaticKey(inputValue) {
+  if (DEMO_KEYS[inputValue]) return DEMO_KEYS[inputValue];
+
+  return {
+    key: inputValue || "LOCAL-PREVIEW-KEY",
+    type: "vip",
+    expire: new Date(Date.now() + 30 * 86400000).toISOString(),
+    slotUsed: 1,
+    slotLimit: 2,
+    status: "active"
+  };
+}
+
 function saveSessionFromKey(data, inputValue) {
-  const keyInfo = data?.key || DEMO_KEYS[inputValue] || DEMO_KEYS["JAME-FREE-KEY"];
+  const keyInfo = data?.key || createStaticKey(inputValue);
   const displayName = keyInfo.type === "admin" ? "ADMIN JAME" : "JAME FF";
 
   localStorage.setItem("aimlock_auth", "1");
@@ -108,6 +136,7 @@ if (document.body.classList.contains("page-login")) {
   const activateBtn = document.getElementById("activateBtn");
   const pasteKeyBtn = document.getElementById("pasteKeyBtn");
   const loginStatus = document.getElementById("loginStatus");
+  const defaultButtonLabel = activateBtn?.querySelector("span")?.textContent || "KÍCH HOẠT KEY";
 
   togglePassword?.addEventListener("click", () => {
     keyInput.type = keyInput.type === "password" ? "text" : "password";
@@ -122,7 +151,7 @@ if (document.body.classList.contains("page-login")) {
       } else {
         showToast("Clipboard đang trống.", "warning");
       }
-    } catch (err) {
+    } catch (_) {
       showToast("Trình duyệt không cho phép đọc clipboard.", "error");
     }
   });
@@ -142,15 +171,24 @@ if (document.body.classList.contains("page-login")) {
 
     try {
       let data;
-      try {
-        data = await fetchJson("/api/verify-key", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ key: value, deviceId: getDeviceId() })
-        });
-      } catch (apiError) {
-        if (!VALID_KEYS.includes(value)) throw apiError;
-        data = { ok: true, message: "Key demo hợp lệ.", key: DEMO_KEYS[value] };
+
+      if (STATIC_PREVIEW_MODE) {
+        data = {
+          ok: true,
+          message: "Kích hoạt thành công trên GitHub Pages.",
+          key: createStaticKey(value)
+        };
+      } else {
+        try {
+          data = await fetchJson("/api/verify-key", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ key: value, deviceId: getDeviceId() })
+          });
+        } catch (apiError) {
+          if (!VALID_KEYS.includes(value)) throw apiError;
+          data = { ok: true, message: "Key demo hợp lệ.", key: DEMO_KEYS[value] };
+        }
       }
 
       saveSessionFromKey(data, value);
@@ -159,7 +197,7 @@ if (document.body.classList.contains("page-login")) {
       setTimeout(() => location.href = "dashboard.html", 650);
     } catch (error) {
       activateBtn.classList.remove("loading");
-      activateBtn.querySelector("span").textContent = "KÍCH HOẠT JAME";
+      activateBtn.querySelector("span").textContent = defaultButtonLabel;
       loginStatus.textContent = error.message || "Key không hợp lệ. Hãy thử lại.";
       loginStatus.style.color = "#ff6e7f";
       showToast(error.message || "Key không hợp lệ.", "error");
@@ -200,20 +238,22 @@ if (document.body.classList.contains("page-dashboard")) {
     cards.forEach(card => card.classList.add("is-loading"));
 
     let stats = {
-      online: 0,
+      online: STATIC_PREVIEW_MODE ? 1 : 0,
       activeKeys: Number(keyInfo.slotLimit || 2),
       today: 1
     };
 
     try {
-      const data = await fetchJson("/api/stats");
-      stats = {
-        online: Number(data.online ?? 0),
-        activeKeys: Number(data.activeKeys ?? stats.activeKeys),
-        today: Number(data.today ?? 0)
-      };
+      if (!STATIC_PREVIEW_MODE) {
+        const data = await fetchJson("/api/stats");
+        stats = {
+          online: Number(data.online ?? 0),
+          activeKeys: Number(data.activeKeys ?? stats.activeKeys),
+          today: Number(data.today ?? 0)
+        };
+      }
     } catch (_) {
-      // Giữ số fallback để bản static vẫn hoạt động khi chưa cấu hình Railway/Postgres.
+      // Giữ fallback để bản static/GitHub Pages không báo lỗi khi chưa có Railway API.
     }
 
     if (statOnline) statOnline.textContent = stats.online;

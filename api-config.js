@@ -1,6 +1,12 @@
-// AIMLOCK JAME API CONFIG
-// Nếu bạn deploy cả frontend + server.js chung trên Railway, để trống dòng dưới.
-// Nếu bạn mở web từ GitHub Pages/Vercel/Netlify hoặc file local,
-// hãy điền URL Railway backend, ví dụ:
-// window.AIMLOCK_API_BASE_URL = "https://ten-app-cua-ban.up.railway.app";
-window.AIMLOCK_API_BASE_URL = "";
+/*
+  AIMLOCK JAME API CONFIG
+  ------------------------------------------------------------
+  GitHub Pages chỉ chạy được frontend tĩnh, không chạy được /api.
+  Vì vậy file này để trống mặc định để web không báo lỗi khi mở tại:
+  https://jamelock-dev.github.io/Aimlock-Jame/
+
+  Nếu bạn đã deploy server.js lên Railway và muốn dùng key thật,
+  đổi dòng bên dưới thành domain Railway của bạn, ví dụ:
+  window.AIMLOCK_API_BASE_URL = "https://ten-app-cua-ban.up.railway.app";
+*/
+window.AIMLOCK_API_BASE_URL = window.AIMLOCK_API_BASE_URL || "";
