@@ -105,3 +105,14 @@ border-radius:50%;
 display:grid;place-items:center;
 background:#b06cff;
 }
+
+input{
+  color:#fff !important;
+  background:transparent !important;
+  -webkit-text-fill-color:#fff !important;
+}
+
+.input input::selection{
+  background:#a45cff;
+  color:white;
+}
