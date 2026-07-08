@@ -71,7 +71,7 @@ async function apiFetch(path, options={}){
     await new Promise(r=>setTimeout(r,160));
     if(path==="/api/verify-key"){
       const body = JSON.parse(options.body||"{}");
-      if(!String(body.key||"").trim()) throw new Error("Vui lòng nhập Password / Key.");
+      if(!String(body.key||"").trim()) throw new Error("Vui lòng nhập mã kích hoạt.");
       return {ok:true,key:{expire:"2100-01-01T06:59:59.000Z",slotUsed:1,slotLimit:1}};
     }
     if(path==="/api/stats") return {ok:true,online:1248,activeKeys:328,today:3562,railway:"Online"};
@@ -89,12 +89,12 @@ async function apiFetch(path, options={}){
 }
 function getFeatures(){try{return JSON.parse(localStorage.getItem("aimlockFeatureState")||"{}");}catch{return {};}}
 function saveFeatures(s){localStorage.setItem("aimlockFeatureState", JSON.stringify(s));}
-function labelFeature(name){return ({boost:"Boost RAM",aimbody:"AIMBODY",nhetam:"NHẸ TÂM",headlock:"JAMELOCK",ping:"AINTIBAN",cache:"REG FF"})[name]||name;}
+function labelFeature(name){return ({boost:"Tăng tốc RAM",aimbody:"Mô-đun Aim",nhetam:"Chế độ mượt",headlock:"Khóa JAME",ping:"Kiểm tra an toàn",cache:"Dọn bộ nhớ đệm"})[name]||name;}
 function renderFeatures(){
   const state=getFeatures();
   Object.keys(featureMap).forEach(name=>{
     const on=Boolean(state[name]);
-    featureMap[name].forEach(id=>{const el=$(id); if(el) el.textContent=on?"ON":"OFF";});
+    featureMap[name].forEach(id=>{const el=$(id); if(el) el.textContent=on?"BẬT":"TẮT";});
     document.querySelectorAll(`[data-toggle-feature="${name}"]`).forEach(el=>el.classList.toggle("is-on", on));
   });
   if(deviceText) deviceText.textContent=deviceId();
@@ -107,31 +107,31 @@ async function applyFeatureAction(name, value){
     const start=performance.now();
     const data=await apiFetch("/api/health");
     const ms=Math.max(1, Math.round(performance.now()-start));
-    showToast(`AINTIBAN hoạt động • ${data.message} • ${ms}ms`);
+    showToast(`Kiểm tra an toàn hoạt động • ${data.message} • ${ms}ms`);
   }
   if(name==="cache"){
     let removed=0;
     Object.keys(localStorage).forEach(k=>{if(k.startsWith("aimlockTemp_")||k.startsWith("tmp_")){localStorage.removeItem(k); removed++;}});
     try{if("caches" in window){const names=await caches.keys(); await Promise.all(names.map(n=>caches.delete(n))); removed+=names.length;}}catch{}
-    showToast(`REG FF hoàn tất • ${removed} mục tạm`);
+    showToast(`Dọn bộ nhớ đệm hoàn tất • ${removed} mục tạm`);
   }
 }
 async function setFeature(name, value){const s=getFeatures(); s[name]=Boolean(value); saveFeatures(s); renderFeatures(); try{await applyFeatureAction(name,value);}catch(err){s[name]=false; saveFeatures(s); renderFeatures(); throw err;}}
-async function toggleFeature(name){const s=getFeatures(); const next=!s[name]; try{await setFeature(name,next); showToast(`${labelFeature(name)}: ${next?"ON":"OFF"}`);}catch(err){showToast(err.message||`${labelFeature(name)} thất bại`);}}
+async function toggleFeature(name){const s=getFeatures(); const next=!s[name]; try{await setFeature(name,next); showToast(`${labelFeature(name)}: ${next?"BẬT":"TẮT"}`);}catch(err){showToast(err.message||`${labelFeature(name)} thất bại`);}}
 async function verifyKey(){
   const key = loginKeyInput?.value.trim();
-  if(!key){loginStatus.innerHTML='<span class="green-dot"></span> Vui lòng nhập Password / Key.'; loginStatus.className='login-status-v2 error'; showToast('Thiếu key'); return;}
-  loginStatus.innerHTML='<span class="green-dot"></span> Đang kiểm tra Postgres key server...'; loginStatus.className='login-status-v2';
-  activateBtn.disabled=true; activateBtn.textContent='ĐANG KÍCH HOẠT...';
+  if(!key){loginStatus.innerHTML='<span class="green-dot"></span> Vui lòng nhập Password / Key.'; loginStatus.className='login-status-v2 error'; showToast('Thiếu mã kích hoạt'); return;}
+  loginStatus.innerHTML='<span class="green-dot"></span> Đang xác minh mã trên hệ thống...'; loginStatus.className='login-status-v2';
+  activateBtn.disabled=true; activateBtn.textContent='ĐANG XÁC MINH...';
   try{
     const data=await apiFetch('/api/verify-key',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key,deviceId:deviceId()})});
     localStorage.setItem('jameLoginUnlocked','true'); localStorage.setItem('jameKeyInfo', JSON.stringify(data.key));
     if(keyExpireText) keyExpireText.textContent=formatExpire(data.key.expire);
     if(keySlotText) keySlotText.textContent=`${data.key.slotUsed}/${data.key.slotLimit}`;
-    loginStatus.innerHTML='<span class="green-dot"></span> Sẵn sàng kích hoạt'; loginStatus.className='login-status-v2 success';
+    loginStatus.innerHTML='<span class="green-dot"></span> Sẵn sàng xác minh mã'; loginStatus.className='login-status-v2 success';
     showToast('Đăng nhập thành công'); setTimeout(()=>lockApp(false), 450); updateStats();
-  }catch(err){loginStatus.innerHTML=`<span class="green-dot"></span> ${err.message||'Key không hợp lệ.'}`; loginStatus.className='login-status-v2 error'; showToast('Kích hoạt thất bại');}
-  finally{activateBtn.disabled=false; activateBtn.textContent='⚡ KÍCH HOẠT JAME';}
+  }catch(err){loginStatus.innerHTML=`<span class="green-dot"></span> ${err.message||'Key không hợp lệ.'}`; loginStatus.className='login-status-v2 error'; showToast('Xác minh thất bại');}
+  finally{activateBtn.disabled=false; activateBtn.textContent='⚡ KÍCH HOẠT NGAY';}
 }
 async function updateStats(){
   try{
@@ -162,7 +162,7 @@ function initSavedLogin(){
   }catch{}
   lockApp(true);
 }
-function logout(){localStorage.removeItem('jameLoginUnlocked'); localStorage.removeItem('jameKeyInfo'); if(loginKeyInput) loginKeyInput.value=''; loginStatus.innerHTML='<span class="green-dot"></span> Sẵn sàng kích hoạt'; loginStatus.className='login-status-v2'; lockApp(true); closeMenu(); showToast('Đã đăng xuất');}
+function logout(){localStorage.removeItem('jameLoginUnlocked'); localStorage.removeItem('jameKeyInfo'); if(loginKeyInput) loginKeyInput.value=''; loginStatus.innerHTML='<span class="green-dot"></span> Sẵn sàng xác minh mã'; loginStatus.className='login-status-v2'; lockApp(true); closeMenu(); showToast('Đã đăng xuất');}
 
 toggleKeyBtn?.addEventListener('click',()=>{const isPass=loginKeyInput.type==='password'; loginKeyInput.type=isPass?'text':'password'; toggleKeyBtn.textContent=isPass?'🙈':'👁';});
 activateBtn?.addEventListener('click', verifyKey);

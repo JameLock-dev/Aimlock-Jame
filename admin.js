@@ -88,7 +88,7 @@ async function loadKeys() {
   const data = await fetchJson("/api/admin/keys", { headers: headers() });
 
   if (!data.ok) {
-    throw new Error(data.message || "Không tải được danh sách key.");
+    throw new Error(data.message || "Không tải được danh sách mã.");
   }
 
   keyTable.innerHTML = "";
@@ -120,7 +120,7 @@ async function loginAdmin() {
   adminPass = adminPassword.value.trim();
 
   if (!adminPass) {
-    loginStatus.textContent = "Vui lòng nhập mật khẩu admin.";
+    loginStatus.textContent = "Vui lòng nhập mật khẩu quản trị.";
     return;
   }
 
@@ -130,7 +130,7 @@ async function loginAdmin() {
     loginBox.classList.add("hidden");
     adminContent.classList.remove("hidden");
   } catch (error) {
-    loginStatus.textContent = error.message || "Sai mật khẩu admin.";
+    loginStatus.textContent = error.message || "Sai mật khẩu quản trị.";
   }
 }
 
@@ -138,7 +138,7 @@ async function saveKey() {
   const key = keyInput.value.trim();
 
   if (!key) {
-    saveStatus.textContent = "Vui lòng nhập key.";
+    saveStatus.textContent = "Vui lòng nhập mã kích hoạt.";
     saveStatus.style.color = "#ef4444";
     return;
   }
@@ -163,7 +163,7 @@ async function saveKey() {
       body: JSON.stringify(payload)
     });
 
-    saveStatus.textContent = data.message || "Đã lưu key";
+    saveStatus.textContent = data.message || "Đã lưu mã";
     saveStatus.style.color = data.ok ? "#22e06e" : "#ef4444";
 
     if (data.ok) {
@@ -174,13 +174,13 @@ async function saveKey() {
       loadKeys();
     }
   } catch (error) {
-    saveStatus.textContent = error.message || "Lỗi lưu key.";
+    saveStatus.textContent = error.message || "Lỗi lưu mã.";
     saveStatus.style.color = "#ef4444";
   }
 }
 
 async function deleteKey(key) {
-  if (!confirm(`Xóa key ${key}?`)) return;
+  if (!confirm(`Xóa mã ${key}?`)) return;
 
   try {
     const data = await fetchJson(`/api/admin/keys/${encodeURIComponent(key)}`, {
@@ -188,11 +188,11 @@ async function deleteKey(key) {
       headers: headers()
     });
 
-    saveStatus.textContent = data.message || "Đã xóa key";
+    saveStatus.textContent = data.message || "Đã xóa mã";
     saveStatus.style.color = data.ok ? "#22e06e" : "#ef4444";
     loadKeys();
   } catch (error) {
-    saveStatus.textContent = error.message || "Lỗi xóa key.";
+    saveStatus.textContent = error.message || "Lỗi xóa mã.";
     saveStatus.style.color = "#ef4444";
   }
 }
@@ -206,7 +206,7 @@ function editKey(row) {
   slotLimitInput.value = item.slotLimit || 1;
 
   window.scrollTo({ top: 0, behavior: "smooth" });
-  saveStatus.textContent = `Đang sửa key: ${item.key}`;
+  saveStatus.textContent = `Đang sửa mã: ${item.key}`;
   saveStatus.style.color = "#ffd000";
 }
 

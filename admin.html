@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AIMLOCK ADMIN</title>
+  <title>AIMLOCK JAME - Quản trị</title>
   <link rel="stylesheet" href="admin.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
@@ -11,17 +11,17 @@
   <main class="admin-page">
     <header class="admin-header">
       <div>
-        <h1>AIMLOCK ADMIN</h1>
-        <p>Postgres Key Server Dashboard</p>
+        <h1>AIMLOCK QUẢN TRỊ</h1>
+        <p>Bảng quản lý mã kích hoạt</p>
       </div>
-      <a class="open-app" href="/">Mở App</a>
+      <a class="open-app" href="/">Mở ứng dụng</a>
     </header>
 
     <section id="loginBox" class="login-box">
-      <h2>Đăng nhập Admin</h2>
-      <p>Nhập mật khẩu admin đã cấu hình trên Railway.</p>
+      <h2>Đăng nhập quản trị</h2>
+      <p>Nhập mật khẩu quản trị đã cấu hình trên Railway.</p>
       <div class="login-row">
-        <input id="adminPassword" type="password" placeholder="Admin password">
+        <input id="adminPassword" type="password" placeholder="Mật khẩu quản trị">
         <button id="adminLoginBtn" type="button">Đăng nhập</button>
       </div>
       <div id="loginStatus" class="status-line"></div>
@@ -30,15 +30,15 @@
     <section id="adminContent" class="hidden">
       <section class="stats-grid">
         <article>
-          <span>Online</span>
+          <span>Trực tuyến</span>
           <strong id="statOnline">1</strong>
         </article>
         <article>
-          <span>Active Keys</span>
+          <span>Mã hoạt động</span>
           <strong id="statActive">0</strong>
         </article>
         <article>
-          <span>Today</span>
+          <span>Hôm nay</span>
           <strong id="statToday">1</strong>
         </article>
         <article>
@@ -48,20 +48,20 @@
       </section>
 
       <section class="card">
-        <h2>Thêm / cập nhật key</h2>
+        <h2>Thêm / cập nhật mã</h2>
         <div class="form-row">
-          <input id="keyInput" type="text" placeholder="Admin password">
-          <input id="typeInput" type="text" placeholder="custom">
+          <input id="keyInput" type="text" placeholder="Nhập mã kích hoạt">
+          <input id="typeInput" type="text" placeholder="Loại mã / gói">
           <input id="expireInput" type="datetime-local">
           <input id="slotLimitInput" type="number" min="1" value="100" placeholder="Slot">
-          <button id="saveKeyBtn" type="button">Lưu key</button>
+          <button id="saveKeyBtn" type="button">Lưu mã</button>
         </div>
         <div id="saveStatus" class="save-status">Sẵn sàng.</div>
       </section>
 
       <section class="card">
         <div class="table-title">
-          <h2>Danh sách key</h2>
+          <h2>Danh sách mã</h2>
           <button id="reloadBtn" type="button">Tải lại</button>
         </div>
 
@@ -69,8 +69,8 @@
           <table>
             <thead>
               <tr>
-                <th>Key</th>
-                <th>Type</th>
+                <th>Mã</th>
+                <th>Loại</th>
                 <th>Hết hạn</th>
                 <th>Slot</th>
                 <th>Trạng thái</th>
