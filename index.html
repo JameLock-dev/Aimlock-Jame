@@ -1,175 +1,198 @@
 <!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Aimlock Jame UI Demo</title>
-  <link rel="stylesheet" href="css/style.css" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aimlock Jame UI Demo</title>
+<style>
+:root{
+  --bg:#030304;--panel:#10080a;--panel2:#171010;--red:#ff1717;--red2:#9e0000;
+  --text:#f7f7f7;--muted:#9b9b9b;--green:#00e46b;--line:rgba(255,23,23,.45);
+  --glow:0 0 18px rgba(255,0,0,.65),0 0 42px rgba(255,0,0,.25);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#050505;color:var(--text)}
+body{
+  display:grid;place-items:center;
+  background:radial-gradient(circle at 50% 0%,rgba(255,0,0,.22),transparent 35%),#050505;
+}
+button,input,a{font:inherit}
+a{text-decoration:none;color:inherit}
+.app{
+  width:min(100vw,430px);min-height:100vh;position:relative;overflow:hidden;background:
+  linear-gradient(180deg,rgba(125,0,0,.24),transparent 27%),
+  radial-gradient(circle at top,rgba(255,0,0,.28),transparent 24%),
+  var(--bg);
+  box-shadow:0 0 80px rgba(255,0,0,.28);
+}
+.app:before{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.8;
+  background:
+  linear-gradient(135deg,transparent 0 7%,rgba(255,0,0,.48) 7.2% 7.55%,transparent 7.8% 92.2%,rgba(255,0,0,.48) 92.45% 92.8%,transparent 93%),
+  repeating-linear-gradient(90deg,transparent 0 23px,rgba(255,0,0,.035) 24px 25px);
+}
+.app:after{
+  content:"";position:absolute;inset:12px;border:1px solid rgba(255,0,0,.25);border-radius:24px;pointer-events:none;
+  clip-path:polygon(0 8%,8% 0,92% 0,100% 8%,100% 92%,92% 100%,8% 100%,0 92%);
+}
+.screen{display:none;position:relative;z-index:2;min-height:100vh;padding:14px 18px 104px}
+.screen.active{display:block}
+.status{height:30px;display:flex;justify-content:space-between;align-items:center;font-weight:900;color:#fff}
+.icons{font-size:13px;letter-spacing:2px}
+.hero,.brand{text-align:center}
+.hero{padding:50px 0 26px}
+.brand{padding:28px 0 14px}
+.logo{
+  width:92px;height:92px;margin:0 auto 8px;position:relative;display:grid;place-items:center;color:var(--red);
+  filter:drop-shadow(0 0 16px rgba(255,0,0,.75));
+}
+.logo.small{width:74px;height:74px;margin-bottom:2px}.logo.mini{width:44px;height:44px;margin:0}
+.logo .letter{font-size:76px;font-weight:1000;line-height:1;text-shadow:var(--glow);transform:scaleX(1.08)}
+.logo.small .letter{font-size:60px}.logo.mini .letter{font-size:36px}
+.scope{position:absolute;width:38px;height:38px;border:3px solid var(--red);border-radius:50%;left:50%;top:42%;transform:translate(-50%,-50%)}
+.scope:before,.scope:after{content:"";position:absolute;background:var(--red);left:50%;top:50%;transform:translate(-50%,-50%)}
+.scope:before{width:50px;height:2px}.scope:after{width:2px;height:50px}
+h1,h2,h3,p{margin:0}
+.hero h1,.brand h1{font-size:38px;line-height:1;color:var(--red);text-shadow:var(--glow);letter-spacing:1px}
+.hero p,.brand p{margin-top:8px;font-size:14px;font-weight:900;letter-spacing:9px;color:#eee}
+.card,.stats,.f-card,.info,.link a,.device,.bottom{
+  background:linear-gradient(180deg,rgba(38,16,16,.92),rgba(6,6,6,.96));
+  border:1px solid var(--line);box-shadow:0 22px 60px rgba(0,0,0,.75),inset 0 0 25px rgba(255,0,0,.08)
+}
+.card{position:relative;margin:0 10px;border-radius:25px;padding:54px 24px 28px}
+.label{
+  position:absolute;left:50%;top:-18px;transform:translateX(-50%);padding:10px 28px;border-radius:0 0 15px 15px;
+  border:1px solid var(--line);background:#130d0f;color:var(--red);font-weight:1000;box-shadow:var(--glow);white-space:nowrap
+}
+.card h2{font-size:35px;letter-spacing:1px}.card h2 span{color:var(--red);text-shadow:var(--glow)}
+.by{text-align:center;color:var(--red);font-weight:1000;letter-spacing:2px;margin:14px 0 28px}
+.input{
+  height:58px;border:1px solid var(--line);border-radius:14px;background:#101010;display:grid;grid-template-columns:42px 1fr 42px;
+  align-items:center;gap:8px;padding:0 10px;box-shadow:inset 0 0 22px rgba(255,0,0,.16)
+}
+.input input{border:0;outline:0;background:transparent;color:#fff;min-width:0;font-size:16px}.input input::placeholder{color:#777}
+.input b{font-size:24px;color:var(--red)}.eye{border:0;background:transparent;color:#eee;cursor:pointer}
+.primary{
+  width:100%;height:64px;margin-top:24px;border-radius:13px;border:1px solid rgba(255,255,255,.24);cursor:pointer;color:#fff;
+  background:linear-gradient(180deg,#ff3030,#b60000);box-shadow:0 0 25px rgba(255,0,0,.75),inset 0 0 24px rgba(255,255,255,.15);
+  font-weight:1000;font-size:20px;letter-spacing:2px
+}
+.ready,.online{display:flex;align-items:center;justify-content:center;gap:10px}
+.ready{margin:25px 0;color:#bbb}.dot{width:12px;height:12px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)}
+.divider{display:flex;align-items:center;gap:12px;margin:8px 0 18px;color:var(--red)}
+.divider:before,.divider:after{content:"";height:1px;background:var(--line);flex:1}
+.quick-title,.title{text-align:center;color:var(--red);font-weight:1000}
+.quick-title{margin-bottom:18px}
+.quick,.link{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.quick a,.link a{
+  height:58px;border:1px solid var(--line);background:rgba(255,255,255,.035);border-radius:12px;
+  display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px
+}
+.foot{margin:28px 18px 0;color:#aaa;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}.foot b{color:var(--red)}
+.top{position:absolute;left:18px;right:18px;top:58px;display:flex;justify-content:space-between}
+.iconbtn{width:48px;height:48px;border-radius:14px;border:1px solid var(--line);background:rgba(15,15,15,.8);color:#fff;font-size:23px}
+.bell{position:relative}.bell i{position:absolute;right:8px;top:8px;width:9px;height:9px;background:var(--red);border:2px solid #fff;border-radius:50%}
+.online{width:max-content;margin:10px auto 0;padding:6px 18px;border:1px solid var(--line);border-radius:18px;background:#090909;color:#21f57a;font-weight:1000}
+.stats{border-radius:22px;padding:14px;margin:0 8px 25px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stats article{border:1px solid rgba(255,0,0,.22);background:rgba(0,0,0,.3);border-radius:12px;padding:12px 6px;text-align:center}
+.stats span{font-size:24px;display:block}.stats b{font-size:25px;display:block}.stats small{font-size:12px;color:var(--muted)}
+.title{width:max-content;margin:18px auto 14px;position:relative;padding:0 22px}.title:before,.title:after{content:"";position:absolute;top:50%;width:44px;height:2px;background:linear-gradient(90deg,transparent,var(--red))}
+.title:before{right:100%}.title:after{left:100%;transform:scaleX(-1)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.f-card{min-height:118px;border-radius:14px;padding:13px 7px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.f-card .fi{font-size:29px;filter:drop-shadow(0 0 10px rgba(255,0,0,.7))}.f-card h3{font-size:14px;text-align:center;color:#e2e2e2}
+.switch{position:relative;width:58px;height:28px;display:block}.switch input{display:none}
+.switch i{position:absolute;inset:0;border-radius:99px;background:#333;border:1px solid rgba(255,255,255,.18);transition:.2s}
+.switch i:after{content:"";position:absolute;width:24px;height:24px;right:2px;top:1px;border-radius:50%;background:#eee;transition:.2s}
+.switch input:checked+i{background:linear-gradient(180deg,var(--red),var(--red2));box-shadow:0 0 12px rgba(255,0,0,.6)}
+.switch input:not(:checked)+i:after{right:31px}
+.info{margin-top:12px;border-radius:14px;padding:16px;display:grid;grid-template-columns:50px 1fr auto;gap:12px;align-items:center}
+.info-icon{width:44px;height:44px;border:3px solid var(--red);color:var(--red);border-radius:50%;display:grid;place-items:center;font-size:24px;font-weight:1000}
+.info h3{color:var(--red);font-size:15px}.info p{font-size:12px;color:#aaa;line-height:1.45}
+.info button{height:44px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:#130d0d;color:#ddd;font-weight:900}
+.link a{justify-content:space-between;padding:0 18px}.link a span{font-size:30px;color:#aaa}
+.device{border-radius:14px;padding:10px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.device article{display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;border-right:1px solid rgba(255,255,255,.08)}
+.device article:last-child{border-right:0}.device span{font-weight:1000}.device small{font-size:10px;color:#888}.device b{font-size:11px}.safe{color:#21f57a}
+.bottom{position:absolute;left:0;right:0;bottom:0;min-height:88px;border-radius:18px 18px 0 0;display:grid;grid-template-columns:1fr 1fr 1.2fr 1fr 1fr;align-items:center;padding:8px 10px 12px}
+.bottom a{text-align:center;color:#8e8e8e;font-size:22px;font-weight:900}.bottom a span{display:block;font-size:11px;margin-top:4px}.bottom .active{color:var(--red)}
+.bottom .center{width:74px;height:74px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;justify-self:center;background:radial-gradient(circle,rgba(255,0,0,.35),#130909 60%);box-shadow:var(--glow)}
+.toast{position:absolute;z-index:20;left:24px;right:24px;bottom:106px;padding:12px;border-radius:12px;background:#141414;border:1px solid var(--line);text-align:center;opacity:0;transform:translateY(20px);transition:.24s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+@media(max-width:380px){.grid{gap:8px}.f-card{min-height:106px}.hero h1,.brand h1{font-size:31px}.card h2{font-size:29px}.stats b{font-size:21px}}
+</style>
 </head>
 <body>
-  <main class="phone" id="app">
-    <div class="hud-line top-left"></div>
-    <div class="hud-line top-right"></div>
-
-    <section class="screen login-screen active" data-screen="login">
-      <header class="statusbar">
-        <span>9:41</span>
-        <span class="status-icons">▰ ▰ ◔</span>
-      </header>
-
-      <div class="hero">
-        <div class="logo-mark" aria-hidden="true">
-          <span class="a-shape">A</span>
-          <span class="crosshair"></span>
-        </div>
-        <h1>AIMLOCK</h1>
-        <p>J A M E</p>
-      </div>
-
-      <section class="access-card">
-        <div class="section-label">SECURE ACCESS</div>
-        <h2>AIMLOCK <span>JAME</span></h2>
-        <p class="byline">BY JAME FF</p>
-
-        <label class="input-row">
-          <span class="icon">🔒</span>
-          <input id="keyInput" type="password" placeholder="Nhập mật khẩu hoặc Key Mua" autocomplete="off" />
-          <button class="eye-btn" type="button" aria-label="Ẩn/hiện mật khẩu">👁</button>
-        </label>
-
-        <button class="primary-btn" id="activateBtn" type="button">
-          <span>⚡</span> KÍCH HOẠT JAME
-        </button>
-
-        <p class="ready"><span></span> Sẵn sàng kích hoạt</p>
-
-        <div class="divider"><span>⌖</span></div>
-
-        <p class="quick-title">KẾT NỐI NHANH</p>
-        <div class="quick-links">
-          <a href="#" aria-label="TikTok">♪ TikTok</a>
-          <a href="#" aria-label="Zalo">💬 Zalo</a>
-        </div>
-      </section>
-
-      <footer class="safe-footer">
-        <span>🛡 Bảo mật cao</span>
-        <b>•</b>
-        <span>Key chính hãng</span>
-        <b>•</b>
-        <span>Hỗ trợ nhanh</span>
-      </footer>
+<main class="app">
+  <section class="screen active" id="login">
+    <div class="status"><span>9:41</span><span class="icons">▰ ▰ ◔</span></div>
+    <div class="hero">
+      <div class="logo"><span class="letter">A</span><span class="scope"></span></div>
+      <h1>AIMLOCK</h1><p>J A M E</p>
+    </div>
+    <section class="card">
+      <div class="label">SECURE ACCESS</div>
+      <h2>AIMLOCK <span>JAME</span></h2>
+      <p class="by">BY JAME FF</p>
+      <label class="input"><b>🔒</b><input id="key" type="password" placeholder="Nhập mật khẩu hoặc Key Mua"><button class="eye" type="button">👁</button></label>
+      <button class="primary" id="activate" type="button">⚡ KÍCH HOẠT JAME</button>
+      <p class="ready"><span class="dot"></span>Sẵn sàng kích hoạt</p>
+      <div class="divider"><span>⌖</span></div>
+      <p class="quick-title">KẾT NỐI NHANH</p>
+      <div class="quick"><a href="#">♪ TikTok</a><a href="#">💬 Zalo</a></div>
     </section>
+    <footer class="foot"><span>🛡 Bảo mật cao</span><b>•</b><span>Key chính hãng</span><b>•</b><span>Hỗ trợ nhanh</span></footer>
+  </section>
 
-    <section class="screen home-screen" data-screen="home">
-      <header class="statusbar">
-        <span>9:41</span>
-        <span class="status-icons">▰ ▰ ◔</span>
-      </header>
-
-      <nav class="top-nav">
-        <button type="button" class="menu-btn">☰</button>
-        <button type="button" class="bell-btn">🔔<i></i></button>
-      </nav>
-
-      <div class="brand">
-        <div class="logo-mark small" aria-hidden="true">
-          <span class="a-shape">A</span>
-          <span class="crosshair"></span>
-        </div>
-        <h1>AIMLOCK JAME</h1>
-        <p>BY JAME FF</p>
-        <div class="online-pill"><span></span> ONLINE</div>
-      </div>
-
-      <section class="stats">
-        <article>
-          <span class="stat-icon">👥</span>
-          <b data-count="1248">1.248</b>
-          <small>Người dùng</small>
-        </article>
-        <article>
-          <span class="stat-icon">🛡</span>
-          <b data-count="328">328</b>
-          <small>Đang hoạt động</small>
-        </article>
-        <article>
-          <span class="stat-icon">🗓</span>
-          <b data-count="3562">3.562</b>
-          <small>Lượt kích hoạt</small>
-        </article>
-      </section>
-
-      <p class="panel-title">TÍNH NĂNG</p>
-
-      <section class="feature-grid">
-        <article class="feature-card">
-          <span class="feature-icon">🚀</span>
-          <h3>Boost RAM</h3>
-          <label class="switch"><input type="checkbox" checked><i></i></label>
-        </article>
-        <article class="feature-card">
-          <span class="feature-icon">🎯</span>
-          <h3>Aim Trainer</h3>
-          <label class="switch"><input type="checkbox" checked><i></i></label>
-        </article>
-        <article class="feature-card">
-          <span class="feature-icon">❤️</span>
-          <h3>Nhẹ Tâm</h3>
-          <label class="switch"><input type="checkbox" checked><i></i></label>
-        </article>
-        <article class="feature-card">
-          <span class="feature-icon">🛡</span>
-          <h3>JameLock</h3>
-          <label class="switch"><input type="checkbox" checked><i></i></label>
-        </article>
-        <article class="feature-card">
-          <span class="feature-icon">👤</span>
-          <h3>Safe UI</h3>
-          <label class="switch"><input type="checkbox" checked><i></i></label>
-        </article>
-        <article class="feature-card">
-          <span class="feature-icon">📄</span>
-          <h3>Reg FF</h3>
-          <label class="switch"><input type="checkbox" checked><i></i></label>
-        </article>
-      </section>
-
-      <section class="info-card">
-        <div class="info-icon">i</div>
-        <div>
-          <h3>THÔNG TIN</h3>
-          <p>Cập nhật chính sách, hướng dẫn sử dụng và hỗ trợ nhanh chóng.</p>
-        </div>
-        <button type="button">XEM NGAY ›</button>
-      </section>
-
-      <p class="panel-title">LIÊN KẾT NHANH</p>
-      <section class="link-row">
-        <a href="#">♪ TikTok <span>›</span></a>
-        <a href="#">💬 Zalo <span>›</span></a>
-      </section>
-
-      <p class="panel-title">THIẾT BỊ &amp; TRẠNG THÁI</p>
-      <section class="device-card">
-        <article><span>📱</span><small>Thiết bị</small><b>iPhone 14 Pro</b></article>
-        <article><span>iOS</span><small>Hệ điều hành</small><b>iOS 17.5.1</b></article>
-        <article><span>Wi‑Fi</span><small>Kết nối</small><b>Wi‑Fi</b></article>
-        <article><span>✓</span><small>Trạng thái</small><b class="safe">An toàn</b></article>
-      </section>
-
-      <nav class="bottom-nav">
-        <a class="active" href="#">⌂<span>TRANG CHỦ</span></a>
-        <a href="#">🔑<span>KEYS</span></a>
-        <a class="center" href="#"><span class="logo-mark mini"><span class="a-shape">A</span><span class="crosshair"></span></span></a>
-        <a href="#">📋<span>LỊCH SỬ</span></a>
-        <a href="#">👤<span>TÀI KHOẢN</span></a>
-      </nav>
+  <section class="screen" id="home">
+    <div class="status"><span>9:41</span><span class="icons">▰ ▰ ◔</span></div>
+    <nav class="top"><button class="iconbtn">☰</button><button class="iconbtn bell">🔔<i></i></button></nav>
+    <div class="brand">
+      <div class="logo small"><span class="letter">A</span><span class="scope"></span></div>
+      <h1>AIMLOCK JAME</h1><p>BY JAME FF</p>
+      <div class="online"><span class="dot"></span>ONLINE</div>
+    </div>
+    <section class="stats">
+      <article><span>👥</span><b>1.248</b><small>Người dùng</small></article>
+      <article><span>🛡</span><b>328</b><small>Đang hoạt động</small></article>
+      <article><span>🗓</span><b>3.562</b><small>Lượt kích hoạt</small></article>
     </section>
-
-    <div class="toast" id="toast">Demo UI: không có chức năng can thiệp game.</div>
-  </main>
-
-  <script src="js/app.js"></script>
+    <p class="title">TÍNH NĂNG</p>
+    <section class="grid">
+      <article class="f-card"><span class="fi">🚀</span><h3>Boost RAM</h3><label class="switch"><input type="checkbox" checked><i></i></label></article>
+      <article class="f-card"><span class="fi">🎯</span><h3>Aim Trainer</h3><label class="switch"><input type="checkbox" checked><i></i></label></article>
+      <article class="f-card"><span class="fi">❤️</span><h3>Nhẹ Tâm</h3><label class="switch"><input type="checkbox" checked><i></i></label></article>
+      <article class="f-card"><span class="fi">🛡</span><h3>JameLock</h3><label class="switch"><input type="checkbox" checked><i></i></label></article>
+      <article class="f-card"><span class="fi">👤</span><h3>Safe UI</h3><label class="switch"><input type="checkbox" checked><i></i></label></article>
+      <article class="f-card"><span class="fi">📄</span><h3>Reg FF</h3><label class="switch"><input type="checkbox" checked><i></i></label></article>
+    </section>
+    <section class="info">
+      <div class="info-icon">i</div><div><h3>THÔNG TIN</h3><p>Cập nhật chính sách, hướng dẫn sử dụng và hỗ trợ nhanh chóng.</p></div><button>XEM NGAY ›</button>
+    </section>
+    <p class="title">LIÊN KẾT NHANH</p>
+    <section class="link"><a href="#">♪ TikTok <span>›</span></a><a href="#">💬 Zalo <span>›</span></a></section>
+    <p class="title">THIẾT BỊ & TRẠNG THÁI</p>
+    <section class="device">
+      <article><span>📱</span><small>Thiết bị</small><b>iPhone 14 Pro</b></article>
+      <article><span>iOS</span><small>Hệ điều hành</small><b>iOS 17.5.1</b></article>
+      <article><span>Wi‑Fi</span><small>Kết nối</small><b>Wi‑Fi</b></article>
+      <article><span>✓</span><small>Trạng thái</small><b class="safe">An toàn</b></article>
+    </section>
+    <nav class="bottom">
+      <a class="active" href="#">⌂<span>TRANG CHỦ</span></a><a href="#">🔑<span>KEYS</span></a>
+      <a class="center" href="#"><span class="logo mini"><span class="letter">A</span><span class="scope"></span></span></a>
+      <a href="#">📋<span>LỊCH SỬ</span></a><a href="#">👤<span>TÀI KHOẢN</span></a>
+    </nav>
+  </section>
+  <div class="toast" id="toast">Demo UI</div>
+</main>
+<script>
+const login=document.getElementById("login"),home=document.getElementById("home"),key=document.getElementById("key"),toast=document.getElementById("toast");
+function pop(t){toast.textContent=t;toast.classList.add("show");clearTimeout(pop.t);pop.t=setTimeout(()=>toast.classList.remove("show"),2300)}
+document.getElementById("activate").onclick=()=>{if(!key.value.trim()){pop("Nhập key demo để xem giao diện.");return}pop("Đã mở giao diện demo.");setTimeout(()=>{login.classList.remove("active");home.classList.add("active")},550)}
+document.querySelector(".eye").onclick=()=>{key.type=key.type==="password"?"text":"password"}
+document.querySelectorAll("a, .iconbtn, .info button, .switch input").forEach(el=>el.addEventListener("click",e=>{if(el.tagName==="A")e.preventDefault();pop("Đây là chức năng demo giao diện.")}))
+</script>
 </body>
 </html>
