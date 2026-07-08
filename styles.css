@@ -1588,3 +1588,156 @@ input{outline:none;border:0;background:none;color:var(--txt)}
     height:40px !important;
   }
 }
+
+
+/* ==================================
+   V13 CYBER ELITE FULL REDESIGN
+   Login + Dashboard
+   ================================== */
+
+:root{
+  --cyber-bg:#02050d;
+  --cyber-panel:#07101c;
+  --cyber-blue:#00d9ff;
+  --cyber-purple:#9b5cff;
+  --cyber-pink:#ff3cac;
+  --cyber-line:rgba(0,217,255,.35);
+}
+
+body.login-page,
+body.dashboard-page{
+  background:
+    radial-gradient(circle at 50% 0%, rgba(0,217,255,.15), transparent 25%),
+    radial-gradient(circle at 80% 40%, rgba(155,92,255,.18), transparent 30%),
+    linear-gradient(180deg,#02050d,#050817 55%,#010308);
+}
+
+.phone-shell{
+  background:
+    linear-gradient(135deg,rgba(0,217,255,.04),transparent 30%),
+    linear-gradient(180deg,#030814,#050714);
+}
+
+.phone-shell:before{
+  background:
+    repeating-linear-gradient(90deg,rgba(0,217,255,.035) 0 1px,transparent 1px 44px),
+    repeating-linear-gradient(0deg,rgba(155,92,255,.03) 0 1px,transparent 1px 44px),
+    radial-gradient(circle at top,rgba(0,217,255,.12),transparent 32%);
+}
+
+.brand-logo span,
+.mini-logo span,
+.brand-logo.official-brand{
+  filter:drop-shadow(0 0 22px rgba(0,217,255,.55)) !important;
+}
+
+.eyebrow,
+.section-divider span,
+.section-title-v10 h3{
+  color:#00d9ff !important;
+  text-shadow:0 0 18px rgba(0,217,255,.5) !important;
+}
+
+.glass-card,
+.panel,
+.hero-panel-v10,
+.feature-row-v10,
+.stat-card-v10,
+.info-banner-v10,
+.quick-link-v10{
+  background:
+    linear-gradient(180deg,rgba(10,18,32,.96),rgba(3,8,18,.98)) !important;
+  border-color:rgba(0,217,255,.22) !important;
+  box-shadow:
+    0 0 0 1px rgba(155,92,255,.14),
+    0 20px 45px rgba(0,0,0,.55),
+    inset 0 0 25px rgba(0,217,255,.035) !important;
+}
+
+.login-card,
+.pro-login-card{
+  border-color:rgba(0,217,255,.35) !important;
+}
+
+.input-wrap{
+  border-color:rgba(0,217,255,.55) !important;
+  background:#020711 !important;
+}
+
+.input-icon,
+.feature-badge-v10,
+.stat-icon-v10,
+.info-icon-v10{
+  color:#00d9ff !important;
+  border-color:rgba(0,217,255,.35) !important;
+  background:rgba(0,217,255,.08) !important;
+}
+
+.primary-btn,
+.info-btn-v10{
+  background:
+    linear-gradient(135deg,#00d9ff,#9b5cff,#ff3cac) !important;
+  box-shadow:
+    0 0 28px rgba(0,217,255,.35),
+    inset 0 0 20px rgba(255,255,255,.18) !important;
+}
+
+.key-actions .free-key-btn,
+.paste-key-btn{
+  border-color:rgba(155,92,255,.45) !important;
+}
+
+.status-chip{
+  border-color:rgba(0,217,255,.45) !important;
+  color:#8ff5ff !important;
+}
+
+.top-logo-v10,
+.official-mini img{
+  filter:
+    drop-shadow(0 0 20px rgba(0,217,255,.45))
+    drop-shadow(0 0 35px rgba(155,92,255,.35)) !important;
+}
+
+.core-diamond-v10{
+  background:linear-gradient(135deg,#00d9ff,#9b5cff) !important;
+  box-shadow:0 0 22px rgba(0,217,255,.6) !important;
+}
+
+.feature-accent{
+  background:linear-gradient(180deg,#00d9ff,#9b5cff) !important;
+  box-shadow:0 0 18px rgba(0,217,255,.45) !important;
+}
+
+.toggle-v10.is-on{
+  background:linear-gradient(135deg,#9b5cff,#ff3cac) !important;
+  border-color:rgba(255,255,255,.35) !important;
+}
+
+.toggle-v10.is-on .thumb{
+  background:#fff !important;
+  box-shadow:0 0 16px #fff !important;
+}
+
+.bottom-nav-v10,
+.bottom-nav{
+  border-color:rgba(0,217,255,.28) !important;
+  background:#030712 !important;
+}
+
+.nav-hub,
+.center-hub{
+  background:
+    radial-gradient(circle,#00d9ff,#9b5cff 45%,#02050d 70%) !important;
+  box-shadow:
+    0 0 35px rgba(0,217,255,.5) !important;
+}
+
+.quick-link-v10{
+  border-color:rgba(155,92,255,.3) !important;
+}
+
+.toast{
+  border-color:rgba(0,217,255,.4) !important;
+  box-shadow:0 0 30px rgba(0,217,255,.2) !important;
+}
