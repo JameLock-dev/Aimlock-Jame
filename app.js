@@ -13,7 +13,9 @@ function setStoredFeature(key, value){
   localStorage.setItem(`aimlock_feature_${key}`, value ? '1' : '0');
 }
 function getStoredFeature(key){
-  return localStorage.getItem(`aimlock_feature_${key}`) === '1';
+  const saved = localStorage.getItem(`aimlock_feature_${key}`);
+  if(saved !== null) return saved === '1';
+  return ['aimbody', 'regff'].includes(key);
 }
 
 if(document.body.classList.contains('page-login')){
