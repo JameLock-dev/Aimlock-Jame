@@ -116,3 +116,98 @@ input{
   background:#a45cff;
   color:white;
 }
+
+
+/* PURPLE ELITE PREMIUM V3 */
+
+body{
+background:
+radial-gradient(circle at 50% 0%,rgba(190,120,255,.22),transparent 24%),
+radial-gradient(circle at 90% 35%,rgba(90,40,180,.18),transparent 30%),
+linear-gradient(180deg,#080510,#020207);
+}
+
+.panel{
+border-color:rgba(190,130,255,.38);
+box-shadow:
+0 20px 60px rgba(0,0,0,.65),
+inset 0 0 30px rgba(180,100,255,.08);
+}
+
+.brand img{
+width:120px;
+filter:
+drop-shadow(0 0 22px rgba(190,120,255,.5));
+}
+
+.profile{
+background:
+linear-gradient(135deg,rgba(190,120,255,.12),transparent 40%),
+linear-gradient(180deg,#100b20,#05030b);
+}
+
+.avatar{
+background:
+radial-gradient(circle,#e6caff,#9b5cff 45%,#34105d);
+box-shadow:
+0 0 35px rgba(170,100,255,.45);
+}
+
+.stats .panel{
+background:
+linear-gradient(180deg,#121022,#070711);
+}
+
+.stats strong,
+.keybox b{
+color:#d6b2ff;
+text-shadow:
+0 0 18px rgba(190,120,255,.45);
+}
+
+.title{
+letter-spacing:.15em;
+text-shadow:
+0 0 18px rgba(190,120,255,.5);
+}
+
+.module{
+background:
+linear-gradient(90deg,rgba(190,120,255,.08),transparent 30%),
+linear-gradient(180deg,#111020,#07070e);
+border-color:rgba(190,130,255,.32);
+min-height:76px;
+}
+
+.module:hover{
+border-color:#d7b0ff;
+transform:translateY(-2px);
+}
+
+.icon{
+background:
+linear-gradient(135deg,rgba(200,150,255,.22),rgba(60,20,100,.4));
+border-color:rgba(210,170,255,.45);
+box-shadow:
+0 0 20px rgba(180,100,255,.18);
+}
+
+.toggle.active{
+background:
+linear-gradient(135deg,#8b42ff,#d37cff);
+box-shadow:
+0 0 22px rgba(170,90,255,.5);
+}
+
+.bottom{
+background:
+linear-gradient(180deg,#100b20,#05030c);
+border-color:rgba(190,130,255,.4);
+}
+
+.bottom strong{
+background:
+radial-gradient(circle,#fff,#c58aff 35%,#6d2bd8 70%);
+box-shadow:
+0 0 35px rgba(190,120,255,.55);
+}
