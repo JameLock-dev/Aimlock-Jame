@@ -1,83 +1,175 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AIMLOCK JAME - Login</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aimlock Jame UI Demo</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
-<body class="theme-dark page-login">
-  <main class="app-shell login-shell">
-    <section class="hero-block">
-      <div class="logo-stack large">
-        <img src="logo.png" alt="AIMLOCK JAME" class="brand-logo" />
-      </div>
-      <div class="hero-subtitle">
-        <span></span>
-        <p>PRIVATE GAMING ACCESS</p>
-        <span></span>
-      </div>
-    </section>
+<body>
+  <main class="phone" id="app">
+    <div class="hud-line top-left"></div>
+    <div class="hud-line top-right"></div>
 
-    <section class="panel login-panel">
-      <div class="panel-head login-head">
-        <div class="mini-brand">
-          <img src="logo.png" alt="AIMLOCK JAME" class="mini-logo" />
-          <div>
-            <div class="mini-title">AIMLOCK JAME</div>
-            <div class="mini-caption">BY JAME FF</div>
-          </div>
+    <section class="screen login-screen active" data-screen="login">
+      <header class="statusbar">
+        <span>9:41</span>
+        <span class="status-icons">▰ ▰ ◔</span>
+      </header>
+
+      <div class="hero">
+        <div class="logo-mark" aria-hidden="true">
+          <span class="a-shape">A</span>
+          <span class="crosshair"></span>
         </div>
-        <div class="status-pill online"><span class="dot"></span>ONLINE</div>
+        <h1>AIMLOCK</h1>
+        <p>J A M E</p>
       </div>
 
-      <div class="input-wrap">
-        <span class="input-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.2"/></svg>
-        </span>
-        <input id="keyInput" type="password" placeholder="Nhập mật khẩu hoặc Key Mua" autocomplete="off" />
-        <button class="ghost-icon" id="togglePassword" type="button" aria-label="Hiện key">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="3"/></svg>
+      <section class="access-card">
+        <div class="section-label">SECURE ACCESS</div>
+        <h2>AIMLOCK <span>JAME</span></h2>
+        <p class="byline">BY JAME FF</p>
+
+        <label class="input-row">
+          <span class="icon">🔒</span>
+          <input id="keyInput" type="password" placeholder="Nhập mật khẩu hoặc Key Mua" autocomplete="off" />
+          <button class="eye-btn" type="button" aria-label="Ẩn/hiện mật khẩu">👁</button>
+        </label>
+
+        <button class="primary-btn" id="activateBtn" type="button">
+          <span>⚡</span> KÍCH HOẠT JAME
         </button>
-      </div>
 
-      <div class="dual-actions">
-        <a class="secondary-btn" id="freeKeyBtn" href="https://link-cua-ban.com/lay-key" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M7.5 7a2.5 2.5 0 1 1 0-5c2 0 4.5 5 4.5 5"/><path d="M16.5 7a2.5 2.5 0 1 0 0-5c-2 0-4.5 5-4.5 5"/></svg>
-          <span>LẤY KEY MIỄN PHÍ</span>
-        </a>
-        <button class="secondary-btn" id="pasteKeyBtn" type="button">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="8" y="3" width="8" height="4" rx="1.5"/><path d="M8 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><path d="M9 12h6M9 16h6"/></svg>
-          <span>DÁN KEY</span>
-        </button>
-      </div>
+        <p class="ready"><span></span> Sẵn sàng kích hoạt</p>
 
-      <button class="primary-btn" id="activateBtn" type="button">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>
-        <span>KÍCH HOẠT JAME</span>
-      </button>
+        <div class="divider"><span>⌖</span></div>
 
-      <div class="ready-state" id="loginStatus"><span class="dot"></span>Sẵn sàng kích hoạt</div>
+        <p class="quick-title">KẾT NỐI NHANH</p>
+        <div class="quick-links">
+          <a href="#" aria-label="TikTok">♪ TikTok</a>
+          <a href="#" aria-label="Zalo">💬 Zalo</a>
+        </div>
+      </section>
+
+      <footer class="safe-footer">
+        <span>🛡 Bảo mật cao</span>
+        <b>•</b>
+        <span>Key chính hãng</span>
+        <b>•</b>
+        <span>Hỗ trợ nhanh</span>
+      </footer>
     </section>
 
-    <section class="quick-links-card compact">
-      <h3>KẾT NỐI NHANH</h3>
-      <div class="quick-links two-col">
-        <a class="quick-link" href="https://www.tiktok.com/" target="_blank" rel="noopener">
-          <span class="social-mark tiktok-mark">♪</span>
-          <span>TikTok</span>
-        </a>
-        <a class="quick-link" href="https://zalo.me/" target="_blank" rel="noopener">
-          <span class="social-mark zalo-mark">Z</span>
-          <span>Zalo</span>
-        </a>
+    <section class="screen home-screen" data-screen="home">
+      <header class="statusbar">
+        <span>9:41</span>
+        <span class="status-icons">▰ ▰ ◔</span>
+      </header>
+
+      <nav class="top-nav">
+        <button type="button" class="menu-btn">☰</button>
+        <button type="button" class="bell-btn">🔔<i></i></button>
+      </nav>
+
+      <div class="brand">
+        <div class="logo-mark small" aria-hidden="true">
+          <span class="a-shape">A</span>
+          <span class="crosshair"></span>
+        </div>
+        <h1>AIMLOCK JAME</h1>
+        <p>BY JAME FF</p>
+        <div class="online-pill"><span></span> ONLINE</div>
       </div>
+
+      <section class="stats">
+        <article>
+          <span class="stat-icon">👥</span>
+          <b data-count="1248">1.248</b>
+          <small>Người dùng</small>
+        </article>
+        <article>
+          <span class="stat-icon">🛡</span>
+          <b data-count="328">328</b>
+          <small>Đang hoạt động</small>
+        </article>
+        <article>
+          <span class="stat-icon">🗓</span>
+          <b data-count="3562">3.562</b>
+          <small>Lượt kích hoạt</small>
+        </article>
+      </section>
+
+      <p class="panel-title">TÍNH NĂNG</p>
+
+      <section class="feature-grid">
+        <article class="feature-card">
+          <span class="feature-icon">🚀</span>
+          <h3>Boost RAM</h3>
+          <label class="switch"><input type="checkbox" checked><i></i></label>
+        </article>
+        <article class="feature-card">
+          <span class="feature-icon">🎯</span>
+          <h3>Aim Trainer</h3>
+          <label class="switch"><input type="checkbox" checked><i></i></label>
+        </article>
+        <article class="feature-card">
+          <span class="feature-icon">❤️</span>
+          <h3>Nhẹ Tâm</h3>
+          <label class="switch"><input type="checkbox" checked><i></i></label>
+        </article>
+        <article class="feature-card">
+          <span class="feature-icon">🛡</span>
+          <h3>JameLock</h3>
+          <label class="switch"><input type="checkbox" checked><i></i></label>
+        </article>
+        <article class="feature-card">
+          <span class="feature-icon">👤</span>
+          <h3>Safe UI</h3>
+          <label class="switch"><input type="checkbox" checked><i></i></label>
+        </article>
+        <article class="feature-card">
+          <span class="feature-icon">📄</span>
+          <h3>Reg FF</h3>
+          <label class="switch"><input type="checkbox" checked><i></i></label>
+        </article>
+      </section>
+
+      <section class="info-card">
+        <div class="info-icon">i</div>
+        <div>
+          <h3>THÔNG TIN</h3>
+          <p>Cập nhật chính sách, hướng dẫn sử dụng và hỗ trợ nhanh chóng.</p>
+        </div>
+        <button type="button">XEM NGAY ›</button>
+      </section>
+
+      <p class="panel-title">LIÊN KẾT NHANH</p>
+      <section class="link-row">
+        <a href="#">♪ TikTok <span>›</span></a>
+        <a href="#">💬 Zalo <span>›</span></a>
+      </section>
+
+      <p class="panel-title">THIẾT BỊ &amp; TRẠNG THÁI</p>
+      <section class="device-card">
+        <article><span>📱</span><small>Thiết bị</small><b>iPhone 14 Pro</b></article>
+        <article><span>iOS</span><small>Hệ điều hành</small><b>iOS 17.5.1</b></article>
+        <article><span>Wi‑Fi</span><small>Kết nối</small><b>Wi‑Fi</b></article>
+        <article><span>✓</span><small>Trạng thái</small><b class="safe">An toàn</b></article>
+      </section>
+
+      <nav class="bottom-nav">
+        <a class="active" href="#">⌂<span>TRANG CHỦ</span></a>
+        <a href="#">🔑<span>KEYS</span></a>
+        <a class="center" href="#"><span class="logo-mark mini"><span class="a-shape">A</span><span class="crosshair"></span></span></a>
+        <a href="#">📋<span>LỊCH SỬ</span></a>
+        <a href="#">👤<span>TÀI KHOẢN</span></a>
+      </nav>
     </section>
 
-    <div class="footer-caption">PRIVATE CONTROL CENTER</div>
+    <div class="toast" id="toast">Demo UI: không có chức năng can thiệp game.</div>
   </main>
 
-  <div class="toast" id="toast"></div>
-  <script src="app.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
