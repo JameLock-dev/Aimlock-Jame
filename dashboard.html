@@ -1,155 +1,116 @@
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AIMLOCK JAME - Purple Elite Dashboard</title>
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Purple Elite Dashboard</title>
+<link rel="stylesheet" href="style.css">
 </head>
-<body class="page-dashboard purple-dashboard-page">
-  <main class="app-shell dashboard-shell-purple">
-    <header class="topbar-purple">
-      <button class="top-icon" id="menuBtn" type="button" aria-label="Menu">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-      </button>
-      <div class="brand-center-purple">
-        <img src="logo.png" alt="AIMLOCK JAME" class="hero-logo dashboard-logo" />
-        <div class="brand-caption">PURPLE ELITE CONTROL</div>
-      </div>
-      <button class="top-icon" id="notifyBtn" type="button" aria-label="Thông báo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 17H5.5a1.5 1.5 0 0 1-1.2-2.4L6 12.5V10a6 6 0 0 1 12 0v2.5l1.7 2.1A1.5 1.5 0 0 1 18.5 17H15"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
-        <span class="notif-dot">3</span>
-      </button>
-    </header>
+<body class="dash">
+<div class="app">
 
-    <section class="elite-card hero-card-purple">
-      <div class="card-corners"></div>
-      <div class="avatar-ring-purple">
-        <div class="avatar-core"></div>
-      </div>
-      <div class="hero-main-copy">
-        <span>Xin chào,</span>
-        <strong id="helloName">JAME FF</strong>
-        <div class="vip-row-purple">
-          <b>VIP</b>
-          <small>Còn <em>30</em> ngày</small>
-        </div>
-        <div class="online-line"><span class="online-dot"></span>SYSTEM ONLINE</div>
-      </div>
-      <button class="key-box-purple interactive" data-toast="Bạn hiện có 2 key đang hoạt động.">
-        <span>KEY CỦA BẠN</span>
-        <strong>2</strong>
-      </button>
-    </section>
+<header class="nav">
+<button>☰</button>
+<img src="logo.png">
+<button>🔔</button>
+</header>
 
-    <section class="stats-grid-purple">
-      <button class="elite-card stat-box interactive" data-toast="Hiện tại có 0 người dùng online.">
-        <div class="stat-orb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 11a4 4 0 1 0-8 0"/><path d="M4 20a8 8 0 0 1 16 0"/><path d="M19 10a3 3 0 0 1 2 5"/><path d="M3 15a3 3 0 0 1 2-5"/></svg></div>
-        <div class="stat-title">ONLINE</div>
-        <div class="stat-value">0</div>
-        <div class="stat-sub">Người dùng</div>
-      </button>
-      <button class="elite-card stat-box interactive" data-toast="Có 2 key đang hoạt động.">
-        <div class="stat-orb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="12.5" r="3.5"/><path d="M11 12.5h10l-2 2 2 2-2 2"/></svg></div>
-        <div class="stat-title">ACTIVE KEYS</div>
-        <div class="stat-value">2</div>
-        <div class="stat-sub">Đang hoạt động</div>
-      </button>
-      <button class="elite-card stat-box interactive" data-toast="Hôm nay có 1 lượt kích hoạt.">
-        <div class="stat-orb"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg></div>
-        <div class="stat-title">TODAY</div>
-        <div class="stat-value">1</div>
-        <div class="stat-sub">Lượt kích hoạt</div>
-      </button>
-    </section>
+<section class="panel profile">
+<div class="avatar">◆</div>
+<div>
+<small>Xin chào</small>
+<h2>JAME FF</h2>
+<span class="vip">VIP • Còn 30 ngày</span>
+</div>
+<div class="keybox">
+<small>KEY</small>
+<b>2</b>
+</div>
+</section>
 
-    <div class="section-title-purple"><span></span><h3>TÍNH NĂNG</h3><span></span></div>
+<section class="stats">
+<div class="panel"><b>ONLINE</b><strong>0</strong><small>Người dùng</small></div>
+<div class="panel"><b>ACTIVE KEYS</b><strong>2</strong><small>Đang hoạt động</small></div>
+<div class="panel"><b>TODAY</b><strong>1</strong><small>Lượt kích hoạt</small></div>
+</section>
 
-    <section class="module-list">
-      <article class="module-row">
-        <div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="7" width="12" height="10" rx="1.5"/><path d="M9 4v3M15 4v3M9 17v3M15 17v3M3 10h3M3 14h3M18 10h3M18 14h3"/></svg></div>
-        <div class="module-copy"><h4>BOOST RAM</h4><p>Tối ưu bộ nhớ</p></div>
-        <button class="toggle purple-toggle" data-feature="boostram" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
-      </article>
-      <article class="module-row">
-        <div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.6"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></div>
-        <div class="module-copy"><h4>AIMBODY</h4><p>Chế độ module</p></div>
-        <button class="toggle purple-toggle is-on" data-feature="aimbody" aria-pressed="true"><span class="thumb"></span><span class="label">ON</span></button>
-      </article>
-      <article class="module-row">
-        <div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 7.8a5 5 0 0 0-8.2-1.5L12 7l-.6-.7a5 5 0 0 0-8.2 5.7L12 21l8.8-9a5 5 0 0 0 0-4.2Z"/><path d="M4 12h4l2-3 3 7 2-4h5"/></svg></div>
-        <div class="module-copy"><h4>NHẸ TÂM</h4><p>Trạng thái nhẹ</p></div>
-        <button class="toggle purple-toggle" data-feature="nhetam" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
-      </article>
-      <article class="module-row">
-        <div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 20 6v5c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10V6l8-3Z"/><rect x="8.5" y="11" width="7" height="5" rx="1"/><path d="M10 11V9a2 2 0 0 1 4 0v2"/></svg></div>
-        <div class="module-copy"><h4>JAMELOCK</h4><p>Khóa bảo vệ</p></div>
-        <button class="toggle purple-toggle" data-feature="jamelock" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
-      </article>
-      <article class="module-row">
-        <div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 20 6v5c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10V6l8-3Z"/><path d="m8.8 12.3 2.1 2.1 4.7-5"/></svg></div>
-        <div class="module-copy"><h4>AINTIBAN</h4><p>Kiểm tra kết nối</p></div>
-        <button class="toggle purple-toggle" data-feature="aintiban" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
-      </article>
-      <article class="module-row">
-        <div class="module-icon"><span class="ff-mark">FF</span></div>
-        <div class="module-copy"><h4>REG FF</h4><p>Dọn dữ liệu tạm</p></div>
-        <button class="toggle purple-toggle" data-feature="regff" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
-      </article>
-    </section>
+<h2 class="title">TÍNH NĂNG</h2>
 
-    <section class="elite-card info-card-purple">
-      <div class="card-corners"></div>
-      <div class="info-icon-wrap">
-        <svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="60" cy="60" r="42" opacity=".22"/><path d="M32 72h18l26 15V33L50 50H32v22Z"/><path d="M82 45c10 7 10 23 0 30"/></svg>
-      </div>
-      <div class="info-copy">
-        <span>THÔNG TIN</span>
-        <h3>Cập nhật & hỗ trợ</h3>
-        <p>Cập nhật phiên bản mới nhất, hướng dẫn sử dụng và hỗ trợ nhanh chóng 24/7 từ đội ngũ AIMLOCK JAME.</p>
-      </div>
-      <button class="info-btn interactive" data-toast="Đang mở khu vực thông tin...">XEM NGAY ›</button>
-    </section>
+<section class="modules">
 
-    <section class="quick-links-card purple-links">
-      <h3>LIÊN KẾT NHANH</h3>
-      <div class="quick-links two-col">
-        <a class="quick-link" href="https://www.tiktok.com/" target="_blank" rel="noopener">
-          <span class="social-mark tiktok-mark">♪</span>
-          <span><b>TikTok</b><small>@aimlock.jame</small></span>
-          <em>›</em>
-        </a>
-        <a class="quick-link" href="https://zalo.me/" target="_blank" rel="noopener">
-          <span class="social-mark zalo-mark">Z</span>
-          <span><b>Zalo</b><small>Hỗ trợ nhanh</small></span>
-          <em>›</em>
-        </a>
-      </div>
-    </section>
+<div class="module panel">
+<div class="icon">⚡</div>
+<div>
+<b>BOOST RAM</b>
+<small>Tối ưu bộ nhớ</small>
+</div>
+<button class="toggle">OFF</button>
+</div>
 
-    <nav class="bottom-nav-purple">
-      <button class="nav-item active interactive" data-toast="Bạn đang ở Trang chủ."><span>⌂</span><small>Trang chủ</small></button>
-      <button class="nav-item interactive" data-toast="Mở tab Kích hoạt."><span>⚡</span><small>Kích hoạt</small></button>
-      <button class="nav-hub interactive" data-toast="Purple core đã sẵn sàng."><span>△</span></button>
-      <button class="nav-item interactive" data-toast="Mở tab Thông tin."><span>ⓘ</span><small>Thông tin</small></button>
-      <button class="nav-item interactive" id="accountBtn" data-toast="Tài khoản đang hoạt động bình thường."><span>◌</span><small>Tài khoản</small></button>
-    </nav>
-  </main>
+<div class="module panel">
+<div class="icon">◎</div>
+<div>
+<b>AIMBODY</b>
+<small>Chế độ module</small>
+</div>
+<button class="toggle">OFF</button>
+</div>
 
-  <div class="side-drawer" id="sideDrawer">
-    <div class="drawer-card elite-drawer">
-      <div class="drawer-head">
-        <strong>AIMLOCK MENU</strong>
-        <button id="closeDrawer" type="button">×</button>
-      </div>
-      <button class="drawer-link interactive" data-toast="Mục Trung tâm điều khiển.">Trung tâm điều khiển</button>
-      <button class="drawer-link interactive" data-toast="Mục Cài đặt giao diện.">Cài đặt giao diện</button>
-      <button class="drawer-link interactive" data-toast="Mục Hỗ trợ cộng đồng.">Hỗ trợ cộng đồng</button>
-      <button class="drawer-link danger" id="logoutBtn">Đăng xuất</button>
-    </div>
-  </div>
+<div class="module panel">
+<div class="icon">♡</div>
+<div>
+<b>NHẸ TÂM</b>
+<small>Trạng thái nhẹ</small>
+</div>
+<button class="toggle">OFF</button>
+</div>
 
-  <div class="toast" id="toast"></div>
-  <script src="app.js"></script>
+<div class="module panel">
+<div class="icon">♙</div>
+<div>
+<b>JAMELOCK</b>
+<small>Khóa bảo vệ</small>
+</div>
+<button class="toggle">OFF</button>
+</div>
+
+<div class="module panel">
+<div class="icon">◈</div>
+<div>
+<b>AINTIBAN</b>
+<small>Kiểm tra kết nối</small>
+</div>
+<button class="toggle">OFF</button>
+</div>
+
+<div class="module panel">
+<div class="icon">FF</div>
+<div>
+<b>REG FF</b>
+<small>Dọn dữ liệu tạm</small>
+</div>
+<button class="toggle">OFF</button>
+</div>
+
+</section>
+
+<section class="panel info">
+<h3>THÔNG TIN</h3>
+<h2>Cập nhật & hỗ trợ</h2>
+<p>Phiên bản Purple Elite Full Feature.</p>
+<button class="btn">XEM NGAY</button>
+</section>
+
+<nav class="bottom panel">
+<span>⌂<small>Home</small></span>
+<span>⚡<small>Key</small></span>
+<strong>◎</strong>
+<span>ⓘ<small>Info</small></span>
+<span>◉<small>User</small></span>
+</nav>
+
+</div>
+<script src="app.js"></script>
 </body>
 </html>
