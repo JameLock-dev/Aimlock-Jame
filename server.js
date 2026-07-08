@@ -7,7 +7,7 @@ const { Pool } = require("pg");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Admin11";
+const ADMIN_PASSWORD = String(process.env.ADMIN_PASSWORD || "").trim();
 
 // Ưu tiên DATABASE_PUBLIC_URL để tránh lỗi ENOTFOUND postgres.railway.internal.
 // Trên Railway App Service nên đặt: DATABASE_URL=${{Postgres.DATABASE_PUBLIC_URL}}
@@ -100,7 +100,14 @@ function requireDatabase(req, res, next) {
 }
 
 function requireAdmin(req, res, next) {
-  const password = req.headers["x-admin-password"];
+  if (!ADMIN_PASSWORD) {
+    return res.status(500).json({
+      ok: false,
+      message: "Chưa cấu hình ADMIN_PASSWORD trong biến môi trường."
+    });
+  }
+
+  const password = String(req.headers["x-admin-password"] || "").trim();
 
   if (password !== ADMIN_PASSWORD) {
     return res.status(401).json({ ok: false, message: "Sai mật khẩu admin." });
@@ -178,25 +185,18 @@ async function initDb() {
   await pool.query(`ALTER TABLE usage_log ADD COLUMN IF NOT EXISTS success BOOLEAN DEFAULT TRUE;`);
   await pool.query(`ALTER TABLE usage_log ADD COLUMN IF NOT EXISTS reason TEXT;`);
 
-  // Key mẫu luôn còn hạn 365 ngày. Có thể đổi bằng DEFAULT_KEY trên Railway.
-  await pool.query(
-    `
-    INSERT INTO keys (key_value, type, expire, slot_used, slot_limit, status)
-    VALUES ($1, 'free', NOW() + INTERVAL '365 days', 0, 100, 'active')
-    ON CONFLICT (key_value) DO NOTHING;
-    `,
-    [process.env.DEFAULT_KEY || "JAME-FREE-KEY"]
-  );
-
-  // Cho phép Admin11 cũng là key mẫu trong database.
-  await pool.query(
-    `
-    INSERT INTO keys (key_value, type, expire, slot_used, slot_limit, status)
-    VALUES ($1, 'admin', NOW() + INTERVAL '3650 days', 0, 100, 'active')
-    ON CONFLICT (key_value) DO NOTHING;
-    `,
-    [ADMIN_PASSWORD]
-  );
+  // Chỉ tạo key mẫu khi bạn chủ động đặt DEFAULT_KEY trong biến môi trường.
+  const defaultKey = cleanKey(process.env.DEFAULT_KEY);
+  if (defaultKey) {
+    await pool.query(
+      `
+      INSERT INTO keys (key_value, type, expire, slot_used, slot_limit, status)
+      VALUES ($1, 'free', NOW() + INTERVAL '365 days', 0, 100, 'active')
+      ON CONFLICT (key_value) DO NOTHING;
+      `,
+      [defaultKey]
+    );
+  }
 
   console.log("✅ Postgres connected & database ready");
 }
@@ -293,23 +293,7 @@ app.post("/api/verify-key", async (req, res) => {
   const ip = String(req.ip || req.headers["x-forwarded-for"] || "").split(",")[0].trim();
 
   if (!input) {
-    return res.status(400).json({ ok: false, message: "Vui lòng nhập Password / Key." });
-  }
-
-  // Admin password đăng nhập được kể cả khi Postgres đang lỗi.
-  if (input === ADMIN_PASSWORD) {
-    return res.json({
-      ok: true,
-      message: "Đăng nhập Admin thành công.",
-      key: {
-        key: "ADMIN",
-        type: "admin",
-        expire: "2099-12-31T23:59:59.000Z",
-        slotUsed: 1,
-        slotLimit: 1,
-        status: "active"
-      }
-    });
+    return res.status(400).json({ ok: false, message: "Vui lòng nhập key." });
   }
 
   if (!pool || !DATABASE_URL) {
@@ -520,7 +504,6 @@ initDb()
   .finally(() => {
     app.listen(PORT, () => {
       console.log(`✅ AIMLOCK JAME server running on port ${PORT}`);
-      console.log(`✅ Admin password: ${ADMIN_PASSWORD}`);
       console.log(`✅ Database URL mode: ${DATABASE_URL ? (isRailwayInternalUrl(DATABASE_URL) ? "internal" : "public/external") : "missing"}`);
     });
   });
