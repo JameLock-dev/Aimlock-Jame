@@ -15,7 +15,7 @@ function setStoredFeature(key, value){
 function getStoredFeature(key){
   const saved = localStorage.getItem(`aimlock_feature_${key}`);
   if(saved !== null) return saved === '1';
-  return ['aimbody', 'regff'].includes(key);
+  return false;
 }
 
 if(document.body.classList.contains('page-login')){
