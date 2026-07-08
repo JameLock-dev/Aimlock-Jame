@@ -42,7 +42,7 @@ async function fetchJson(url, options = {}) {
     throw new Error(
       API_BASE_URL
         ? "Không kết nối được API. Hãy kiểm tra URL Railway backend trong api-config.js."
-        : "Không kết nối được API. Hãy mở admin bằng domain Railway chạy server.js, không mở bằng file local/GitHub Pages."
+        : "Không kết nối được API. Hãy chạy start-local.bat hoặc mở admin bằng domain Railway chạy server.js, không mở admin.html trực tiếp."
     );
   }
   const text = await response.text();

@@ -40,7 +40,7 @@ async function fetchJson(url, options = {}) {
     throw new Error(
       API_BASE_URL
         ? "Không kết nối được API. Hãy kiểm tra URL Railway backend trong api-config.js."
-        : "Không kết nối được API. Hãy mở web bằng domain Railway chạy server.js, không mở bằng file local/GitHub Pages."
+        : "Không kết nối được API. Hãy chạy start-local.bat hoặc mở domain Railway chạy server.js, không mở index.html trực tiếp."
     );
   }
 
@@ -51,7 +51,7 @@ async function fetchJson(url, options = {}) {
     throw new Error(
       API_BASE_URL
         ? "API URL trong api-config.js chưa đúng hoặc backend chưa deploy server.js."
-        : "Bạn đang mở frontend không cùng server API. Hãy mở domain Railway chạy server.js hoặc cấu hình AIMLOCK_API_BASE_URL trong api-config.js."
+        : "Bạn đang mở frontend không cùng server API. Hãy chạy start-local.bat, mở domain Railway chạy server.js, hoặc cấu hình AIMLOCK_API_BASE_URL trong api-config.js."
     );
   }
 
