@@ -1,102 +1,83 @@
 
-const keyInput = document.getElementById("keyInput") || document.getElementById("licenseKey");
-const loginBtn = document.getElementById("loginBtn") || document.getElementById("activateBtn");
-const message = document.getElementById("msg") || document.getElementById("loginStatus");
-const showBtn = document.getElementById("eye") || document.getElementById("toggleKey");
-const pasteBtn = document.getElementById("paste") || document.getElementById("pasteKeyBtn");
+const keyInput = document.getElementById("key") || document.getElementById("keyInput");
+const loginBtn = document.getElementById("login") || document.getElementById("loginBtn");
+const message = document.getElementById("msg") || document.getElementById("status");
 
-const localKeys = ["admin11","jame-free-key"];
+const showBtn = document.getElementById("eye");
+const pasteBtn = document.getElementById("paste");
 
-function setMessage(text, ok=false){
-  if(!message) return;
-  message.textContent = text;
-  message.style.color = ok ? "#7dffbf" : "#ff8fa3";
+function msg(text, success=false){
+    if(!message) return;
+    message.innerHTML = text;
+    message.style.color = success ? "#6dffb1" : "#ff8fa8";
 }
 
 showBtn?.addEventListener("click",()=>{
-  if(!keyInput) return;
-  keyInput.type = keyInput.type === "password" ? "text" : "password";
+    if(!keyInput) return;
+    keyInput.type = keyInput.type === "password" ? "text" : "password";
 });
 
-pasteBtn?.addEventListener("click", async ()=>{
-  try{
-    keyInput.value = await navigator.clipboard.readText();
-    setMessage("Đã dán key", true);
-  }catch{
-    setMessage("Không thể truy cập clipboard");
-  }
+pasteBtn?.addEventListener("click",async()=>{
+    try{
+        keyInput.value = await navigator.clipboard.readText();
+        msg("✓ Đã dán key",true);
+    }catch{
+        msg("Không thể dán tự động");
+    }
 });
 
-async function verifyKey(value){
-  try{
-    const response = await fetch("/api/verify-key",{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify({
-        key:value,
-        deviceId:"browser"
-      })
-    });
 
-    const data = await response.json();
+loginBtn?.addEventListener("click",()=>{
 
-    if(data.ok){
-      return true;
+    const value = keyInput?.value.trim();
+
+    if(!value){
+        msg("⚠ Vui lòng nhập key");
+        return;
     }
 
-    throw new Error(data.message || "Key không hợp lệ");
-  }
-  catch(error){
-    // Chế độ fallback khi mở giao diện tĩnh
-    if(localKeys.includes(value.toLowerCase())){
-      return true;
+    /*
+      Login local fallback.
+      Khi có backend thật có thể thay đoạn này bằng API verify.
+    */
+    const validKeys=[
+        "admin11",
+        "jame-free-key"
+    ];
+
+    if(validKeys.includes(value.toLowerCase())){
+
+        localStorage.setItem("jame-auth","true");
+        localStorage.setItem("jame-key",value);
+
+        msg("✓ Kích hoạt thành công",true);
+
+        setTimeout(()=>{
+            window.location.href="./dashboard.html";
+        },700);
+
+    }else{
+
+        msg("❌ Key không đúng");
+
     }
-    throw error;
-  }
-}
 
-loginBtn?.addEventListener("click", async ()=>{
-  const value = keyInput?.value.trim();
-
-  if(!value){
-    setMessage("⚠ Vui lòng nhập key");
-    return;
-  }
-
-  loginBtn.disabled = true;
-  setMessage("Đang kiểm tra key...");
-
-  try{
-    await verifyKey(value);
-
-    localStorage.setItem("jame-auth","1");
-    localStorage.setItem("jame-key",value);
-
-    setMessage("✓ Kích hoạt thành công", true);
-
-    setTimeout(()=>{
-      window.location.href="dashboard.html";
-    },500);
-
-  }catch(error){
-    setMessage(error.message || "Không đăng nhập được");
-    loginBtn.disabled=false;
-  }
 });
 
 
 document.querySelectorAll(".toggle").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    btn.classList.toggle("active");
-    btn.textContent = btn.classList.contains("active") ? "ON" : "OFF";
-  });
+    btn.addEventListener("click",()=>{
+        btn.classList.toggle("active");
+        btn.textContent =
+        btn.classList.contains("active") ? "ON" : "OFF";
+    });
 });
 
+
 document.querySelectorAll(".interactive").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    const text = btn.dataset.toast;
-    if(text) alert(text);
-  });
+    btn.addEventListener("click",()=>{
+        if(btn.dataset.toast){
+            alert(btn.dataset.toast);
+        }
+    });
 });
