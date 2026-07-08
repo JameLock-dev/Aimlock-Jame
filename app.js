@@ -1,15 +1,6 @@
 const VALID_KEYS = ["Admin11", "JAME-FREE-KEY"];
 const toastEl = document.getElementById('toast');
 
-const FEATURE_LABELS = {
-  boostram: 'Tăng tốc RAM',
-  aimbody: 'Mô-đun Aim',
-  nhetam: 'Chế độ mượt',
-  jamelock: 'Khóa JAME',
-  aintiban: 'Kiểm tra an toàn',
-  regff: 'Dọn bộ nhớ đệm'
-};
-
 function showToast(message){
   if(!toastEl) return;
   toastEl.textContent = message;
@@ -43,7 +34,7 @@ if(document.body.classList.contains('page-login')){
       const text = await navigator.clipboard.readText();
       if(text){
         keyInput.value = text.trim();
-        showToast('Đã dán mã từ clipboard.');
+        showToast('Đã dán key từ clipboard.');
       } else {
         showToast('Clipboard đang trống.');
       }
@@ -55,28 +46,28 @@ if(document.body.classList.contains('page-login')){
   activateBtn?.addEventListener('click', () => {
     const value = keyInput.value.trim();
     if(!value){
-      showToast('Vui lòng nhập mã trước khi kích hoạt.');
+      showToast('Vui lòng nhập key trước khi kích hoạt.');
       keyInput.focus();
       return;
     }
 
     activateBtn.classList.add('loading');
-    activateBtn.querySelector('span').textContent = 'ĐANG XÁC MINH...';
-    loginStatus.innerHTML = '<span class="dot"></span>Đang xác minh mã';
+    activateBtn.querySelector('span').textContent = 'ĐANG KIỂM TRA...';
+    loginStatus.innerHTML = '<span class="dot"></span>Đang xác minh key';
 
     setTimeout(() => {
       if(VALID_KEYS.includes(value)){
         localStorage.setItem('aimlock_auth', '1');
         localStorage.setItem('aimlock_user', 'JAME FF');
-        loginStatus.innerHTML = '<span class="dot"></span>Xác minh thành công';
-        showToast('Xác minh thành công. Đang vào bảng điều khiển...');
+        loginStatus.innerHTML = '<span class="dot"></span>Kích hoạt thành công';
+        showToast('Kích hoạt thành công. Đang vào dashboard...');
         setTimeout(() => location.href = 'dashboard.html', 700);
       }else{
         activateBtn.classList.remove('loading');
-        activateBtn.querySelector('span').textContent = 'KÍCH HOẠT NGAY';
-        loginStatus.textContent = 'Mã không hợp lệ. Hãy thử lại.';
+        activateBtn.querySelector('span').textContent = 'KÍCH HOẠT JAME';
+        loginStatus.textContent = 'Key không hợp lệ. Hãy thử lại.';
         loginStatus.style.color = '#ff6e7f';
-        showToast('Mã không hợp lệ. Mã demo hợp lệ: Admin11 hoặc JAME-FREE-KEY');
+        showToast('Key không hợp lệ. Demo nhận: Admin11 hoặc JAME-FREE-KEY');
       }
     }, 900);
   });
@@ -99,7 +90,7 @@ if(document.body.classList.contains('page-dashboard')){
       const next = !toggle.classList.contains('is-on');
       updateToggle(toggle, next);
       setStoredFeature(feature, next);
-      showToast(`${FEATURE_LABELS[feature] || feature} đã ${next ? 'bật' : 'tắt'}.`);
+      showToast(`${feature.toUpperCase()} đã ${next ? 'bật' : 'tắt'}.`);
     });
   });
 
@@ -134,5 +125,5 @@ function updateToggle(toggle, on){
   toggle.classList.toggle('is-on', on);
   toggle.setAttribute('aria-pressed', on ? 'true' : 'false');
   const label = toggle.querySelector('.label');
-  if(label) label.textContent = on ? 'BẬT' : 'TẮT';
+  if(label) label.textContent = on ? 'ON' : 'OFF';
 }

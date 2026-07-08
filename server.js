@@ -332,7 +332,7 @@ app.post("/api/verify-key", async (req, res) => {
     if (!result.rows.length) {
       await writeLog(client, { keyValue: input, deviceId, ip, success: false, reason: "Key không tồn tại" });
       await client.query("COMMIT");
-      return res.status(404).json({ ok: false, message: "Mã không tồn tại." });
+      return res.status(404).json({ ok: false, message: "Key không tồn tại." });
     }
 
     const item = result.rows[0];
@@ -340,14 +340,14 @@ app.post("/api/verify-key", async (req, res) => {
     if (item.status !== "active") {
       await writeLog(client, { keyValue: item.key_value, deviceId, ip, success: false, reason: "Key đã bị khóa" });
       await client.query("COMMIT");
-      return res.status(403).json({ ok: false, message: "Mã đã bị khóa." });
+      return res.status(403).json({ ok: false, message: "Key đã bị khóa." });
     }
 
     if (new Date(item.expire).getTime() <= Date.now()) {
       await client.query("UPDATE keys SET status = 'expired' WHERE id = $1", [item.id]);
       await writeLog(client, { keyValue: item.key_value, deviceId, ip, success: false, reason: "Key đã hết hạn" });
       await client.query("COMMIT");
-      return res.status(403).json({ ok: false, message: "Mã đã hết hạn." });
+      return res.status(403).json({ ok: false, message: "Key đã hết hạn." });
     }
 
     const device = await client.query(
@@ -371,9 +371,9 @@ app.post("/api/verify-key", async (req, res) => {
       );
     } else {
       if (effectiveUsed >= slotLimit) {
-        await writeLog(client, { keyValue: item.key_value, deviceId, ip, success: false, reason: "Mã đã hết slot" });
+        await writeLog(client, { keyValue: item.key_value, deviceId, ip, success: false, reason: "Key đã hết slot" });
         await client.query("COMMIT");
-        return res.status(403).json({ ok: false, message: `Mã đã hết slot: ${effectiveUsed}/${slotLimit}` });
+        return res.status(403).json({ ok: false, message: `Key đã hết slot: ${effectiveUsed}/${slotLimit}` });
       }
 
       await client.query(
@@ -400,7 +400,7 @@ app.post("/api/verify-key", async (req, res) => {
 
     return res.json({
       ok: true,
-      message: "Mã hợp lệ.",
+      message: "Key hợp lệ.",
       key: rowToKey(updated.rows[0])
     });
   } catch (error) {
@@ -441,7 +441,7 @@ app.post("/api/admin/keys", requireDatabase, requireAdmin, async (req, res) => {
   const status = cleanKey(req.body?.status) || "active";
 
   if (!input) {
-    return res.status(400).json({ ok: false, message: "Thiếu mã." });
+    return res.status(400).json({ ok: false, message: "Thiếu key." });
   }
 
   const client = await pool.connect();
@@ -474,7 +474,7 @@ app.post("/api/admin/keys", requireDatabase, requireAdmin, async (req, res) => {
 
     return res.json({
       ok: true,
-      message: "Đã lưu mã.",
+      message: "Đã lưu key.",
       key: rowToKey(result.rows[0])
     });
   } catch (error) {
@@ -497,7 +497,7 @@ app.delete("/api/admin/keys/:key", requireDatabase, requireAdmin, async (req, re
 
     return res.json({
       ok: true,
-      message: result.rowCount ? "Đã xóa mã." : "Không tìm thấy mã."
+      message: result.rowCount ? "Đã xóa key." : "Không tìm thấy key."
     });
   } catch (error) {
     return res.status(500).json({ ok: false, message: dbErrorMessage(error) });
