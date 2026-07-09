@@ -180,7 +180,7 @@ if (document.body.classList.contains("page-login")) {
       if (STATIC_PREVIEW_MODE) {
         data = {
           ok: true,
-          message: "Kích hoạt thành công trên GitHub Pages.",
+          message: "Kích hoạt Thành công AIMLOCK JAME.",
           key: createStaticKey(value)
         };
       } else {
@@ -197,8 +197,8 @@ if (document.body.classList.contains("page-login")) {
       }
 
       saveSessionFromKey(data, value);
-      loginStatus.innerHTML = '<span class="dot"></span>Kích hoạt thành công';
-      showToast(data.message || "Kích hoạt thành công. Đang vào dashboard...", "success");
+      loginStatus.innerHTML = '<span class="dot"></span>Kích hoạt Thành công AIMLOCK JAME';
+      showToast(data.message || "Kích hoạt Thành công AIMLOCK JAME. Đang vào dashboard...", "success");
       setTimeout(() => location.href = "dashboard.html", 650);
     } catch (error) {
       activateBtn.classList.remove("loading");
