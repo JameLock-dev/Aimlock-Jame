@@ -168,7 +168,7 @@ if (document.body.classList.contains("page-login")) {
   const freeKeyBtn = document.getElementById("freeKeyBtn");
   const zaloLinks = document.querySelectorAll('a[href*="zalo.me"]');
   const defaultButtonLabel = activateBtn?.querySelector("span")?.textContent || "KÍCH HOẠT KEY";
-  const appGate = { blocked: false, title: "", message: "", actionUrl: "" };
+  const appGate = { blocked: false, title: "", message: "", actionUrl: "", mode: "" };
 
   function ensureGateModal() {
     let modal = document.getElementById("appGateModal");
@@ -206,16 +206,23 @@ if (document.body.classList.contains("page-login")) {
     const modal = ensureGateModal();
     const title = modal.querySelector("#appGateTitle");
     const message = modal.querySelector("#appGateMessage");
+    const actionBtn = modal.querySelector("#appGateActionBtn");
     if (title) title.textContent = appGate.title || "Thông báo hệ thống";
     if (message) message.innerHTML = appGate.message || "App cần cập nhật để tiếp tục.";
+    if (actionBtn) {
+      const isMaintenance = appGate.mode === "maintenance";
+      actionBtn.style.display = isMaintenance ? "none" : "";
+      actionBtn.textContent = isMaintenance ? "" : "Tải bản mới";
+    }
     modal.classList.add("show");
   }
 
-  function blockLogin(title, message, actionUrl) {
+  function blockLogin(title, message, actionUrl, mode = "update") {
     appGate.blocked = true;
     appGate.title = title || "CẦN CẬP NHẬT APP";
     appGate.message = message || "Phiên bản bạn đang dùng đã cũ. Vui lòng tải bản mới để tiếp tục.";
     appGate.actionUrl = actionUrl || "";
+    appGate.mode = mode;
     if (activateBtn) {
       activateBtn.classList.add("is-disabled-v26");
       activateBtn.querySelector("span").textContent = title?.includes("NÂNG CẤP") ? "APP ĐANG NÂNG CẤP" : "CẦN CẬP NHẬT";
@@ -242,12 +249,12 @@ if (document.body.classList.contains("page-login")) {
       && (compareVersions(AIMLOCK_APP_VERSION, minimumVersion) < 0 || compareVersions(AIMLOCK_APP_VERSION, latestVersion) < 0);
 
     if (asBool(settings.maintenance)) {
-      blockLogin(settings.maintenanceTitle || "APP ĐANG NÂNG CẤP", settings.maintenanceMessage || "Vui lòng quay lại sau.", actionUrl);
+      blockLogin(settings.maintenanceTitle || "APP ĐANG NÂNG CẤP", settings.maintenanceMessage || "Vui lòng quay lại sau.", "", "maintenance");
       return;
     }
 
     if (mustUpdate) {
-      blockLogin(settings.forceTitle || `CẦN CẬP NHẬT APP V${latestVersion}`, settings.forceMessage || "Phiên bản bạn đang dùng đã cũ. Vui lòng tải bản mới để tiếp tục.", actionUrl);
+      blockLogin(settings.forceTitle || `CẦN CẬP NHẬT APP V${latestVersion}`, settings.forceMessage || "Phiên bản bạn đang dùng đã cũ. Vui lòng tải bản mới để tiếp tục.", actionUrl, "update");
     }
   }
 

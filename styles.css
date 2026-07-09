@@ -2313,3 +2313,9 @@ input{outline:none;border:0;background:none;color:var(--txt)}
 .primary-btn.is-disabled-v26{
   animation:none !important;
 }
+
+
+/* Maintenance modal: only show confirm button */
+.app-gate-actions-v26 button[style*="display: none"] + button{
+  grid-column:1 / -1;
+}
