@@ -2834,3 +2834,76 @@ input{outline:none;border:0;background:none;color:var(--txt)}
 .page-login-v13 .free-key-v27 .key-copy-v29 small{
   color:#cdb67b;
 }
+
+
+/* V31 fix free key text overlap */
+.page-login-v13 .dual-actions{
+  grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr) !important;
+  gap:10px !important;
+}
+.page-login-v13 .free-key-v27{
+  min-height:54px !important;
+  grid-template-columns:30px minmax(0,1fr) 12px !important;
+  gap:8px !important;
+  padding:0 10px !important;
+  overflow:hidden;
+}
+.page-login-v13 .free-key-v27 .key-icon-badge{
+  width:30px !important;
+  height:30px !important;
+  border-radius:10px !important;
+}
+.page-login-v13 .free-key-v27 .key-icon-badge svg{
+  width:17px !important;
+  height:17px !important;
+}
+.page-login-v13 .free-key-v27 .key-copy-v31{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:2px;
+  line-height:1;
+}
+.page-login-v13 .free-key-v27 .key-copy-v31 strong{
+  color:#fff;
+  font-size:.72rem;
+  font-weight:1000;
+  letter-spacing:.035em;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.page-login-v13 .free-key-v27 .key-copy-v31 small{
+  color:#ffd66b;
+  font-size:.57rem;
+  font-weight:850;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.page-login-v13 .free-key-v27 .key-arrow-v29{
+  justify-self:end;
+  font-size:.95rem !important;
+}
+.page-login-v13 .paste-key-v27{
+  min-height:54px !important;
+  gap:8px !important;
+  padding:0 10px !important;
+}
+.page-login-v13 .paste-key-v27 .key-icon-badge{
+  width:30px !important;
+  height:30px !important;
+  border-radius:10px !important;
+}
+.page-login-v13 .paste-key-v27 span:last-child{
+  font-size:.70rem !important;
+  letter-spacing:.04em !important;
+}
+@media (max-width:380px){
+  .page-login-v13 .dual-actions{grid-template-columns:1fr 1fr !important;gap:8px !important}
+  .page-login-v13 .free-key-v27{grid-template-columns:28px minmax(0,1fr) !important;padding:0 8px !important}
+  .page-login-v13 .free-key-v27 .key-arrow-v29{display:none !important}
+  .page-login-v13 .free-key-v27 .key-copy-v31 strong{font-size:.66rem}
+  .page-login-v13 .free-key-v27 .key-copy-v31 small{font-size:.52rem}
+}
