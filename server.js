@@ -178,6 +178,23 @@ async function initDb() {
   await pool.query(`ALTER TABLE usage_log ADD COLUMN IF NOT EXISTS success BOOLEAN DEFAULT TRUE;`);
   await pool.query(`ALTER TABLE usage_log ADD COLUMN IF NOT EXISTS reason TEXT;`);
 
+
+  // AIMLOCK APP SETTINGS API - FIX
+  // Lưu cấu hình app/admin vào Postgres để APK WebView đọc được.
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS app_settings (
+      id INTEGER PRIMARY KEY DEFAULT 1,
+      data JSONB NOT NULL DEFAULT '{}'::jsonb,
+      updated_at TIMESTAMPTZ DEFAULT NOW()
+    );
+  `);
+
+  await pool.query(`
+    INSERT INTO app_settings (id, data)
+    VALUES (1, '{}'::jsonb)
+    ON CONFLICT (id) DO NOTHING;
+  `);
+
   // Key mẫu luôn còn hạn 365 ngày. Có thể đổi bằng DEFAULT_KEY trên Railway.
   await pool.query(
     `
@@ -250,6 +267,135 @@ async function syncSlotUsed(clientOrPool, keyId) {
   return updated.rows[0] || null;
 }
 
+
+// AIMLOCK APP SETTINGS API - FIX
+function defaultAppSettings() {
+  return {
+    maintenance: false,
+    forceUpdate: false,
+    minVersion: 1,
+    latestVersion: 1,
+
+    freeKeyUrl: "https://link-cua-ban.com/lay-key",
+    updateUrl: "https://link-cua-ban.com/tai-apk",
+    zaloUrl: "https://zalo.me/0333635135",
+    tiktokUrl: "https://www.tiktok.com/",
+
+    maintenanceTitle: "APP ĐANG BẢO TRÌ",
+    maintenanceMessage: "Vui lòng quay lại sau.",
+    forceTitle: "CẦN CẬP NHẬT APP",
+    forceMessage: "Phiên bản bạn đang dùng đã cũ. Vui lòng tải bản mới để tiếp tục.",
+
+    updateItems: [
+      {
+        badge: "NEW",
+        title: "NEW AIMLOCK MỚI",
+        description: "Thêm tính năng AIMLOCK mới cho anh em."
+      },
+      {
+        badge: "01",
+        title: "Admin Settings",
+        description: "Có thể sửa update/link/trạng thái app trực tiếp trên admin."
+      }
+    ]
+  };
+}
+
+function normalizeAppSettings(input) {
+  const current = input && typeof input === "object" ? input : {};
+  const defaults = defaultAppSettings();
+
+  let updateItems = current.updateItems ?? current.update_items ?? defaults.updateItems;
+
+  if (typeof updateItems === "string") {
+    try {
+      updateItems = JSON.parse(updateItems);
+    } catch (_) {
+      updateItems = defaults.updateItems;
+    }
+  }
+
+  if (!Array.isArray(updateItems)) {
+    updateItems = defaults.updateItems;
+  }
+
+  return {
+    ...defaults,
+    ...current,
+    maintenance: Boolean(current.maintenance ?? current.isMaintenance ?? defaults.maintenance),
+    forceUpdate: Boolean(current.forceUpdate ?? current.force_update ?? current.requiredUpdate ?? defaults.forceUpdate),
+    minVersion: Number(current.minVersion ?? current.minimumVersion ?? current.minAppVersion ?? defaults.minVersion) || 1,
+    latestVersion: Number(current.latestVersion ?? current.newVersion ?? current.currentVersion ?? defaults.latestVersion) || 1,
+    freeKeyUrl: String(current.freeKeyUrl ?? current.keyUrl ?? current.linkKeyUrl ?? current.getKeyUrl ?? defaults.freeKeyUrl),
+    updateUrl: String(current.updateUrl ?? current.downloadUrl ?? current.apkUrl ?? current.newVersionUrl ?? current.appDownloadUrl ?? defaults.updateUrl),
+    zaloUrl: String(current.zaloUrl ?? current.supportUrl ?? defaults.zaloUrl),
+    tiktokUrl: String(current.tiktokUrl ?? current.communityUrl ?? defaults.tiktokUrl),
+    maintenanceTitle: String(current.maintenanceTitle ?? current.statusTitle ?? defaults.maintenanceTitle),
+    maintenanceMessage: String(current.maintenanceMessage ?? current.maintenanceText ?? current.statusMessage ?? defaults.maintenanceMessage),
+    forceTitle: String(current.forceTitle ?? current.updateTitle ?? defaults.forceTitle),
+    forceMessage: String(current.forceMessage ?? current.updateMessage ?? current.oldVersionMessage ?? defaults.forceMessage),
+    updateItems
+  };
+}
+
+async function readAppSettingsFromDb() {
+  if (!pool || !DATABASE_URL) {
+    return normalizeAppSettings(defaultAppSettings());
+  }
+
+  const result = await pool.query("SELECT data, updated_at FROM app_settings WHERE id = 1 LIMIT 1");
+  const row = result.rows[0];
+
+  if (!row) {
+    const settings = normalizeAppSettings(defaultAppSettings());
+
+    await pool.query(
+      `
+      INSERT INTO app_settings (id, data, updated_at)
+      VALUES (1, $1::jsonb, NOW())
+      ON CONFLICT (id)
+      DO UPDATE SET data = EXCLUDED.data, updated_at = NOW()
+      `,
+      [JSON.stringify(settings)]
+    );
+
+    return settings;
+  }
+
+  return normalizeAppSettings({
+    ...(row.data || {}),
+    updatedAt: row.updated_at
+  });
+}
+
+async function saveAppSettingsToDb(payload) {
+  if (!pool || !DATABASE_URL) {
+    const error = new Error("Chưa cấu hình DATABASE_URL nên không thể lưu settings.");
+    error.statusCode = 500;
+    throw error;
+  }
+
+  const current = await readAppSettingsFromDb();
+  const next = normalizeAppSettings({
+    ...current,
+    ...(payload || {}),
+    updatedAt: new Date().toISOString()
+  });
+
+  await pool.query(
+    `
+    INSERT INTO app_settings (id, data, updated_at)
+    VALUES (1, $1::jsonb, NOW())
+    ON CONFLICT (id)
+    DO UPDATE SET data = EXCLUDED.data, updated_at = NOW()
+    `,
+    [JSON.stringify(next)]
+  );
+
+  return next;
+}
+
+
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
@@ -316,6 +462,85 @@ app.get("/api/stats", requireDatabase, async (req, res) => {
     });
   }
 });
+
+
+
+// AIMLOCK APP SETTINGS API - FIX
+// APK/WebView đọc settings công khai.
+app.get("/api/app-settings", async (req, res) => {
+  try {
+    const settings = await readAppSettingsFromDb();
+
+    return res.json({
+      ok: true,
+      ...settings,
+      settings
+    });
+  } catch (error) {
+    return res.status(500).json({
+      ok: false,
+      message: dbErrorMessage(error),
+      ...defaultAppSettings(),
+      settings: defaultAppSettings()
+    });
+  }
+});
+
+// Admin lưu settings. Cần header x-admin-password.
+app.post("/api/app-settings", requireAdmin, async (req, res) => {
+  try {
+    const saved = await saveAppSettingsToDb(req.body || {});
+
+    return res.json({
+      ok: true,
+      message: "Đã lưu settings.",
+      ...saved,
+      settings: saved
+    });
+  } catch (error) {
+    return res.status(error.statusCode || 500).json({
+      ok: false,
+      message: dbErrorMessage(error)
+    });
+  }
+});
+
+// Giữ route cũ để admin.js cũ không lỗi.
+app.get("/api/admin/settings", requireAdmin, async (req, res) => {
+  try {
+    const settings = await readAppSettingsFromDb();
+
+    return res.json({
+      ok: true,
+      ...settings,
+      settings
+    });
+  } catch (error) {
+    return res.status(500).json({
+      ok: false,
+      message: dbErrorMessage(error)
+    });
+  }
+});
+
+app.post("/api/admin/settings", requireAdmin, async (req, res) => {
+  try {
+    const saved = await saveAppSettingsToDb(req.body || {});
+
+    return res.json({
+      ok: true,
+      message: "Đã lưu settings.",
+      ...saved,
+      settings: saved
+    });
+  } catch (error) {
+    return res.status(error.statusCode || 500).json({
+      ok: false,
+      message: dbErrorMessage(error)
+    });
+  }
+});
+
 
 app.post("/api/verify-key", async (req, res) => {
   const input = cleanKey(req.body?.key);
