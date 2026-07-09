@@ -2966,3 +2966,105 @@ input{outline:none;border:0;background:none;color:var(--txt)}
   .page-login-v13 .paste-key-v27{min-height:52px !important;padding:0 9px !important;gap:7px !important}
   .page-login-v13 .paste-key-v27 span:last-child{font-size:.70rem !important}
 }
+
+
+/* V33: full free-key text + smaller paste button */
+.page-login-v13 .dual-actions{
+  grid-template-columns:minmax(0,1.35fr) minmax(92px,.65fr) !important;
+  gap:10px !important;
+}
+
+.page-login-v13 .free-key-v27{
+  min-width:0 !important;
+  grid-template-columns:30px minmax(0,1fr) 12px !important;
+  gap:8px !important;
+  padding:0 10px !important;
+}
+
+.page-login-v13 .free-key-v27 .key-icon-badge{
+  width:30px !important;
+  height:30px !important;
+  flex-basis:30px !important;
+}
+
+.page-login-v13 .free-key-v27 .key-copy-v29{
+  display:block !important;
+  min-width:0 !important;
+  overflow:visible !important;
+}
+
+.page-login-v13 .free-key-v27 .key-copy-v29 strong,
+.page-login-v13 .free-key-v27 > span:not(.key-icon-badge):not(.key-arrow-v29){
+  display:block !important;
+  font-size:.68rem !important;
+  line-height:1.08 !important;
+  letter-spacing:.025em !important;
+  white-space:normal !important;
+  overflow:visible !important;
+  text-overflow:clip !important;
+  color:#fff !important;
+  font-weight:1000 !important;
+}
+
+.page-login-v13 .free-key-v27 .key-copy-v29 small{
+  display:none !important;
+}
+
+.page-login-v13 .free-key-v27 .key-arrow-v29{
+  font-size:.95rem !important;
+  justify-self:end !important;
+}
+
+.page-login-v13 .paste-key-v27{
+  min-width:92px !important;
+  justify-content:center !important;
+  gap:7px !important;
+  padding:0 8px !important;
+}
+
+.page-login-v13 .paste-key-v27 .key-icon-badge{
+  width:26px !important;
+  height:26px !important;
+  flex-basis:26px !important;
+  border-radius:9px !important;
+}
+
+.page-login-v13 .paste-key-v27 svg{
+  width:15px !important;
+  height:15px !important;
+}
+
+.page-login-v13 .paste-key-v27 span:last-child{
+  font-size:.66rem !important;
+  letter-spacing:.035em !important;
+  white-space:nowrap !important;
+}
+
+@media (max-width:430px){
+  .page-login-v13 .dual-actions{
+    grid-template-columns:minmax(0,1.38fr) minmax(88px,.62fr) !important;
+    gap:9px !important;
+  }
+  .page-login-v13 .free-key-v27{
+    min-height:52px !important;
+    grid-template-columns:28px minmax(0,1fr) 10px !important;
+    padding:0 8px !important;
+  }
+  .page-login-v13 .free-key-v27 .key-icon-badge{
+    width:28px !important;
+    height:28px !important;
+    flex-basis:28px !important;
+  }
+  .page-login-v13 .free-key-v27 .key-copy-v29 strong,
+  .page-login-v13 .free-key-v27 > span:not(.key-icon-badge):not(.key-arrow-v29){
+    font-size:.60rem !important;
+    line-height:1.08 !important;
+  }
+  .page-login-v13 .paste-key-v27{
+    min-width:88px !important;
+    min-height:52px !important;
+  }
+  .page-login-v13 .paste-key-v27 span:last-child{
+    font-size:.60rem !important;
+  }
+}
