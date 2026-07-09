@@ -8,29 +8,14 @@
   "date": "2026-07-09",
   "items": [
     {
-      "badge": "NEW AIM",
-      "title": "Thông báo tự nhảy khi có bản mới",
-      "description": "Thêm Tính Năng AIMLOCK Mới Cho Anh Em"
+      "badge": "NEW",
+      "title": "NEW AIMLOCK MỚI",
+      "description": "Thêm Tính Năng AIMLOCK Mới Cho Anh Em , Đi Phòng Được Nha"
     },
     {
       "badge": "01",
-      "title": "Update Center tự động",
-      "description": "Nút XEM NGAY mở popup cập nhật mới và nội dung được nạp tự động từ file updates.json."
-    },
-    {
-      "badge": "02",
-      "title": "Ghi nhớ đã xem",
-      "description": "Sau khi mở bản cập nhật hoặc đánh dấu đã đọc, app lưu version đã xem để không báo lặp lại."
-    },
-    {
-      "badge": "03",
       "title": "Logo login nâng cấp",
       "description": "Logo ngoài login to hơn nhẹ, nền vàng nổi hơn và vòng quay đỏ vàng vẫn hoạt động."
     },
-    {
-      "badge": "04",
-      "title": "Menu + thông báo + HUD ổn định hơn",
-      "description": "Giữ nguyên toàn bộ tính năng đã làm: menu thật, module runtime, thông báo và popup update."
-    }
   ]
 }
