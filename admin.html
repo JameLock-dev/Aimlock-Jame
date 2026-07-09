@@ -101,92 +101,141 @@
         </div>
       </section>
 
-      <section class="card settings-card-admin">
-        <h2>Settings</h2>
-        <p class="settings-help">Sửa nội dung cập nhật / link / trạng thái app tại đây. Bấm lưu xong app sẽ tự lấy dữ liệu mới từ server.</p>
-
-        <div class="settings-grid-admin">
-          <label>
-            <span>Link lấy key miễn phí</span>
-            <input id="settingFreeKeyUrl" type="text" placeholder="https://link4m.net/...">
-          </label>
-          <label>
-            <span>Link Zalo hỗ trợ</span>
-            <input id="settingZaloUrl" type="text" placeholder="https://zalo.me/0333635135">
-          </label>
-          <label>
-            <span>Link phụ / Boost</span>
-            <input id="settingBoostUrl" type="text" placeholder="https://boostylink.com/...">
-          </label>
-          <label>
-            <span>Tiêu đề bắt buộc cập nhật</span>
-            <input id="settingForceTitle" type="text" placeholder="CẦN CẬP NHẬT APP V1">
-          </label>
-          <label>
-            <span>Thông báo bản cũ</span>
-            <input id="settingForceMessage" type="text" placeholder="Phiên bản bạn đang dùng đã cũ...">
-          </label>
-          <label>
-            <span>Tiêu đề bảo trì</span>
-            <input id="settingMaintenanceTitle" type="text" placeholder="APP ĐANG NÂNG CẤP">
-          </label>
-          <label>
-            <span>Nội dung bảo trì</span>
-            <input id="settingMaintenanceMessage" type="text" placeholder="20h00 SẼ CẬP NHẬT XONG...">
-          </label>
-          <label>
-            <span>Phiên bản hiện tại</span>
-            <input id="settingCurrentVersion" type="text" placeholder="1">
-          </label>
-          <label>
-            <span>Phiên bản mới nhất</span>
-            <input id="settingLatestVersion" type="text" placeholder="1">
-          </label>
-          <label>
-            <span>Phiên bản tối thiểu</span>
-            <input id="settingMinVersion" type="text" placeholder="1">
-          </label>
-          <label>
-            <span>Update version</span>
-            <input id="settingUpdateVersion" type="text" placeholder="V1">
-          </label>
-          <label>
-            <span>Update title</span>
-            <input id="settingUpdateTitle" type="text" placeholder="AIMLOCK JAME">
-          </label>
-          <label>
-            <span>Update label</span>
-            <input id="settingUpdateLabel" type="text" placeholder="BẢN CẬP NHẬT">
-          </label>
-          <label>
-            <span>Update headline</span>
-            <input id="settingUpdateHeadline" type="text" placeholder="NEW AIMLOCK MỚI">
-          </label>
-          <label class="wide">
-            <span>Update summary</span>
-            <input id="settingUpdateSummary" type="text" placeholder="Nội dung tóm tắt bản cập nhật">
-          </label>
-          <label>
-            <span>Thời gian hiển thị</span>
-            <input id="settingUpdateTimeLabel" type="text" placeholder="Vừa cập nhật">
-          </label>
-          <label class="checkbox-line">
-            <input id="settingForceUpdate" type="checkbox">
-            <span>Bắt buộc cập nhật</span>
-          </label>
-          <label class="checkbox-line">
-            <input id="settingMaintenance" type="checkbox">
-            <span>Bảo trì</span>
-          </label>
-          <label class="wide full">
-            <span>Danh sách nội dung cập nhật JSON</span>
-            <textarea id="settingUpdateItemsJson" rows="8" spellcheck="false"></textarea>
-          </label>
+      <section class="card settings-card-admin settings-card-clean">
+        <div class="settings-clean-head">
+          <div>
+            <h2>Settings cập nhật app</h2>
+            <p class="settings-help">Sửa link, trạng thái app và nội dung bản cập nhật tại đây. Bấm lưu xong app sẽ tự lấy dữ liệu mới từ server.</p>
+          </div>
+          <button id="loadSettingsBtn" type="button" class="secondary-admin-btn compact-settings-btn">Tải từ server</button>
         </div>
 
-        <div class="settings-actions-admin">
+        <div class="settings-layout-admin">
+          <section class="settings-group-admin">
+            <div class="settings-group-title">
+              <b>1</b>
+              <div>
+                <h3>Cấu hình link</h3>
+                <p>Những link app sẽ mở khi người dùng bấm lấy key / hỗ trợ.</p>
+              </div>
+            </div>
+            <div class="settings-fields-admin three-col">
+              <label class="setting-field-admin">
+                <span>Link lấy key</span>
+                <input id="settingFreeKeyUrl" type="text" placeholder="https://link4m.net/...">
+              </label>
+              <label class="setting-field-admin">
+                <span>Link Zalo hỗ trợ</span>
+                <input id="settingZaloUrl" type="text" placeholder="https://zalo.me/0333635135">
+              </label>
+              <label class="setting-field-admin">
+                <span>Link nhiệm vụ / Boost</span>
+                <input id="settingBoostUrl" type="text" placeholder="https://boostylink.com/...">
+              </label>
+            </div>
+          </section>
+
+          <section class="settings-group-admin">
+            <div class="settings-group-title">
+              <b>2</b>
+              <div>
+                <h3>Cấu hình app</h3>
+                <p>Quản lý version, trạng thái bảo trì và bắt buộc cập nhật.</p>
+              </div>
+            </div>
+            <div class="settings-fields-admin three-col">
+              <label class="setting-field-admin">
+                <span>Tên app</span>
+                <input id="settingUpdateTitle" type="text" placeholder="AIMLOCK JAME">
+              </label>
+              <label class="setting-field-admin">
+                <span>Version hiện tại</span>
+                <input id="settingCurrentVersion" type="text" placeholder="1">
+              </label>
+              <label class="setting-field-admin">
+                <span>Version cập nhật</span>
+                <input id="settingUpdateVersion" type="text" placeholder="V1">
+              </label>
+              <label class="setting-field-admin">
+                <span>Version mới nhất</span>
+                <input id="settingLatestVersion" type="text" placeholder="1">
+              </label>
+              <label class="setting-field-admin">
+                <span>Version tối thiểu</span>
+                <input id="settingMinVersion" type="text" placeholder="1">
+              </label>
+              <label class="setting-field-admin">
+                <span>Trạng thái app</span>
+                <input id="settingMaintenanceTitle" type="text" placeholder="APP ĐANG NÂNG CẤP">
+              </label>
+              <label class="setting-toggle-admin">
+                <input id="settingForceUpdate" type="checkbox">
+                <span>Bắt buộc cập nhật</span>
+              </label>
+              <label class="setting-toggle-admin">
+                <input id="settingMaintenance" type="checkbox">
+                <span>Bảo trì</span>
+              </label>
+            </div>
+          </section>
+
+          <section class="settings-group-admin">
+            <div class="settings-group-title">
+              <b>3</b>
+              <div>
+                <h3>Nội dung cập nhật</h3>
+                <p>Phần này sẽ hiện trong popup update và trung tâm thông báo của app.</p>
+              </div>
+            </div>
+            <div class="settings-fields-admin two-col">
+              <label class="setting-field-admin">
+                <span>Label</span>
+                <input id="settingUpdateLabel" type="text" placeholder="BẢN CẬP NHẬT">
+              </label>
+              <label class="setting-field-admin">
+                <span>Tiêu đề / Headline</span>
+                <input id="settingUpdateHeadline" type="text" placeholder="Phiên bản 1 chính thức">
+              </label>
+              <label class="setting-field-admin wide">
+                <span>Mô tả ngắn</span>
+                <input id="settingUpdateSummary" type="text" placeholder="Cập nhật giao diện, module, HUD và thông báo tự động.">
+              </label>
+              <label class="setting-field-admin">
+                <span>Thời gian hiển thị</span>
+                <input id="settingUpdateTimeLabel" type="text" placeholder="Vừa cập nhật">
+              </label>
+              <label class="setting-field-admin">
+                <span>Tiêu đề bắt buộc cập nhật</span>
+                <input id="settingForceTitle" type="text" placeholder="CẦN CẬP NHẬT APP V1">
+              </label>
+              <label class="setting-field-admin wide">
+                <span>Thông báo bản cũ</span>
+                <input id="settingForceMessage" type="text" placeholder="Phiên bản bạn đang dùng đã cũ. Vui lòng tải bản mới để tiếp tục.">
+              </label>
+              <label class="setting-field-admin wide">
+                <span>Nội dung bảo trì / lịch cập nhật</span>
+                <input id="settingMaintenanceMessage" type="text" placeholder="20h00 SẼ CẬP NHẬT XONG ANH EM NHÉ">
+              </label>
+            </div>
+          </section>
+
+          <section class="settings-group-admin">
+            <div class="settings-group-title">
+              <b>4</b>
+              <div>
+                <h3>Danh sách nội dung update</h3>
+                <p>Mỗi dòng trong app update là một object JSON gồm badge, title, description.</p>
+              </div>
+            </div>
+            <label class="setting-field-admin json-field-admin">
+              <span>Update items JSON</span>
+              <textarea id="settingUpdateItemsJson" rows="8" spellcheck="false" placeholder='[{"badge":"NEW","title":"AIMLOCK JAME","description":"Nội dung cập nhật"}]'></textarea>
+            </label>
+          </section>
+        </div>
+
+        <div class="settings-actions-admin settings-actions-clean">
           <button id="saveSettingsBtn" type="button">Lưu settings</button>
-          <button id="loadSettingsBtn" type="button" class="secondary-admin-btn">Tải settings</button>
           <button id="previewSettingsBtn" type="button" class="secondary-admin-btn">Xem app</button>
         </div>
         <div id="settingsStatus" class="save-status">Sẵn sàng cập nhật settings.</div>
