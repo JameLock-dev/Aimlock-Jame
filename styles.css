@@ -2907,3 +2907,62 @@ input{outline:none;border:0;background:none;color:var(--txt)}
   .page-login-v13 .free-key-v27 .key-copy-v31 strong{font-size:.66rem}
   .page-login-v13 .free-key-v27 .key-copy-v31 small{font-size:.52rem}
 }
+
+
+/* V32 bigger readable free-key button */
+.page-login-v13 .dual-actions{
+  grid-template-columns:1.08fr .92fr;
+  gap:10px;
+}
+.page-login-v13 .free-key-v27{
+  grid-template-columns:32px minmax(0,1fr) 12px !important;
+  min-height:54px !important;
+  padding:0 12px !important;
+  gap:9px !important;
+}
+.page-login-v13 .free-key-v27 .key-icon-badge{
+  width:32px !important;
+  height:32px !important;
+  border-radius:11px !important;
+}
+.page-login-v13 .free-key-v27 .key-icon-badge svg{
+  width:18px !important;
+  height:18px !important;
+}
+.page-login-v13 .free-key-v27 .key-copy-v32{
+  display:block;
+  min-width:0;
+  line-height:1;
+}
+.page-login-v13 .free-key-v27 .key-copy-v32 strong{
+  display:block;
+  color:#fff;
+  font-size:.86rem;
+  font-weight:1000;
+  letter-spacing:.035em;
+  white-space:nowrap;
+  overflow:visible;
+  text-shadow:0 0 10px rgba(255,255,255,.10);
+}
+.page-login-v13 .free-key-v27 .key-arrow-v29{
+  display:block !important;
+  font-size:1rem;
+}
+.page-login-v13 .paste-key-v27{
+  min-height:54px !important;
+  padding:0 12px !important;
+  gap:9px !important;
+}
+.page-login-v13 .paste-key-v27 span:last-child{
+  font-size:.78rem !important;
+}
+@media (max-width:430px){
+  .page-login-v13 .dual-actions{grid-template-columns:1.08fr .92fr;gap:8px}
+  .page-login-v13 .free-key-v27{grid-template-columns:30px minmax(0,1fr) 10px !important;min-height:52px !important;padding:0 9px !important;gap:7px !important}
+  .page-login-v13 .free-key-v27 .key-icon-badge{width:30px !important;height:30px !important;border-radius:10px !important}
+  .page-login-v13 .free-key-v27 .key-icon-badge svg{width:17px !important;height:17px !important}
+  .page-login-v13 .free-key-v27 .key-copy-v32 strong{font-size:.74rem;letter-spacing:.02em}
+  .page-login-v13 .free-key-v27 .key-arrow-v29{font-size:.90rem}
+  .page-login-v13 .paste-key-v27{min-height:52px !important;padding:0 9px !important;gap:7px !important}
+  .page-login-v13 .paste-key-v27 span:last-child{font-size:.70rem !important}
+}
