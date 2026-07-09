@@ -3178,3 +3178,34 @@ input{outline:none;border:0;background:none;color:var(--txt)}
   .page-login-v13 .quick-links-card.compact h3::before,
   .page-login-v13 .quick-links-card.compact h3::after{width:24px;}
 }
+
+
+/* V35 one-line free key text */
+.page-login-v13 .free-key-v27{
+  grid-template-columns:30px minmax(0,1fr) 12px !important;
+  gap:8px !important;
+}
+.page-login-v13 .free-key-v27 .key-copy-v34{display:none !important;}
+.page-login-v13 .free-key-v27 .key-copy-v35{
+  display:block !important;
+  min-width:0 !important;
+}
+.page-login-v13 .free-key-v27 .key-copy-v35 strong{
+  display:block !important;
+  font-size:.69rem !important;
+  font-weight:1000 !important;
+  letter-spacing:.02em !important;
+  line-height:1.08 !important;
+  color:#fff !important;
+  white-space:nowrap !important;
+}
+.page-login-v13 .paste-key-v27{
+  min-width:92px !important;
+}
+@media (max-width:430px){
+  .page-login-v13 .free-key-v27 .key-copy-v35 strong{
+    font-size:.62rem !important;
+    letter-spacing:.01em !important;
+  }
+  .page-login-v13 .paste-key-v27{min-width:86px !important;}
+}
