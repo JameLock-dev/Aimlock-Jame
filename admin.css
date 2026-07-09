@@ -274,3 +274,136 @@ td:first-child {
     border-radius: 18px;
   }
 }
+
+/* Admin Settings UI */
+.settings-help {
+  color: var(--muted);
+  margin: -8px 0 18px;
+  line-height: 1.5;
+}
+
+.settings-grid-admin {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.settings-grid-admin label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.settings-grid-admin label span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.settings-grid-admin input,
+.settings-grid-admin textarea {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: var(--card-2);
+  color: #fff;
+  outline: none;
+  padding: 0 16px;
+  font-weight: 800;
+  font-family: inherit;
+}
+
+.settings-grid-admin input {
+  height: 54px;
+}
+
+.settings-grid-admin textarea {
+  min-height: 170px;
+  padding: 14px 16px;
+  line-height: 1.5;
+  resize: vertical;
+  font-size: 13px;
+}
+
+.settings-grid-admin .wide {
+  grid-column: span 2;
+}
+
+.settings-grid-admin .full {
+  grid-column: 1 / -1;
+}
+
+.settings-grid-admin .checkbox-line {
+  flex-direction: row;
+  align-items: center;
+  min-height: 54px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--card-2);
+}
+
+.settings-grid-admin .checkbox-line input {
+  width: 18px;
+  height: 18px;
+  accent-color: #0ea5e9;
+  padding: 0;
+}
+
+.settings-actions-admin {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.settings-actions-admin button {
+  min-width: 170px;
+  height: 54px;
+  border: 0;
+  border-radius: 16px;
+  background: linear-gradient(90deg, #ffbf1a, var(--orange));
+  color: #050505;
+  font-weight: 900;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.settings-actions-admin .secondary-admin-btn {
+  background: #1f2937;
+  color: #fff;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+@media (max-width: 960px) {
+  .settings-grid-admin {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .settings-grid-admin {
+    grid-template-columns: 1fr;
+  }
+  .settings-grid-admin .wide,
+  .settings-grid-admin .full {
+    grid-column: 1 / -1;
+  }
+  .settings-actions-admin button {
+    width: 100%;
+  }
+}
+
+/* V2 admin layout: key server dashboard + settings like target admin */
+body{
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255,208,0,.08), transparent 28%),
+    linear-gradient(180deg,#071020,#0f172a 48%,#0b1220);
+}
+.admin-page{width:min(1180px,calc(100% - 72px));padding-top:48px}.admin-header-actions{display:flex;gap:12px;align-items:center}.logout-admin-btn{cursor:pointer}.login-box,.card{background:rgba(17,24,39,.82);border-color:rgba(148,163,184,.20);box-shadow:0 16px 40px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.04)}
+.stats-grid article{background:#050a18;border-color:rgba(148,163,184,.20);box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
+.form-row input,.login-row input,.settings-grid-admin input,.settings-grid-admin textarea{background:#030816;border-color:rgba(148,163,184,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
+.form-row input:focus,.login-row input:focus,.settings-grid-admin input:focus,.settings-grid-admin textarea:focus{border-color:rgba(255,208,0,.55);box-shadow:0 0 0 3px rgba(255,208,0,.08)}
+.action-group{flex-wrap:wrap}.action-btn.reset{background:linear-gradient(90deg,#ffb800,#ff8a18);color:#050505;border:0}.action-btn.devices{background:#1f2937}.device-table-admin{min-width:980px}.devices-card-admin h2{margin-bottom:10px}.settings-card-admin{padding:28px 30px 34px}.settings-grid-admin{grid-template-columns:1.4fr 1.4fr 1.2fr;align-items:end}.settings-grid-admin label span{display:none}.settings-grid-admin .checkbox-line span{display:inline;color:#d6deec;font-size:17px;font-weight:500}.settings-grid-admin .checkbox-line{border:0;background:transparent;min-height:54px;padding:0}.settings-grid-admin .checkbox-line input{background:auto}.settings-grid-admin input::placeholder,.settings-grid-admin textarea::placeholder{color:#b8c1cf}.settings-grid-admin .full textarea{min-height:150px}.settings-actions-admin button,#saveKeyBtn{min-width:220px;background:linear-gradient(90deg,#ffce17,#ff7a18)}.settings-actions-admin .secondary-admin-btn{min-width:150px}.save-status{min-height:22px}.key-status{color:#fff}.key-status::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;background:#22e06e;box-shadow:0 0 10px rgba(34,224,110,.55)}
+@media(max-width:960px){.admin-page{width:min(100% - 28px,720px)}.admin-header-actions{width:100%;justify-content:flex-start}.settings-grid-admin{grid-template-columns:1fr 1fr}.settings-grid-admin .wide{grid-column:1/-1}}
+@media(max-width:560px){.admin-page{width:min(100% - 20px,520px)}.admin-header-actions{flex-wrap:wrap}.settings-grid-admin{grid-template-columns:1fr}.settings-grid-admin .checkbox-line span{font-size:15px}}

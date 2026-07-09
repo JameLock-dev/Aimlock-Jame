@@ -14,7 +14,7 @@
         <h1>AIMLOCK ADMIN</h1>
         <p>Postgres Key Server Dashboard</p>
       </div>
-      <a class="open-app" href="index.html">Mở App</a>
+      <div class="admin-header-actions"><a class="open-app" href="index.html">Mở App</a><button class="open-app logout-admin-btn" id="adminLogoutTop" type="button">Đăng xuất</button></div>
     </header>
 
     <section id="loginBox" class="login-box">
@@ -80,6 +80,116 @@
             <tbody id="keyTable"></tbody>
           </table>
         </div>
+      </section>
+
+      <section class="card devices-card-admin">
+        <h2>Thiết bị của key</h2>
+        <p class="settings-help" id="deviceHelp">Chọn “Thiết bị” ở một key để xem danh sách máy đang gắn.</p>
+        <div class="table-wrap">
+          <table class="device-table-admin">
+            <thead>
+              <tr>
+                <th>Device ID</th>
+                <th>Tên máy</th>
+                <th>Lần đầu</th>
+                <th>Lần cuối</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="deviceTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card settings-card-admin">
+        <h2>Settings</h2>
+        <p class="settings-help">Sửa nội dung cập nhật / link / trạng thái app tại đây. Bấm lưu xong app sẽ tự lấy dữ liệu mới từ server.</p>
+
+        <div class="settings-grid-admin">
+          <label>
+            <span>Link lấy key miễn phí</span>
+            <input id="settingFreeKeyUrl" type="text" placeholder="https://link4m.net/...">
+          </label>
+          <label>
+            <span>Link Zalo hỗ trợ</span>
+            <input id="settingZaloUrl" type="text" placeholder="https://zalo.me/0333635135">
+          </label>
+          <label>
+            <span>Link phụ / Boost</span>
+            <input id="settingBoostUrl" type="text" placeholder="https://boostylink.com/...">
+          </label>
+          <label>
+            <span>Tiêu đề bắt buộc cập nhật</span>
+            <input id="settingForceTitle" type="text" placeholder="CẦN CẬP NHẬT APP V1">
+          </label>
+          <label>
+            <span>Thông báo bản cũ</span>
+            <input id="settingForceMessage" type="text" placeholder="Phiên bản bạn đang dùng đã cũ...">
+          </label>
+          <label>
+            <span>Tiêu đề bảo trì</span>
+            <input id="settingMaintenanceTitle" type="text" placeholder="APP ĐANG NÂNG CẤP">
+          </label>
+          <label>
+            <span>Nội dung bảo trì</span>
+            <input id="settingMaintenanceMessage" type="text" placeholder="20h00 SẼ CẬP NHẬT XONG...">
+          </label>
+          <label>
+            <span>Phiên bản hiện tại</span>
+            <input id="settingCurrentVersion" type="text" placeholder="1">
+          </label>
+          <label>
+            <span>Phiên bản mới nhất</span>
+            <input id="settingLatestVersion" type="text" placeholder="1">
+          </label>
+          <label>
+            <span>Phiên bản tối thiểu</span>
+            <input id="settingMinVersion" type="text" placeholder="1">
+          </label>
+          <label>
+            <span>Update version</span>
+            <input id="settingUpdateVersion" type="text" placeholder="V1">
+          </label>
+          <label>
+            <span>Update title</span>
+            <input id="settingUpdateTitle" type="text" placeholder="AIMLOCK JAME">
+          </label>
+          <label>
+            <span>Update label</span>
+            <input id="settingUpdateLabel" type="text" placeholder="BẢN CẬP NHẬT">
+          </label>
+          <label>
+            <span>Update headline</span>
+            <input id="settingUpdateHeadline" type="text" placeholder="NEW AIMLOCK MỚI">
+          </label>
+          <label class="wide">
+            <span>Update summary</span>
+            <input id="settingUpdateSummary" type="text" placeholder="Nội dung tóm tắt bản cập nhật">
+          </label>
+          <label>
+            <span>Thời gian hiển thị</span>
+            <input id="settingUpdateTimeLabel" type="text" placeholder="Vừa cập nhật">
+          </label>
+          <label class="checkbox-line">
+            <input id="settingForceUpdate" type="checkbox">
+            <span>Bắt buộc cập nhật</span>
+          </label>
+          <label class="checkbox-line">
+            <input id="settingMaintenance" type="checkbox">
+            <span>Bảo trì</span>
+          </label>
+          <label class="wide full">
+            <span>Danh sách nội dung cập nhật JSON</span>
+            <textarea id="settingUpdateItemsJson" rows="8" spellcheck="false"></textarea>
+          </label>
+        </div>
+
+        <div class="settings-actions-admin">
+          <button id="saveSettingsBtn" type="button">Lưu settings</button>
+          <button id="loadSettingsBtn" type="button" class="secondary-admin-btn">Tải settings</button>
+          <button id="previewSettingsBtn" type="button" class="secondary-admin-btn">Xem app</button>
+        </div>
+        <div id="settingsStatus" class="save-status">Sẵn sàng cập nhật settings.</div>
       </section>
     </section>
   </main>

@@ -118,6 +118,107 @@ function cleanDeviceId(value) {
   return deviceId.slice(0, 120) || "browser";
 }
 
+const DEFAULT_APP_SETTINGS = {
+  freeKeyUrl: "https://link4m.net/GhYJFCll",
+  zaloUrl: "https://zalo.me/0333635135",
+  boostLinkUrl: "https://boostylink.com/Kt8rStah",
+  currentVersion: "1",
+  latestVersion: "1",
+  minVersion: "1",
+  forceUpdate: "false",
+  maintenance: "false",
+  forceTitle: "CẦN CẬP NHẬT APP V1",
+  forceMessage: "Phiên bản bạn đang dùng đã cũ. Vui lòng tải bản mới để tiếp tục.",
+  maintenanceTitle: "APP ĐANG NÂNG CẤP",
+  maintenanceMessage: "20h00 SẼ CẬP NHẬT XONG ANH EM NHÉ<br>Vui lòng quay lại sau.",
+  updateVersion: "V1",
+  updateTitle: "AIMLOCK JAME",
+  updateLabel: "BẢN CẬP NHẬT",
+  updateHeadline: "Phiên bản 1 chính thức",
+  updateSummary: "Cập nhật giao diện, module, HUD và hệ thống thông báo tự động.",
+  updateTimeLabel: "Vừa cập nhật",
+  updateItemsJson: JSON.stringify([
+    { badge: "NEW", title: "AIMLOCK JAME", description: "Admin có thể chỉnh nội dung cập nhật trực tiếp trong bảng Settings." },
+    { badge: "01", title: "Thông báo tự động", description: "App tự nhận phiên bản mới từ server và bật thông báo khi có update." }
+  ])
+};
+
+function normalizeBool(value) {
+  return value === true || value === "true" || value === "1" || value === 1;
+}
+
+function safeParseItems(value) {
+  try {
+    const parsed = JSON.parse(String(value || "[]"));
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (_) {
+    return [];
+  }
+}
+
+function settingsToPublic(settings) {
+  const merged = { ...DEFAULT_APP_SETTINGS, ...(settings || {}) };
+  return {
+    settings: {
+      freeKeyUrl: merged.freeKeyUrl,
+      zaloUrl: merged.zaloUrl,
+      boostLinkUrl: merged.boostLinkUrl,
+      currentVersion: merged.currentVersion,
+      latestVersion: merged.latestVersion,
+      minVersion: merged.minVersion,
+      forceUpdate: normalizeBool(merged.forceUpdate),
+      maintenance: normalizeBool(merged.maintenance),
+      forceTitle: merged.forceTitle,
+      forceMessage: merged.forceMessage,
+      maintenanceTitle: merged.maintenanceTitle,
+      maintenanceMessage: merged.maintenanceMessage
+    },
+    update: {
+      version: merged.updateVersion || merged.latestVersion || "V1",
+      title: merged.updateTitle || "AIMLOCK JAME",
+      label: merged.updateLabel || "BẢN CẬP NHẬT",
+      headline: merged.updateHeadline || "Cập nhật mới",
+      summary: merged.updateSummary || "Đã có cập nhật mới cho hệ thống.",
+      time_label: merged.updateTimeLabel || "Vừa cập nhật",
+      date: new Date().toISOString().slice(0, 10),
+      items: safeParseItems(merged.updateItemsJson)
+    }
+  };
+}
+
+async function getAppSettings() {
+  if (!pool) return { ...DEFAULT_APP_SETTINGS };
+  const result = await pool.query("SELECT key, value FROM app_settings");
+  const settings = { ...DEFAULT_APP_SETTINGS };
+  for (const row of result.rows) settings[row.key] = row.value;
+  return settings;
+}
+
+async function saveAppSettings(settings) {
+  const allowed = Object.keys(DEFAULT_APP_SETTINGS);
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+    for (const key of allowed) {
+      if (!Object.prototype.hasOwnProperty.call(settings, key)) continue;
+      const value = key === "updateItemsJson"
+        ? JSON.stringify(safeParseItems(settings[key]))
+        : String(settings[key] ?? "");
+      await client.query(
+        `INSERT INTO app_settings (key, value) VALUES ($1, $2)
+         ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = NOW()`,
+        [key, value]
+      );
+    }
+    await client.query("COMMIT");
+  } catch (error) {
+    try { await client.query("ROLLBACK"); } catch (_) {}
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
 function rowToKey(row) {
   return {
     key: row.key_value,
@@ -177,6 +278,22 @@ async function initDb() {
   await pool.query(`ALTER TABLE usage_log ADD COLUMN IF NOT EXISTS ip TEXT;`);
   await pool.query(`ALTER TABLE usage_log ADD COLUMN IF NOT EXISTS success BOOLEAN DEFAULT TRUE;`);
   await pool.query(`ALTER TABLE usage_log ADD COLUMN IF NOT EXISTS reason TEXT;`);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS app_settings (
+      key TEXT PRIMARY KEY,
+      value TEXT,
+      updated_at TIMESTAMPTZ DEFAULT NOW()
+    );
+  `);
+
+  for (const [key, value] of Object.entries(DEFAULT_APP_SETTINGS)) {
+    await pool.query(
+      `INSERT INTO app_settings (key, value) VALUES ($1, $2)
+       ON CONFLICT (key) DO NOTHING`,
+      [key, String(value)]
+    );
+  }
 
   // Key mẫu luôn còn hạn 365 ngày. Có thể đổi bằng DEFAULT_KEY trên Railway.
   await pool.query(
@@ -245,6 +362,47 @@ app.get("/api/health", requireDatabase, async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({ ok: false, message: dbErrorMessage(error) });
+  }
+});
+
+app.get("/api/app-settings", requireDatabase, async (req, res) => {
+  try {
+    const settings = await getAppSettings();
+    return res.json({ ok: true, ...settingsToPublic(settings) });
+  } catch (error) {
+    return res.status(500).json({ ok: false, message: dbErrorMessage(error) });
+  }
+});
+
+app.get("/api/admin/settings", requireDatabase, requireAdmin, async (req, res) => {
+  try {
+    const settings = await getAppSettings();
+    return res.json({ ok: true, raw: settings, ...settingsToPublic(settings) });
+  } catch (error) {
+    return res.status(500).json({ ok: false, message: dbErrorMessage(error) });
+  }
+});
+
+app.post("/api/admin/settings", requireDatabase, requireAdmin, async (req, res) => {
+  try {
+    const payload = req.body || {};
+    await saveAppSettings(payload);
+    const settings = await getAppSettings();
+    return res.json({ ok: true, message: "Đã lưu settings.", raw: settings, ...settingsToPublic(settings) });
+  } catch (error) {
+    return res.status(500).json({ ok: false, message: dbErrorMessage(error) });
+  }
+});
+
+app.get("/updates.json", async (req, res) => {
+  try {
+    if (!pool || !DATABASE_URL) {
+      return res.sendFile(path.join(__dirname, "updates.json"));
+    }
+    const settings = await getAppSettings();
+    return res.json(settingsToPublic(settings).update);
+  } catch (_) {
+    return res.sendFile(path.join(__dirname, "updates.json"));
   }
 });
 
@@ -485,6 +643,96 @@ app.post("/api/admin/keys", requireDatabase, requireAdmin, async (req, res) => {
     return res.status(500).json({ ok: false, message: dbErrorMessage(error) });
   } finally {
     client.release();
+  }
+});
+
+
+app.get("/api/admin/keys/:key/devices", requireDatabase, requireAdmin, async (req, res) => {
+  try {
+    const keyResult = await pool.query(
+      "SELECT id, key_value FROM keys WHERE LOWER(key_value) = LOWER($1) LIMIT 1",
+      [req.params.key]
+    );
+
+    if (!keyResult.rows.length) {
+      return res.status(404).json({ ok: false, message: "Không tìm thấy key." });
+    }
+
+    const result = await pool.query(
+      `
+      SELECT device_id, created_at, last_seen
+      FROM key_devices
+      WHERE key_id = $1
+      ORDER BY last_seen DESC, created_at DESC
+      `,
+      [keyResult.rows[0].id]
+    );
+
+    return res.json({
+      ok: true,
+      message: "Đã tải danh sách thiết bị.",
+      key: keyResult.rows[0].key_value,
+      devices: result.rows.map((row) => ({
+        deviceId: row.device_id,
+        deviceName: row.device_id?.startsWith("browser-") ? "Browser Device" : "Unknown Device",
+        firstSeen: row.created_at,
+        lastSeen: row.last_seen
+      }))
+    });
+  } catch (error) {
+    return res.status(500).json({ ok: false, message: dbErrorMessage(error) });
+  }
+});
+
+app.delete("/api/admin/keys/:key/devices/:deviceId", requireDatabase, requireAdmin, async (req, res) => {
+  try {
+    const keyResult = await pool.query(
+      "SELECT id, key_value FROM keys WHERE LOWER(key_value) = LOWER($1) LIMIT 1",
+      [req.params.key]
+    );
+
+    if (!keyResult.rows.length) {
+      return res.status(404).json({ ok: false, message: "Không tìm thấy key." });
+    }
+
+    await pool.query(
+      "DELETE FROM key_devices WHERE key_id = $1 AND device_id = $2",
+      [keyResult.rows[0].id, req.params.deviceId]
+    );
+
+    const count = await pool.query(
+      "SELECT COUNT(*)::int AS total FROM key_devices WHERE key_id = $1",
+      [keyResult.rows[0].id]
+    );
+
+    await pool.query(
+      "UPDATE keys SET slot_used = $2 WHERE id = $1",
+      [keyResult.rows[0].id, Number(count.rows[0]?.total || 0)]
+    );
+
+    return res.json({ ok: true, message: "Đã gỡ thiết bị khỏi key." });
+  } catch (error) {
+    return res.status(500).json({ ok: false, message: dbErrorMessage(error) });
+  }
+});
+
+app.post("/api/admin/keys/:key/reset-devices", requireDatabase, requireAdmin, async (req, res) => {
+  try {
+    const keyResult = await pool.query(
+      "SELECT id, key_value FROM keys WHERE LOWER(key_value) = LOWER($1) LIMIT 1",
+      [req.params.key]
+    );
+
+    if (!keyResult.rows.length) {
+      return res.status(404).json({ ok: false, message: "Không tìm thấy key." });
+    }
+
+    await pool.query("DELETE FROM key_devices WHERE key_id = $1", [keyResult.rows[0].id]);
+    await pool.query("UPDATE keys SET slot_used = 0 WHERE id = $1", [keyResult.rows[0].id]);
+
+    return res.json({ ok: true, message: "Đã reset toàn bộ máy của key." });
+  } catch (error) {
+    return res.status(500).json({ ok: false, message: dbErrorMessage(error) });
   }
 });
 
