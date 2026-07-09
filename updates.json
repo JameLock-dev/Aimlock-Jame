@@ -8,9 +8,9 @@
   "date": "2026-07-09",
   "items": [
     {
-      "badge": "NEW",
+      "badge": "NEW AIM",
       "title": "Thông báo tự nhảy khi có bản mới",
-      "description": "App tự kiểm tra updates.json, hiện chấm đỏ ở chuông và bật toast khi có version mới chưa xem."
+      "description": "Thêm Tính Năng AIMLOCK Mới Cho Anh Em"
     },
     {
       "badge": "01",
