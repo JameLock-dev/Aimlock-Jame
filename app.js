@@ -398,18 +398,6 @@ if (document.body.classList.contains("page-dashboard")) {
   });
   supportZaloBtn?.addEventListener("click", () => window.open(zaloSupportUrl, "_blank", "noopener"));
   activateActionBtn?.addEventListener("click", () => document.getElementById("moduleList")?.scrollIntoView({ behavior: "smooth", block: "start" }));
-  document.querySelectorAll(".bottom-nav-v11 .nav-item").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const label = btn.textContent || "";
-      if (label.includes("Kích hoạt")) scrollToSection(document.getElementById("moduleList"));
-      if (label.includes("Thông tin")) scrollToSection(document.getElementById("updateBanner"));
-      if (label.includes("Trang chủ")) scrollToSection(document.getElementById("dashboardTop"));
-    });
-  });
-  document.querySelector(".nav-hub")?.addEventListener("click", () => {
-    scrollToSection(runtimeHud);
-    showToast("Gaming hub đã sẵn sàng.", "success");
-  });
   document.addEventListener("keydown", event => {
     if (event.key === "Escape") closeVip();
   });
@@ -438,6 +426,19 @@ if (document.body.classList.contains("page-dashboard")) {
   const resetModulesBtn = document.getElementById("resetModulesBtn");
   const updateModal = document.getElementById("updateModal");
   const updateNowBtn = document.getElementById("updateNowBtn");
+  const navHomeBtn = document.getElementById("navHomeBtn");
+  const navModulesBtn = document.getElementById("navModulesBtn");
+  const navHudBtn = document.getElementById("navHudBtn");
+  const navUpdatesBtn = document.getElementById("navUpdatesBtn");
+  const accountModal = document.getElementById("accountModal");
+  const accountOpenVipBtn = document.getElementById("accountOpenVipBtn");
+  const accountOpenNotifyBtn = document.getElementById("accountOpenNotifyBtn");
+  const accountSupportBtn = document.getElementById("accountSupportBtn");
+  const accountLogoutBtn = document.getElementById("accountLogoutBtn");
+  const accountSection = document.getElementById("accountSection");
+  const accountModalName = document.getElementById("accountModalName");
+  const accountModalPlan = document.getElementById("accountModalPlan");
+  const accountModalExpire = document.getElementById("accountModalExpire");
   const updateList = document.getElementById("updateList");
   const notifyList = document.getElementById("notifyList");
   const updateBannerLabel = document.getElementById("updateBannerLabel");
@@ -489,6 +490,25 @@ if (document.body.classList.contains("page-dashboard")) {
     updateModal.classList.remove("show");
     updateModal.setAttribute("aria-hidden", "true");
     document.body.classList.remove("modal-open-v14");
+  }
+  function openAccountModal() {
+    if (!accountModal) return;
+    accountModalName.textContent = document.getElementById("helloName")?.textContent || "AIMLOCK USER";
+    accountModalPlan.textContent = `Gói: ${document.getElementById("vipPlan")?.textContent || "AIMLOCK VIP"}`;
+    accountModalExpire.textContent = `HSD: ${document.getElementById("vipExpireDate")?.textContent || "--/--/----"}`;
+    accountModal.classList.add("show");
+    accountModal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open-v14");
+  }
+  function closeAccountModal() {
+    if (!accountModal) return;
+    accountModal.classList.remove("show");
+    accountModal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open-v14");
+  }
+  function setActiveBottomNav(activeEl) {
+    document.querySelectorAll(".bottom-nav-v23 .nav-item-v23, .bottom-nav-v23 .nav-hub-v23").forEach(btn => btn.classList.remove("active"));
+    activeEl?.classList.add("active");
   }
 
   function getSeenUpdateVersion() {
@@ -606,6 +626,32 @@ if (document.body.classList.contains("page-dashboard")) {
   applyDashboardSettings();
   loadLatestUpdates();
 
+  navHomeBtn?.addEventListener("click", () => {
+    setActiveBottomNav(navHomeBtn);
+    scrollToSection(document.getElementById("dashboardTop"));
+    showToast("Đã mở Trang chủ.", "info");
+  });
+  navModulesBtn?.addEventListener("click", () => {
+    setActiveBottomNav(navModulesBtn);
+    scrollToSection(document.getElementById("moduleList"));
+    showToast("Đã mở khu Module.", "success");
+  });
+  navHudBtn?.addEventListener("click", () => {
+    setActiveBottomNav(navHudBtn);
+    scrollToSection(runtimeHud);
+    showToast("Đã mở HUD điều khiển.", "success");
+  });
+  navUpdatesBtn?.addEventListener("click", () => {
+    setActiveBottomNav(navUpdatesBtn);
+    markLatestUpdateSeen();
+    openUpdateModal();
+    showToast("Đã mở trung tâm cập nhật.", "info");
+  });
+  accountBtn?.addEventListener("click", () => {
+    setActiveBottomNav(accountBtn);
+    openAccountModal();
+  });
+
   menuBtn?.addEventListener("click", openDrawer);
   closeDrawer?.addEventListener("click", closeDrawerFn);
   sideDrawer?.addEventListener("click", event => {
@@ -680,7 +726,20 @@ if (document.body.classList.contains("page-dashboard")) {
     showToast("Đã reset toàn bộ module về mặc định.", "warning");
   });
 
-  accountBtn?.addEventListener("click", () => showToast("Tài khoản đang hoạt động bình thường.", "success"));
+  document.querySelectorAll("[data-close-account]").forEach(el => el.addEventListener("click", closeAccountModal));
+  accountOpenVipBtn?.addEventListener("click", () => { closeAccountModal(); openVipModal(); });
+  accountOpenNotifyBtn?.addEventListener("click", () => { closeAccountModal(); openNotifyPanel(); });
+  accountSupportBtn?.addEventListener("click", () => { window.open(zaloSupportUrl, "_blank", "noopener"); });
+  accountLogoutBtn?.addEventListener("click", () => {
+    closeAccountModal();
+    localStorage.removeItem("aimlock_auth");
+    showToast("Đã đăng xuất.", "warning");
+    setTimeout(() => location.href = "index.html", 500);
+  });
+  document.getElementById("accountKeyBtn")?.addEventListener("click", () => {
+    setActiveBottomNav(accountBtn);
+    openAccountModal();
+  });
   logoutBtn?.addEventListener("click", () => {
     localStorage.removeItem("aimlock_auth");
     showToast("Đã đăng xuất.", "warning");
@@ -692,6 +751,7 @@ if (document.body.classList.contains("page-dashboard")) {
       closeNotifyPanel();
       closeSettingsModal();
       closeUpdateModal();
+      closeAccountModal();
     }
   });
 }

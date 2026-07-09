@@ -24,7 +24,7 @@
       </button>
     </header>
 
-    <section class="account-card-v11 panel">
+    <section class="account-card-v11 panel" id="accountSection">
       <div class="account-glow-v11"></div>
       <div class="avatar-orbit-v11">
         <div class="avatar-ring-v11">
@@ -232,25 +232,52 @@
       </div>
     </section>
 
-    <nav class="bottom-nav bottom-nav-v11">
-      <button class="nav-item active interactive" data-toast="Bạn đang ở Trang chủ." data-toast-type="info">
+    <nav class="bottom-nav bottom-nav-v11 bottom-nav-v23" aria-label="Điều hướng nhanh">
+      <button class="nav-item nav-item-v23 active interactive" id="navHomeBtn" type="button">
         <span>⌂</span><small>Trang chủ</small>
       </button>
-      <button class="nav-item interactive" data-toast="Mở tab Kích hoạt." data-toast-type="success">
-        <span>⚡</span><small>Kích hoạt</small>
+      <button class="nav-item nav-item-v23 interactive" id="navModulesBtn" type="button">
+        <span>⚡</span><small>Module</small>
       </button>
-      <button class="nav-hub interactive" data-toast="Gaming hub đã sẵn sàng." data-toast-type="success">
+      <button class="nav-hub nav-hub-v23 interactive" id="navHudBtn" type="button">
         <span>◎</span>
+        <small>HUD</small>
       </button>
-      <button class="nav-item interactive" data-toast="Mở tab Thông tin." data-toast-type="info">
-        <span>ⓘ</span><small>Thông tin</small>
+      <button class="nav-item nav-item-v23 interactive" id="navUpdatesBtn" type="button">
+        <span>ⓘ</span><small>Cập nhật</small>
       </button>
-      <button class="nav-item interactive" id="accountBtn" data-toast="Tài khoản đang hoạt động bình thường." data-toast-type="success">
+      <button class="nav-item nav-item-v23 interactive" id="accountBtn" type="button">
         <span>◌</span><small>Tài khoản</small>
       </button>
     </nav>
   </main>
 
+  <div class="account-modal-v23" id="accountModal" aria-hidden="true">
+    <div class="account-backdrop-v23" data-close-account></div>
+    <section class="account-modal-card-v23" role="dialog" aria-modal="true" aria-labelledby="accountModalTitle">
+      <div class="account-modal-head-v23">
+        <div>
+          <span>PROFILE CENTER</span>
+          <h3 id="accountModalTitle">Tài khoản AIMLOCK JAME</h3>
+        </div>
+        <button type="button" class="ghost-close-v15" data-close-account aria-label="Đóng">×</button>
+      </div>
+      <div class="account-summary-v23">
+        <div class="account-avatar-v23"><img src="logo.png" alt="AIMLOCK JAME"></div>
+        <div class="account-copy-v23">
+          <strong id="accountModalName">ADMIN JAME</strong>
+          <small id="accountModalPlan">Gói: AIMLOCK VIP</small>
+          <b id="accountModalExpire">HSD: 01/01/2100</b>
+        </div>
+      </div>
+      <div class="account-actions-v23">
+        <button type="button" class="account-action-v23" id="accountOpenVipBtn">Mở gia hạn VIP</button>
+        <button type="button" class="account-action-v23" id="accountOpenNotifyBtn">Mở thông báo</button>
+        <button type="button" class="account-action-v23" id="accountSupportBtn">Liên hệ Zalo</button>
+        <button type="button" class="account-action-v23 danger" id="accountLogoutBtn">Đăng xuất</button>
+      </div>
+    </section>
+  </div>
 
   <div class="vip-modal-v14" id="vipModal" aria-hidden="true">
     <div class="vip-modal-backdrop-v14" data-close-vip></div>
