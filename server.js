@@ -179,19 +179,22 @@ async function initDb() {
   await pool.query(`ALTER TABLE usage_log ADD COLUMN IF NOT EXISTS reason TEXT;`);
 
 
-  // AIMLOCK APP SETTINGS API - FIX
-  // Lưu cấu hình app/admin vào Postgres để APK WebView đọc được.
+  // AIMLOCK APP SETTINGS API - FIX V2
+  // Dùng bảng riêng aimlock_app_settings để tránh lỗi table cũ thiếu column "data".
   await pool.query(`
-    CREATE TABLE IF NOT EXISTS app_settings (
-      id INTEGER PRIMARY KEY DEFAULT 1,
+    CREATE TABLE IF NOT EXISTS aimlock_app_settings (
+      id INTEGER PRIMARY KEY,
       data JSONB NOT NULL DEFAULT '{}'::jsonb,
       updated_at TIMESTAMPTZ DEFAULT NOW()
     );
   `);
 
+  await pool.query(`ALTER TABLE aimlock_app_settings ADD COLUMN IF NOT EXISTS data JSONB NOT NULL DEFAULT '{}'::jsonb;`);
+  await pool.query(`ALTER TABLE aimlock_app_settings ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();`);
+
   await pool.query(`
-    INSERT INTO app_settings (id, data)
-    VALUES (1, '{}'::jsonb)
+    INSERT INTO aimlock_app_settings (id, data, updated_at)
+    VALUES (1, '{}'::jsonb, NOW())
     ON CONFLICT (id) DO NOTHING;
   `);
 
@@ -268,7 +271,7 @@ async function syncSlotUsed(clientOrPool, keyId) {
 }
 
 
-// AIMLOCK APP SETTINGS API - FIX
+// AIMLOCK APP SETTINGS API - FIX V2
 function defaultAppSettings() {
   return {
     maintenance: false,
@@ -301,41 +304,82 @@ function defaultAppSettings() {
   };
 }
 
-function normalizeAppSettings(input) {
-  const current = input && typeof input === "object" ? input : {};
-  const defaults = defaultAppSettings();
+function toBoolean(value, fallback = false) {
+  if (typeof value === "boolean") return value;
+  if (typeof value === "number") return value === 1;
 
-  let updateItems = current.updateItems ?? current.update_items ?? defaults.updateItems;
+  const text = String(value ?? "").trim().toLowerCase();
+  if (["true", "1", "yes", "on"].includes(text)) return true;
+  if (["false", "0", "no", "off"].includes(text)) return false;
 
-  if (typeof updateItems === "string") {
+  return fallback;
+}
+
+function parseUpdateItems(value, fallback) {
+  if (Array.isArray(value)) return value;
+
+  if (typeof value === "string") {
     try {
-      updateItems = JSON.parse(updateItems);
-    } catch (_) {
-      updateItems = defaults.updateItems;
-    }
+      const parsed = JSON.parse(value);
+      if (Array.isArray(parsed)) return parsed;
+    } catch (_) {}
   }
 
-  if (!Array.isArray(updateItems)) {
-    updateItems = defaults.updateItems;
-  }
+  return fallback;
+}
+
+function normalizeAppSettings(input) {
+  const defaults = defaultAppSettings();
+  const current = input && typeof input === "object" ? input : {};
+
+  const updateItems = parseUpdateItems(
+    current.updateItems ?? current.update_items,
+    defaults.updateItems
+  );
 
   return {
     ...defaults,
     ...current,
-    maintenance: Boolean(current.maintenance ?? current.isMaintenance ?? defaults.maintenance),
-    forceUpdate: Boolean(current.forceUpdate ?? current.force_update ?? current.requiredUpdate ?? defaults.forceUpdate),
-    minVersion: Number(current.minVersion ?? current.minimumVersion ?? current.minAppVersion ?? defaults.minVersion) || 1,
-    latestVersion: Number(current.latestVersion ?? current.newVersion ?? current.currentVersion ?? defaults.latestVersion) || 1,
+
+    maintenance: toBoolean(current.maintenance ?? current.isMaintenance, defaults.maintenance),
+    forceUpdate: toBoolean(current.forceUpdate ?? current.force_update ?? current.requiredUpdate ?? current.mustUpdate, defaults.forceUpdate),
+
+    minVersion: Number(current.minVersion ?? current.minimumVersion ?? current.minAppVersion ?? current.requiredVersion ?? defaults.minVersion) || 1,
+    latestVersion: Number(current.latestVersion ?? current.newVersion ?? current.currentVersion ?? current.version ?? defaults.latestVersion) || 1,
+
     freeKeyUrl: String(current.freeKeyUrl ?? current.keyUrl ?? current.linkKeyUrl ?? current.getKeyUrl ?? defaults.freeKeyUrl),
-    updateUrl: String(current.updateUrl ?? current.downloadUrl ?? current.apkUrl ?? current.newVersionUrl ?? current.appDownloadUrl ?? defaults.updateUrl),
+    updateUrl: String(current.updateUrl ?? current.downloadUrl ?? current.apkUrl ?? current.newVersionUrl ?? current.appDownloadUrl ?? current.boostLinkUrl ?? defaults.updateUrl),
     zaloUrl: String(current.zaloUrl ?? current.supportUrl ?? defaults.zaloUrl),
     tiktokUrl: String(current.tiktokUrl ?? current.communityUrl ?? defaults.tiktokUrl),
+
     maintenanceTitle: String(current.maintenanceTitle ?? current.statusTitle ?? defaults.maintenanceTitle),
     maintenanceMessage: String(current.maintenanceMessage ?? current.maintenanceText ?? current.statusMessage ?? defaults.maintenanceMessage),
     forceTitle: String(current.forceTitle ?? current.updateTitle ?? defaults.forceTitle),
     forceMessage: String(current.forceMessage ?? current.updateMessage ?? current.oldVersionMessage ?? defaults.forceMessage),
+
     updateItems
   };
+}
+
+async function ensureAppSettingsTable() {
+  if (!pool || !DATABASE_URL) return;
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS aimlock_app_settings (
+      id INTEGER PRIMARY KEY,
+      data JSONB NOT NULL DEFAULT '{}'::jsonb,
+      updated_at TIMESTAMPTZ DEFAULT NOW()
+    );
+  `);
+
+  await pool.query(`ALTER TABLE aimlock_app_settings ADD COLUMN IF NOT EXISTS data JSONB NOT NULL DEFAULT '{}'::jsonb;`);
+  await pool.query(`ALTER TABLE aimlock_app_settings ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();`);
+
+  await pool.query(`
+    INSERT INTO aimlock_app_settings (id, data, updated_at)
+    VALUES (1, '{}'::jsonb, NOW())
+    ON CONFLICT (id) DO NOTHING;
+  `);
 }
 
 async function readAppSettingsFromDb() {
@@ -343,7 +387,12 @@ async function readAppSettingsFromDb() {
     return normalizeAppSettings(defaultAppSettings());
   }
 
-  const result = await pool.query("SELECT data, updated_at FROM app_settings WHERE id = 1 LIMIT 1");
+  await ensureAppSettingsTable();
+
+  const result = await pool.query(
+    "SELECT data, updated_at FROM aimlock_app_settings WHERE id = 1 LIMIT 1"
+  );
+
   const row = result.rows[0];
 
   if (!row) {
@@ -351,7 +400,7 @@ async function readAppSettingsFromDb() {
 
     await pool.query(
       `
-      INSERT INTO app_settings (id, data, updated_at)
+      INSERT INTO aimlock_app_settings (id, data, updated_at)
       VALUES (1, $1::jsonb, NOW())
       ON CONFLICT (id)
       DO UPDATE SET data = EXCLUDED.data, updated_at = NOW()
@@ -375,6 +424,8 @@ async function saveAppSettingsToDb(payload) {
     throw error;
   }
 
+  await ensureAppSettingsTable();
+
   const current = await readAppSettingsFromDb();
   const next = normalizeAppSettings({
     ...current,
@@ -384,7 +435,7 @@ async function saveAppSettingsToDb(payload) {
 
   await pool.query(
     `
-    INSERT INTO app_settings (id, data, updated_at)
+    INSERT INTO aimlock_app_settings (id, data, updated_at)
     VALUES (1, $1::jsonb, NOW())
     ON CONFLICT (id)
     DO UPDATE SET data = EXCLUDED.data, updated_at = NOW()
@@ -465,7 +516,7 @@ app.get("/api/stats", requireDatabase, async (req, res) => {
 
 
 
-// AIMLOCK APP SETTINGS API - FIX
+// AIMLOCK APP SETTINGS API - FIX V2
 // APK/WebView đọc settings công khai.
 app.get("/api/app-settings", async (req, res) => {
   try {
@@ -477,16 +528,18 @@ app.get("/api/app-settings", async (req, res) => {
       settings
     });
   } catch (error) {
+    const fallback = defaultAppSettings();
+
     return res.status(500).json({
       ok: false,
       message: dbErrorMessage(error),
-      ...defaultAppSettings(),
-      settings: defaultAppSettings()
+      ...fallback,
+      settings: fallback
     });
   }
 });
 
-// Admin lưu settings. Cần header x-admin-password.
+// Admin lưu settings. Cần header x-admin-password đúng ADMIN_PASSWORD.
 app.post("/api/app-settings", requireAdmin, async (req, res) => {
   try {
     const saved = await saveAppSettingsToDb(req.body || {});
@@ -505,7 +558,7 @@ app.post("/api/app-settings", requireAdmin, async (req, res) => {
   }
 });
 
-// Giữ route cũ để admin.js cũ không lỗi.
+// Giữ route cũ để admin.js cũ cũng chạy.
 app.get("/api/admin/settings", requireAdmin, async (req, res) => {
   try {
     const settings = await readAppSettingsFromDb();
