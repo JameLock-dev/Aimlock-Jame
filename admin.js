@@ -249,7 +249,7 @@ async function loadSettings() {
       return;
     }
 
-    const data = await fetchJson("/api/admin/settings", { headers: headers() });
+    const data = await fetchJson("/api/app-settings", { headers: headers() });
     fillSettings(data);
     settingsStatus.textContent = "Đã tải settings từ server.";
     settingsStatus.style.color = "#22e06e";
