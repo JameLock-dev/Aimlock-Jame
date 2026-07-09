@@ -436,6 +436,8 @@ if (document.body.classList.contains("page-dashboard")) {
   const compactToggle = document.getElementById("compactToggle");
   const saveSettingsBtn = document.getElementById("saveSettingsBtn");
   const resetModulesBtn = document.getElementById("resetModulesBtn");
+  const updateModal = document.getElementById("updateModal");
+  const updateNowBtn = document.getElementById("updateNowBtn");
 
   function openDrawer() {
     sideDrawer?.classList.add("show");
@@ -465,6 +467,18 @@ if (document.body.classList.contains("page-dashboard")) {
     if (!settingsModal) return;
     settingsModal.classList.remove("show");
     settingsModal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open-v14");
+  }
+  function openUpdateModal() {
+    if (!updateModal) return;
+    updateModal.classList.add("show");
+    updateModal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open-v14");
+  }
+  function closeUpdateModal() {
+    if (!updateModal) return;
+    updateModal.classList.remove("show");
+    updateModal.setAttribute("aria-hidden", "true");
     document.body.classList.remove("modal-open-v14");
   }
 
@@ -540,13 +554,15 @@ if (document.body.classList.contains("page-dashboard")) {
         return;
       }
       if (action === "update") {
-        scrollToSection(updateBanner);
-        showToast("Đã chuyển đến khu bản cập nhật mới.", "info");
+        openUpdateModal();
+        showToast("Đã mở trung tâm cập nhật mới.", "info");
       }
     });
   });
 
   document.querySelectorAll("[data-close-settings]").forEach(el => el.addEventListener("click", closeSettingsModal));
+  document.querySelectorAll("[data-close-update]").forEach(el => el.addEventListener("click", closeUpdateModal));
+  updateNowBtn?.addEventListener("click", openUpdateModal);
   saveSettingsBtn?.addEventListener("click", () => {
     localStorage.setItem("aimlock_setting_perf", perfModeToggle?.checked ? "1" : "0");
     localStorage.setItem("aimlock_setting_scanline", scanlineToggle?.checked ? "1" : "0");
@@ -572,6 +588,7 @@ if (document.body.classList.contains("page-dashboard")) {
     if (event.key === "Escape") {
       closeNotifyPanel();
       closeSettingsModal();
+      closeUpdateModal();
     }
   });
 }

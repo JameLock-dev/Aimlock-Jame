@@ -210,10 +210,10 @@
       </div>
       <div class="update-copy-v11">
         <span>BẢN CẬP NHẬT</span>
-        <h3>Cyber Gaming V15</h3>
-        <p>Tối ưu bảng VIP, thêm menu có chức năng thật, trung tâm thông báo và HUD runtime nâng cấp.</p>
+        <h3>AIMLOCK JAME</h3>
+        <p>Bản giao diện chính thức với VIP HUD, menu thật và trung tâm cập nhật mới.</p>
       </div>
-      <button class="update-btn-v11 interactive" data-toast="Bạn đang dùng giao diện mới nhất." data-toast-type="success">XEM NGAY ›</button>
+      <button class="update-btn-v11 interactive" id="updateNowBtn" data-toast="Đang mở trung tâm cập nhật mới." data-toast-type="success">XEM NGAY ›</button>
     </section>
 
     <section class="community-card-v11" id="communitySection">
@@ -319,6 +319,57 @@
     </div>
   </div>
 
+
+
+  <div class="update-modal-v20" id="updateModal" aria-hidden="true">
+    <div class="update-backdrop-v20" data-close-update></div>
+    <section class="update-modal-card-v20" role="dialog" aria-modal="true" aria-labelledby="updateModalTitle">
+      <div class="update-modal-head-v20">
+        <div>
+          <span>UPDATE CENTER</span>
+          <h3 id="updateModalTitle">Cập nhật mới AIMLOCK JAME</h3>
+        </div>
+        <button type="button" class="ghost-close-v15" data-close-update aria-label="Đóng">×</button>
+      </div>
+      <div class="update-list-v20">
+        <article class="update-item-v20 latest">
+          <b>NEW</b>
+          <div>
+            <strong>HUD VIP mới</strong>
+            <p>Tối ưu card tài khoản, trạng thái online và progress VIP đẹp hơn.</p>
+          </div>
+        </article>
+        <article class="update-item-v20">
+          <b>01</b>
+          <div>
+            <strong>Aimlock Menu có chức năng thật</strong>
+            <p>Trung tâm điều khiển, cài đặt giao diện và hỗ trợ cộng đồng đã hoạt động.</p>
+          </div>
+        </article>
+        <article class="update-item-v20">
+          <b>02</b>
+          <div>
+            <strong>Thông báo hoạt động như app</strong>
+            <p>Mở danh sách thông báo, đánh dấu đã đọc và điều hướng tới từng mục.</p>
+          </div>
+        </article>
+        <article class="update-item-v20">
+          <b>03</b>
+          <div>
+            <strong>Runtime HUD module</strong>
+            <p>Bật module có loading, log chạy realtime và trạng thái ACTIVE/LOADING.</p>
+          </div>
+        </article>
+        <article class="update-item-v20">
+          <b>04</b>
+          <div>
+            <strong>Login screen nâng cấp</strong>
+            <p>Logo động, vòng quay đỏ vàng và nút kích hoạt AIMLOCK thon gọn hơn.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+  </div>
 
   <div class="notify-panel-v15" id="notifyPanel" aria-hidden="true">
     <div class="notify-backdrop-v15" data-close-notify></div>
