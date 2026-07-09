@@ -76,7 +76,7 @@
     </section>
 
     <section class="stats-grid-v11" aria-label="Dashboard statistics">
-      <button class="panel stat-card-v11 is-loading interactive" data-stat-card data-toast="Đang đồng bộ số người online." data-toast-type="info">
+      <button class="panel stat-card-v11 is-loading interactive" id="statOnlineCard" data-stat-card data-toast="Đang đồng bộ số người online." data-toast-type="info">
         <div class="stat-icon-v11 pulse-v11">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 11a4 4 0 1 0-8 0"/><path d="M4 20a8 8 0 0 1 16 0"/><path d="M19 10a3 3 0 0 1 2 5"/><path d="M3 15a3 3 0 0 1 2-5"/></svg>
         </div>
@@ -86,7 +86,7 @@
         <span class="skeleton-line-v11"></span>
       </button>
 
-      <button class="panel stat-card-v11 is-loading interactive" data-stat-card data-toast="Đang kiểm tra key hoạt động." data-toast-type="info">
+      <button class="panel stat-card-v11 is-loading interactive" id="statActiveCard" data-stat-card data-toast="Đang kiểm tra key hoạt động." data-toast-type="info">
         <div class="stat-icon-v11">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="12.5" r="3.5"/><path d="M11 12.5h10l-2 2 2 2-2 2"/></svg>
         </div>
@@ -96,7 +96,7 @@
         <span class="skeleton-line-v11"></span>
       </button>
 
-      <button class="panel stat-card-v11 is-loading interactive" data-stat-card data-toast="Đang lấy lượt kích hoạt hôm nay." data-toast-type="info">
+      <button class="panel stat-card-v11 is-loading interactive" id="statTodayCard" data-stat-card data-toast="Đang lấy lượt kích hoạt hôm nay." data-toast-type="info">
         <div class="stat-icon-v11 fill">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>
         </div>
@@ -156,7 +156,7 @@
         <div class="feature-badge-v11">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="7" width="12" height="10" rx="1.5"/><path d="M9 4v3M15 4v3M9 17v3M15 17v3M3 10h3M3 14h3M18 10h3M18 14h3"/></svg>
         </div>
-        <div class="feature-text-v11"><h4>BOOST FPS</h4><p>Dọn RAM nền + ổn định FPS</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+        <div class="feature-text-v11"><h4>BOOST FPS</h4><p>Tối ưu tài nguyên nền, giữ khung hình ổn định khi combat.</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
         <button class="toggle toggle-v11" data-feature="boostram" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
       </article>
 
@@ -164,7 +164,7 @@
         <div class="feature-badge-v11">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.6"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
         </div>
-        <div class="feature-text-v11"><h4>AIMBODY PRO</h4><p>Đồng bộ tâm thân + phản hồi nhanh</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+        <div class="feature-text-v11"><h4>AIMBODY PRO</h4><p>Tinh chỉnh phản hồi điều khiển, hỗ trợ cảm giác thao tác chính xác hơn.</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
         <button class="toggle toggle-v11 is-on" data-feature="aimbody" aria-pressed="true"><span class="thumb"></span><span class="label">ON</span></button>
       </article>
 
@@ -172,7 +172,7 @@
         <div class="feature-badge-v11">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 7.8a5 5 0 0 0-8.2-1.5L12 7l-.6-.7a5 5 0 0 0-8.2 5.7L12 21l8.8-9a5 5 0 0 0 0-4.2Z"/><path d="M4 12h4l2-3 3 7 2-4h5"/></svg>
         </div>
-        <div class="feature-text-v11"><h4>NHẸ TÂM</h4><p>Giảm giật tâm + thao tác mượt</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+        <div class="feature-text-v11"><h4>NHẸ TÂM</h4><p>Làm mượt phản hồi input, giảm cảm giác rung và giật khi thao tác.</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
         <button class="toggle toggle-v11" data-feature="nhetam" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
       </article>
 
@@ -180,7 +180,7 @@
         <div class="feature-badge-v11">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 20 6v5c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10V6l8-3Z"/><rect x="8.5" y="11" width="7" height="5" rx="1"/><path d="M10 11V9a2 2 0 0 1 4 0v2"/></svg>
         </div>
-        <div class="feature-text-v11"><h4>JAMELOCK</h4><p>Khóa cấu hình VIP + bảo vệ phiên</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+        <div class="feature-text-v11"><h4>JAMELOCK</h4><p>Khóa cấu hình cá nhân và bảo vệ phiên sử dụng.</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
         <button class="toggle toggle-v11" data-feature="jamelock" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
       </article>
 
@@ -188,13 +188,13 @@
         <div class="feature-badge-v11">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 20 6v5c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10V6l8-3Z"/><path d="m8.8 12.3 2.1 2.1 4.7-5"/></svg>
         </div>
-        <div class="feature-text-v11"><h4>ANTIBAN SHIELD</h4><p>Kiểm tra lớp bảo vệ kết nối</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+        <div class="feature-text-v11"><h4>ANTIBAND SHIELD</h4><p>Bật Chống quét , Chống Ban Acc Từ Vip1 Đến Vip8</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
         <button class="toggle toggle-v11" data-feature="antiban" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
       </article>
 
       <article class="panel feature-row-v11">
         <div class="feature-badge-v11 ff-badge-v11">FF</div>
-        <div class="feature-text-v11"><h4>REG FF MAX</h4><p>Dọn cache FF + làm mới cấu hình</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+        <div class="feature-text-v11"><h4>REG FF</h4><p>Tối Ưu Game Và Hỗ Trợ Anh Em Kéo Đỏ</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
         <button class="toggle toggle-v11" data-feature="regff" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
       </article>
     </section>
@@ -253,6 +253,49 @@
   </main>
 
 
+
+  <div class="stat-modal-v25" id="onlineModal" aria-hidden="true">
+    <div class="stat-backdrop-v25" data-close-stat></div>
+    <section class="stat-modal-card-v25" role="dialog" aria-modal="true" aria-labelledby="onlineModalTitle">
+      <div class="stat-modal-head-v25">
+        <div>
+          <span>SESSION STATUS</span>
+          <h3 id="onlineModalTitle">Danh sách online / session</h3>
+        </div>
+        <button type="button" class="ghost-close-v15" data-close-stat aria-label="Đóng">×</button>
+      </div>
+      <div class="stat-modal-body-v25" id="onlineModalBody"></div>
+    </section>
+  </div>
+
+  <div class="stat-modal-v25" id="activeKeysModal" aria-hidden="true">
+    <div class="stat-backdrop-v25" data-close-stat></div>
+    <section class="stat-modal-card-v25" role="dialog" aria-modal="true" aria-labelledby="activeKeysModalTitle">
+      <div class="stat-modal-head-v25">
+        <div>
+          <span>KEY MANAGER</span>
+          <h3 id="activeKeysModalTitle">Quản lý key đang hoạt động</h3>
+        </div>
+        <button type="button" class="ghost-close-v15" data-close-stat aria-label="Đóng">×</button>
+      </div>
+      <div class="stat-modal-body-v25" id="activeKeysModalBody"></div>
+    </section>
+  </div>
+
+  <div class="stat-modal-v25" id="todayModal" aria-hidden="true">
+    <div class="stat-backdrop-v25" data-close-stat></div>
+    <section class="stat-modal-card-v25" role="dialog" aria-modal="true" aria-labelledby="todayModalTitle">
+      <div class="stat-modal-head-v25">
+        <div>
+          <span>ACTIVITY LOG</span>
+          <h3 id="todayModalTitle">Lịch sử kích hoạt trong ngày</h3>
+        </div>
+        <button type="button" class="ghost-close-v15" data-close-stat aria-label="Đóng">×</button>
+      </div>
+      <div class="stat-modal-body-v25" id="todayModalBody"></div>
+    </section>
+  </div>
+
   <div class="module-modal-v24" id="moduleModal" aria-hidden="true">
     <div class="module-backdrop-v24" data-close-module></div>
     <section class="module-modal-card-v24" role="dialog" aria-modal="true" aria-labelledby="moduleModalTitle">
@@ -269,40 +312,40 @@
           <div class="feature-badge-v11">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="7" width="12" height="10" rx="1.5"/><path d="M9 4v3M15 4v3M9 17v3M15 17v3M3 10h3M3 14h3M18 10h3M18 14h3"/></svg>
           </div>
-          <div class="feature-text-v11"><h4>BOOST FPS</h4><p>Dọn RAM nền + ổn định FPS</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+          <div class="feature-text-v11"><h4>BOOST FPS</h4><p>Tối ưu tài nguyên nền, giữ khung hình ổn định khi combat.</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
           <button class="toggle toggle-v11" data-feature="boostram" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
         </article>
         <article class="panel feature-row-v11">
           <div class="feature-badge-v11">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.6"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
           </div>
-          <div class="feature-text-v11"><h4>AIMBODY PRO</h4><p>Đồng bộ tâm thân + phản hồi nhanh</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+          <div class="feature-text-v11"><h4>AIMBODY PRO</h4><p>Tinh chỉnh phản hồi điều khiển, hỗ trợ cảm giác thao tác chính xác hơn.</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
           <button class="toggle toggle-v11" data-feature="aimbody" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
         </article>
         <article class="panel feature-row-v11">
           <div class="feature-badge-v11">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 7.8a5 5 0 0 0-8.2-1.5L12 7l-.6-.7a5 5 0 0 0-8.2 5.7L12 21l8.8-9a5 5 0 0 0 0-4.2Z"/><path d="M4 12h4l2-3 3 7 2-4h5"/></svg>
           </div>
-          <div class="feature-text-v11"><h4>NHẸ TÂM</h4><p>Giảm giật tâm + thao tác mượt</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+          <div class="feature-text-v11"><h4>NHẸ TÂM</h4><p>Làm mượt phản hồi input, giảm cảm giác rung và giật khi thao tác.</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
           <button class="toggle toggle-v11" data-feature="nhetam" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
         </article>
         <article class="panel feature-row-v11">
           <div class="feature-badge-v11">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 20 6v5c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10V6l8-3Z"/><rect x="8.5" y="11" width="7" height="5" rx="1"/><path d="M10 11V9a2 2 0 0 1 4 0v2"/></svg>
           </div>
-          <div class="feature-text-v11"><h4>JAMELOCK</h4><p>Khóa cấu hình VIP + bảo vệ phiên</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+          <div class="feature-text-v11"><h4>JAMELOCK</h4><p>Khóa cấu hình cá nhân và bảo vệ phiên sử dụng.</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
           <button class="toggle toggle-v11" data-feature="jamelock" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
         </article>
         <article class="panel feature-row-v11">
           <div class="feature-badge-v11">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 20 6v5c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10V6l8-3Z"/><path d="m8.8 12.3 2.1 2.1 4.7-5"/></svg>
           </div>
-          <div class="feature-text-v11"><h4>ANTIBAN SHIELD</h4><p>Kiểm tra lớp bảo vệ kết nối</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+          <div class="feature-text-v11"><h4>ANTIBAND SHIELD</h4><p>Bật Chống quét , Chống Ban Acc Từ Vip1 Đến Vip8</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
           <button class="toggle toggle-v11" data-feature="antiban" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
         </article>
         <article class="panel feature-row-v11">
           <div class="feature-badge-v11 ff-badge-v11">FF</div>
-          <div class="feature-text-v11"><h4>REG FF MAX</h4><p>Dọn cache FF + làm mới cấu hình</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+          <div class="feature-text-v11"><h4>REG FF</h4><p>Tối Ưu Game Và Hỗ Trợ Anh Em Kéo Đỏ</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
           <button class="toggle toggle-v11" data-feature="regff" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
         </article>
       </section>

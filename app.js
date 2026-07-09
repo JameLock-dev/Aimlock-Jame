@@ -225,10 +225,24 @@ if (document.body.classList.contains("page-dashboard")) {
   const statOnline = document.getElementById("statOnline");
   const statActive = document.getElementById("statActive");
   const statToday = document.getElementById("statToday");
+  const statOnlineCard = document.getElementById("statOnlineCard");
+  const statActiveCard = document.getElementById("statActiveCard");
+  const statTodayCard = document.getElementById("statTodayCard");
+  const onlineModal = document.getElementById("onlineModal");
+  const activeKeysModal = document.getElementById("activeKeysModal");
+  const todayModal = document.getElementById("todayModal");
+  const onlineModalBody = document.getElementById("onlineModalBody");
+  const activeKeysModalBody = document.getElementById("activeKeysModalBody");
+  const todayModalBody = document.getElementById("todayModalBody");
 
   const keyInfo = getKeyInfo();
   const daysLeft = getDaysLeft(keyInfo.expire || new Date(Date.now() + 30 * 86400000).toISOString());
   const progress = keyInfo.type === "admin" ? 100 : clamp(Math.round((daysLeft / 30) * 100), 0, 100);
+  let currentStats = {
+    online: STATIC_PREVIEW_MODE ? 1 : 0,
+    activeKeys: Number(keyInfo.slotLimit || 2),
+    today: 1
+  };
 
   if (helloName) helloName.textContent = localStorage.getItem("aimlock_user") || "JAME FF";
   if (vipPlan) vipPlan.textContent = keyInfo.type === "admin" ? "ADMIN" : "VIP PRO";
@@ -261,6 +275,7 @@ if (document.body.classList.contains("page-dashboard")) {
       // Giữ fallback để bản static/GitHub Pages không báo lỗi khi chưa có Railway API.
     }
 
+    currentStats = stats;
     if (statOnline) statOnline.textContent = stats.online;
     if (statActive) statActive.textContent = stats.activeKeys;
     if (statToday) statToday.textContent = stats.today;
@@ -268,6 +283,117 @@ if (document.body.classList.contains("page-dashboard")) {
   }
 
   loadDashboardStats();
+
+  function openSimpleModal(modal) {
+    if (!modal) return;
+    modal.classList.add("show");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open-v14");
+  }
+
+  function closeSimpleModal(modal) {
+    if (!modal) return;
+    modal.classList.remove("show");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open-v14");
+  }
+
+  function renderOnlineModal() {
+    if (!onlineModalBody) return;
+    const userName = localStorage.getItem("aimlock_user") || "AIMLOCK USER";
+    const now = new Date();
+    onlineModalBody.innerHTML = `
+      <div class="stat-grid-v25">
+        <div class="stat-panel-v25"><strong>Người dùng online</strong><p>${currentStats.online} tài khoản đang kết nối hệ thống.</p></div>
+        <div class="stat-panel-v25"><strong>Thiết bị hiện tại</strong><p>${getDeviceId()}</p></div>
+      </div>
+      <div class="stat-panel-v25">
+        <strong>Session đang hoạt động</strong>
+        <div class="stat-list-v25">
+          <div class="stat-item-v25"><div class="stat-index-v25">01</div><div><b>${userName}</b><span>Trạng thái: Online · Key ${keyInfo.key || keyInfo.type || "VIP"} · Đồng bộ lúc ${now.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}</span></div></div>
+          <div class="stat-item-v25"><div class="stat-index-v25">02</div><div><b>VIP Session Core</b><span>Runtime service đang chạy ổn định để hỗ trợ dashboard realtime.</span></div></div>
+        </div>
+      </div>
+      <div class="stat-actions-v25">
+        <button type="button" class="stat-btn-v25" id="onlineRefreshBtn">Làm mới trạng thái</button>
+        <button type="button" class="stat-btn-v25" id="onlineOpenNotifyBtn">Mở thông báo</button>
+      </div>
+    `;
+    document.getElementById("onlineRefreshBtn")?.addEventListener("click", () => {
+      loadDashboardStats();
+      showToast("Đã làm mới trạng thái online.", "success");
+    });
+    document.getElementById("onlineOpenNotifyBtn")?.addEventListener("click", () => {
+      closeSimpleModal(onlineModal);
+      openNotifyPanel();
+    });
+  }
+
+  function renderActiveKeysModal() {
+    if (!activeKeysModalBody) return;
+    const planName = keyInfo.type === "admin" ? "ADMIN" : "VIP PRO";
+    activeKeysModalBody.innerHTML = `
+      <div class="stat-grid-v25">
+        <div class="stat-panel-v25"><strong>Key hiện tại</strong><p>${keyInfo.key || "LOCAL-PREVIEW-KEY"}</p></div>
+        <div class="stat-panel-v25"><strong>Slot đang dùng</strong><p>${Number(keyInfo.slotUsed || 1)}/${Number(keyInfo.slotLimit || 2)}</p></div>
+      </div>
+      <div class="stat-panel-v25">
+        <strong>Tab quản lý key hoạt động</strong>
+        <div class="stat-list-v25">
+          <div class="stat-item-v25"><div class="stat-index-v25">01</div><div><b>${planName}</b><span>HSD: ${formatDate(keyInfo.expire || new Date(Date.now() + 30 * 86400000).toISOString())} · Trạng thái: ${keyInfo.status || "active"}</span></div></div>
+          <div class="stat-item-v25"><div class="stat-index-v25">02</div><div><b>Thiết bị đã gắn</b><span>${getDeviceId()} · Session hiện tại đang hoạt động ổn định.</span></div></div>
+        </div>
+      </div>
+      <div class="stat-actions-v25">
+        <button type="button" class="stat-btn-v25" id="activeOpenVipBtn">Mở gia hạn VIP</button>
+        <button type="button" class="stat-btn-v25" id="activeCopyKeyBtn">Sao chép key</button>
+      </div>
+    `;
+    document.getElementById("activeOpenVipBtn")?.addEventListener("click", () => {
+      closeSimpleModal(activeKeysModal);
+      openVipModal();
+    });
+    document.getElementById("activeCopyKeyBtn")?.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(String(keyInfo.key || "LOCAL-PREVIEW-KEY"));
+        showToast("Đã sao chép key hiện tại.", "success");
+      } catch (_) {
+        showToast("Không thể sao chép key trên trình duyệt này.", "warning");
+      }
+    });
+  }
+
+  function renderTodayModal() {
+    if (!todayModalBody) return;
+    const todayLabel = new Date().toLocaleDateString("vi-VN");
+    const nowLabel = new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
+    todayModalBody.innerHTML = `
+      <div class="stat-grid-v25">
+        <div class="stat-panel-v25"><strong>Lượt kích hoạt hôm nay</strong><p>${currentStats.today} lượt được ghi nhận trong ngày ${todayLabel}.</p></div>
+        <div class="stat-panel-v25"><strong>Phiên gần nhất</strong><p>${nowLabel} · ${localStorage.getItem("aimlock_user") || "AIMLOCK USER"}</p></div>
+      </div>
+      <div class="stat-panel-v25">
+        <strong>Lịch sử kích hoạt trong ngày</strong>
+        <div class="stat-list-v25">
+          <div class="stat-item-v25"><div class="stat-index-v25">01</div><div><b>Kích hoạt dashboard</b><span>${nowLabel} · Key đã được xác minh thành công trên phiên hiện tại.</span></div></div>
+          <div class="stat-item-v25"><div class="stat-index-v25">02</div><div><b>Đồng bộ update center</b><span>Hệ thống cập nhật tự động đã được kiểm tra và sẵn sàng.</span></div></div>
+          <div class="stat-item-v25"><div class="stat-index-v25">03</div><div><b>Khởi tạo module runtime</b><span>HUD runtime đã sẵn sàng để nhận thao tác bật/tắt module.</span></div></div>
+        </div>
+      </div>
+      <div class="stat-actions-v25">
+        <button type="button" class="stat-btn-v25" id="todayOpenUpdateBtn">Mở cập nhật</button>
+        <button type="button" class="stat-btn-v25" id="todayRefreshBtn">Làm mới lịch sử</button>
+      </div>
+    `;
+    document.getElementById("todayOpenUpdateBtn")?.addEventListener("click", () => {
+      closeSimpleModal(todayModal);
+      openUpdateModal();
+    });
+    document.getElementById("todayRefreshBtn")?.addEventListener("click", () => {
+      renderTodayModal();
+      showToast("Đã làm mới lịch sử hôm nay.", "success");
+    });
+  }
 
   const runtimeTitle = document.getElementById("runtimeTitle");
   const runtimeDetail = document.getElementById("runtimeDetail");
@@ -674,6 +800,26 @@ if (document.body.classList.contains("page-dashboard")) {
   applyDashboardSettings();
   loadLatestUpdates();
 
+  statOnlineCard?.addEventListener("click", () => {
+    renderOnlineModal();
+    openSimpleModal(onlineModal);
+  });
+  statActiveCard?.addEventListener("click", () => {
+    renderActiveKeysModal();
+    openSimpleModal(activeKeysModal);
+  });
+  statTodayCard?.addEventListener("click", () => {
+    renderTodayModal();
+    openSimpleModal(todayModal);
+  });
+  document.querySelectorAll("[data-close-stat]").forEach(el => {
+    el.addEventListener("click", () => {
+      closeSimpleModal(onlineModal);
+      closeSimpleModal(activeKeysModal);
+      closeSimpleModal(todayModal);
+    });
+  });
+
   navHomeBtn?.addEventListener("click", () => {
     setActiveBottomNav(navHomeBtn);
     scrollToSection(document.getElementById("dashboardTop"));
@@ -806,6 +952,9 @@ if (document.body.classList.contains("page-dashboard")) {
       closeAccountModal();
       closeModuleModal();
       closeHudModal();
+      closeSimpleModal(onlineModal);
+      closeSimpleModal(activeKeysModal);
+      closeSimpleModal(todayModal);
     }
   });
 }

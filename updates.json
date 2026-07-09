@@ -2,30 +2,30 @@
   "version": "V1",
   "title": "AIMLOCK JAME",
   "label": "BẢN CẬP NHẬT",
-  "headline": "Phiên bản 1 nâng cấp điều hướng",
-  "summary": "Đã nâng cấp Module thành tab riêng, HUD thành popup riêng và thêm animation chuyển tab mượt hơn như app thật.",
+  "headline": "Phiên bản 1 cập nhật stat + module",
+  "summary": "Đã nâng cấp stat card thành popup thật, bổ sung quản lý key/lịch sử hôm nay và cập nhật nội dung module theo yêu cầu.",
   "time_label": "Vừa cập nhật",
   "date": "2026-07-09",
   "items": [
     {
       "badge": "NEW",
-      "title": "Module tab riêng",
-      "description": "Bấm Module sẽ mở hẳn một tab/panel module riêng có thể bật tắt trực tiếp từng tính năng."
+      "title": "ONLINE popup thật",
+      "description": "Bấm ONLINE sẽ mở danh sách online / session đang hoạt động."
     },
     {
       "badge": "01",
-      "title": "HUD popup riêng",
-      "description": "Bấm HUD sẽ mở popup HUD riêng với runtime status đồng bộ realtime với dashboard chính."
+      "title": "ACTIVE KEYS tab quản lý",
+      "description": "Bấm ACTIVE KEYS để xem key hiện tại, slot sử dụng và thao tác sao chép / gia hạn."
     },
     {
       "badge": "02",
-      "title": "Animation chuyển tab mượt hơn",
-      "description": "Các nút điều hướng dưới có hiệu ứng active, chuyển panel và popup mượt hơn như app thật."
+      "title": "TODAY lịch sử kích hoạt",
+      "description": "Bấm TODAY để xem lịch sử kích hoạt trong ngày và truy cập nhanh update center."
     },
     {
       "badge": "03",
-      "title": "Vẫn giữ phiên bản V1",
-      "description": "Hệ thống update tự động vẫn giữ version là V1 theo yêu cầu của bạn."
+      "title": "Nội dung module mới",
+      "description": "Đã đổi phần mô tả các module theo đúng nội dung bạn yêu cầu."
     }
   ]
 }
