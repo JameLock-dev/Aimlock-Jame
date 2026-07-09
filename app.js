@@ -264,18 +264,90 @@ if (document.body.classList.contains("page-dashboard")) {
 
   loadDashboardStats();
 
+  const runtimeTitle = document.getElementById("runtimeTitle");
+  const runtimeDetail = document.getElementById("runtimeDetail");
+  const runtimePercent = document.getElementById("runtimePercent");
+  const runtimeBar = document.getElementById("runtimeBar");
+  const runtimeLog = document.getElementById("runtimeLog");
+
+  const featureLabels = {
+    boostram: { name: "BOOST FPS", boot: ["Clearing cache", "Stabilizing FPS", "Boost ready"], off: "FPS boost stopped" },
+    aimbody: { name: "AIMBODY PRO", boot: ["Syncing control", "Calibrating response", "Aimbody ready"], off: "Aimbody standby" },
+    nhetam: { name: "NHẸ TÂM", boot: ["Reducing input shake", "Optimizing touch", "Smooth mode ready"], off: "Smooth mode stopped" },
+    jamelock: { name: "JAMELOCK", boot: ["Locking VIP profile", "Saving secure session", "Jamelock ready"], off: "Jamelock unlocked" },
+    antiban: { name: "ANTIBAN SHIELD", boot: ["Checking shield layer", "Securing session", "Shield ready"], off: "Shield standby" },
+    regff: { name: "REG FF MAX", boot: ["Cleaning FF temp", "Refreshing config", "Reg FF ready"], off: "Reg FF stopped" }
+  };
+
+  function setRuntime(title, detail, percent, log) {
+    if (runtimeTitle) runtimeTitle.textContent = title;
+    if (runtimeDetail) runtimeDetail.textContent = detail;
+    if (runtimePercent) runtimePercent.textContent = `${percent}%`;
+    if (runtimeBar) runtimeBar.style.width = `${percent}%`;
+    if (runtimeLog) runtimeLog.textContent = log;
+  }
+
+  function setFeatureState(toggle, text, active = false, loading = false) {
+    const row = toggle.closest(".feature-row-v11");
+    const state = row?.querySelector(".feature-state-v14 em");
+    if (state) state.textContent = text;
+    row?.classList.toggle("is-active-v14", active);
+    row?.classList.toggle("is-booting-v14", loading);
+  }
+
+  function bootFeature(toggle, next) {
+    const feature = toggle.dataset.feature;
+    const config = featureLabels[feature] || { name: String(feature || "MODULE").toUpperCase(), boot: ["Loading", "Syncing", "Ready"], off: "Stopped" };
+
+    if (!next) {
+      updateToggle(toggle, false);
+      setStoredFeature(feature, false);
+      setFeatureState(toggle, "STANDBY", false, false);
+      setRuntime(`${config.name} OFFLINE`, config.off, 0, `STOP › ${config.off}`);
+      showToast(`${config.name} đã tắt.`, "warning");
+      return;
+    }
+
+    toggle.disabled = true;
+    setFeatureState(toggle, "LOADING", false, true);
+    updateToggle(toggle, false);
+    setRuntime(`${config.name} BOOTING`, config.boot[0], 18, `RUN › ${config.boot[0]}`);
+    showToast(`Đang khởi chạy ${config.name}...`, "info");
+
+    const steps = [
+      { delay: 420, percent: 42, text: config.boot[1] || "Syncing" },
+      { delay: 920, percent: 78, text: "Verifying VIP access" },
+      { delay: 1380, percent: 100, text: config.boot[2] || "Ready" }
+    ];
+
+    steps.forEach(step => {
+      setTimeout(() => {
+        setRuntime(`${config.name} BOOTING`, step.text, step.percent, `RUN › ${step.text}`);
+      }, step.delay);
+    });
+
+    setTimeout(() => {
+      toggle.disabled = false;
+      updateToggle(toggle, true);
+      setStoredFeature(feature, true);
+      setFeatureState(toggle, "ACTIVE", true, false);
+      setRuntime(`${config.name} ACTIVE`, "Realtime gaming mode is running", 100, `READY › ${config.name} active`);
+      showToast(`${config.name} đã bật thành công.`, "success");
+    }, 1700);
+  }
+
   document.querySelectorAll(".toggle").forEach(toggle => {
     const feature = toggle.dataset.feature;
     const hasDefaultOn = toggle.classList.contains("is-on");
     const saved = localStorage.getItem(`aimlock_feature_${feature}`);
     const initial = saved === null ? hasDefaultOn : getStoredFeature(feature);
     updateToggle(toggle, initial);
+    setFeatureState(toggle, initial ? "ACTIVE" : "STANDBY", initial, false);
 
     toggle.addEventListener("click", () => {
+      if (toggle.disabled) return;
       const next = !toggle.classList.contains("is-on");
-      updateToggle(toggle, next);
-      setStoredFeature(feature, next);
-      showToast(`${feature.toUpperCase()} đã ${next ? "bật" : "tắt"}.`, next ? "success" : "warning");
+      bootFeature(toggle, next);
     });
   });
 
@@ -286,6 +358,43 @@ if (document.body.classList.contains("page-dashboard")) {
       const type = el.dataset.toastType || "info";
       if (msg) showToast(msg, type);
     });
+  });
+
+  const zaloSupportUrl = "https://zalo.me/0333635135";
+  const vipModal = document.getElementById("vipModal");
+  const renewVipBtn = document.getElementById("renewVipBtn");
+  const supportZaloBtn = document.getElementById("supportZaloBtn");
+  const activateActionBtn = document.getElementById("activateActionBtn");
+  const closeVipModal = document.getElementById("closeVipModal");
+
+  function openVipModal() {
+    if (!vipModal) return;
+    vipModal.classList.add("show");
+    vipModal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open-v14");
+  }
+
+  function closeVip() {
+    if (!vipModal) return;
+    vipModal.classList.remove("show");
+    vipModal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open-v14");
+  }
+
+  renewVipBtn?.addEventListener("click", openVipModal);
+  closeVipModal?.addEventListener("click", closeVip);
+  vipModal?.querySelectorAll("[data-close-vip]").forEach(el => el.addEventListener("click", closeVip));
+  vipModal?.querySelectorAll("[data-plan]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const plan = btn.dataset.plan || "gói VIP";
+      showToast(`Đang mở Zalo: ${plan}`, "success");
+      window.open(zaloSupportUrl, "_blank", "noopener");
+    });
+  });
+  supportZaloBtn?.addEventListener("click", () => window.open(zaloSupportUrl, "_blank", "noopener"));
+  activateActionBtn?.addEventListener("click", () => document.getElementById("moduleList")?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") closeVip();
   });
 
   const menuBtn = document.getElementById("menuBtn");
