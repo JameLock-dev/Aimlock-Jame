@@ -270,7 +270,7 @@ async function saveSettings() {
       return;
     }
 
-    const data = await fetchJson("/api/admin/settings", {
+    const data = await fetchJson("/api/app-settings", {
       method: "POST",
       headers: headers(),
       body: JSON.stringify(payload)
