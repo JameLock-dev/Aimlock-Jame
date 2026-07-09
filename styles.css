@@ -2214,3 +2214,90 @@ input{outline:none;border:0;background:none;color:var(--txt)}
   .stat-modal-card-v25{width:min(100%,96vw);padding:14px 10px 12px;border-radius:24px}
   .stat-grid-v25,.stat-actions-v25{grid-template-columns:1fr}
 }
+
+
+/* V1.1 fix: show full module descriptions */
+.page-dashboard .feature-row-v11,
+.page-dashboard-v13 .feature-row-v11,
+.feature-list-modal-v24 .feature-row-v11{
+  grid-template-columns:54px minmax(0,1fr) 82px;
+  min-height:auto;
+  align-items:center;
+  padding-top:13px;
+  padding-bottom:13px;
+}
+
+.page-dashboard .feature-text-v11,
+.page-dashboard-v13 .feature-text-v11{
+  min-width:0;
+  overflow:visible;
+}
+
+.page-dashboard .feature-text-v11 h4,
+.page-dashboard-v13 .feature-text-v11 h4{
+  white-space:normal;
+  overflow:visible;
+  text-overflow:clip;
+  line-height:1.12;
+}
+
+.page-dashboard .feature-text-v11 p,
+.page-dashboard-v13 .feature-text-v11 p{
+  white-space:normal !important;
+  overflow:visible !important;
+  text-overflow:clip !important;
+  display:block;
+  max-width:100%;
+  line-height:1.32;
+  font-size:.78rem;
+  margin-top:5px;
+  color:#b7c0ce;
+  word-break:normal;
+}
+
+.page-dashboard .feature-state-v14,
+.page-dashboard-v13 .feature-state-v14{
+  margin-top:6px;
+  line-height:1.15;
+}
+
+.page-dashboard .toggle-v11,
+.page-dashboard-v13 .toggle-v11{
+  width:76px;
+  min-width:76px;
+  justify-self:end;
+}
+
+@media (max-width:430px){
+  .page-dashboard .feature-row-v11,
+  .page-dashboard-v13 .feature-row-v11,
+  .feature-list-modal-v24 .feature-row-v11{
+    grid-template-columns:42px minmax(0,1fr) 70px;
+    gap:9px;
+    padding:11px 10px;
+  }
+
+  .page-dashboard .feature-badge-v11,
+  .page-dashboard-v13 .feature-badge-v11{
+    width:40px;
+    height:40px;
+    border-radius:13px;
+  }
+
+  .page-dashboard .feature-text-v11 h4,
+  .page-dashboard-v13 .feature-text-v11 h4{
+    font-size:.82rem;
+  }
+
+  .page-dashboard .feature-text-v11 p,
+  .page-dashboard-v13 .feature-text-v11 p{
+    font-size:.68rem;
+    line-height:1.28;
+  }
+
+  .page-dashboard .toggle-v11,
+  .page-dashboard-v13 .toggle-v11{
+    width:68px;
+    min-width:68px;
+  }
+}
