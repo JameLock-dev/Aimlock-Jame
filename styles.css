@@ -2820,3 +2820,17 @@ input{outline:none;border:0;background:none;color:var(--txt)}
   .page-dashboard-v13 .community-link-v11 small{font-size:.68rem}
   .page-dashboard-v13 .zalo-link-v29 .social-mark span{font-size:.67rem}
 }
+
+
+/* V30 clearer free key button */
+.page-login-v13 .free-key-v27 .key-icon-badge svg{
+  width:18px;
+  height:18px;
+  color:#171008;
+}
+.page-login-v13 .free-key-v27 .key-copy-v29 strong{
+  letter-spacing:.03em;
+}
+.page-login-v13 .free-key-v27 .key-copy-v29 small{
+  color:#cdb67b;
+}
