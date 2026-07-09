@@ -2302,3 +2302,14 @@ input{outline:none;border:0;background:none;color:var(--txt)}
 @media (max-width:430px){
   .app-gate-actions-v26{grid-template-columns:1fr}
 }
+
+
+/* V2 force update check fix */
+.page-login input:disabled,
+.page-login button:disabled{
+  opacity:.62;
+  cursor:not-allowed;
+}
+.primary-btn.is-disabled-v26{
+  animation:none !important;
+}

@@ -1,0 +1,38 @@
+{
+  "ok": true,
+  "settings": {
+    "freeKeyUrl": "https://link4m.net/GhYJFCIl",
+    "zaloUrl": "https://zalo.me/0333635135",
+    "boostLinkUrl": "https://boostylink.com/Kt8rStah",
+    "currentVersion": "2",
+    "latestVersion": "2",
+    "minVersion": "2",
+    "forceUpdate": "1",
+    "maintenance": "0",
+    "forceTitle": "CẦN CẬP NHẬT APP V2",
+    "forceMessage": "Phiên bản bạn đang dùng đã cũ. Vui lòng tải bản mới để tiếp tục.",
+    "maintenanceTitle": "APP ĐANG NÂNG CẤP",
+    "maintenanceMessage": "20h00 SẼ CẬP NHẬT XONG ANH EM NHÉ"
+  },
+  "update": {
+    "version": "V2",
+    "title": "AIMLOCK JAME",
+    "label": "BẢN CẬP NHẬT",
+    "headline": "Phiên bản V2",
+    "summary": "App cần cập nhật lên V2 để tiếp tục sử dụng.",
+    "time_label": "Vừa cập nhật",
+    "date": "2026-07-09",
+    "items": [
+      {
+        "badge": "NEW",
+        "title": "CẦN CẬP NHẬT APP V2",
+        "description": "Phiên bản hiện tại đã cũ, vui lòng tải bản mới để tiếp tục."
+      },
+      {
+        "badge": "01",
+        "title": "Kết nối settings admin",
+        "description": "App đã kiểm tra bắt buộc cập nhật và bảo trì từ server."
+      }
+    ]
+  }
+}

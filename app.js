@@ -218,8 +218,10 @@ if (document.body.classList.contains("page-login")) {
     appGate.actionUrl = actionUrl || "";
     if (activateBtn) {
       activateBtn.classList.add("is-disabled-v26");
-      activateBtn.querySelector("span").textContent = "CẦN CẬP NHẬT";
+      activateBtn.querySelector("span").textContent = title?.includes("NÂNG CẤP") ? "APP ĐANG NÂNG CẤP" : "CẦN CẬP NHẬT";
     }
+    if (keyInput) keyInput.disabled = true;
+    if (pasteKeyBtn) pasteKeyBtn.disabled = true;
     if (loginStatus) {
       loginStatus.innerHTML = `<span class="dot"></span>${appGate.title}`;
       loginStatus.style.color = "#ffd66b";
@@ -250,12 +252,34 @@ if (document.body.classList.contains("page-login")) {
   }
 
   async function loadPublicAppSettings() {
-    try {
-      if (STATIC_PREVIEW_MODE) return;
-      const data = await fetchJson("/api/app-settings");
-      applyPublicAppSettings(data);
-    } catch (_) {
-      // Không chặn app nếu server settings chưa sẵn sàng.
+    const sources = [];
+
+    // Ưu tiên server API. Khi app chạy cùng Railway, đường dẫn này hoạt động ngay.
+    sources.push({ type: "api", url: "/api/app-settings" });
+
+    // Khi chạy GitHub Pages mà chưa cấu hình Railway API, dùng fallback tĩnh để vẫn test được popup.
+    sources.push({ type: "static", url: "app-settings.json" });
+
+    for (const source of sources) {
+      try {
+        let data;
+        if (source.type === "api") {
+          data = await fetchJson(source.url);
+        } else {
+          const response = await fetch(`${source.url}?t=${Date.now()}`, { cache: "no-store" });
+          if (!response.ok) throw new Error("Không tải được app-settings.json");
+          data = await response.json();
+        }
+        applyPublicAppSettings(data);
+        return;
+      } catch (_) {
+        // Thử nguồn tiếp theo.
+      }
+    }
+
+    // Nếu đang chạy GitHub Pages nhưng chưa nối Railway API, nhắc nhẹ để admin biết nguyên nhân.
+    if (STATIC_PREVIEW_MODE) {
+      showToast("Chưa nối Railway API nên app dùng cấu hình tĩnh.", "warning");
     }
   }
 
