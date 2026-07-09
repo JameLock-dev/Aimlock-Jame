@@ -79,6 +79,19 @@ input{outline:none;border:0;background:none;color:var(--txt)}
   clip-path:polygon(0 16px,16px 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%);
   box-shadow:inset 0 0 28px rgba(255,36,72,.07);
 }
+.login-hero-card-v15::after{
+  content:"";
+  position:absolute;
+  top:-25%;
+  left:-45%;
+  width:36%;
+  height:160%;
+  transform:rotate(12deg);
+  background:linear-gradient(180deg, transparent, rgba(255,255,255,.06), rgba(255,214,107,.16), rgba(255,255,255,.05), transparent);
+  filter:blur(2px);
+  animation:loginScanSweepV17 4.6s ease-in-out infinite;
+  pointer-events:none;
+}
 .login-hero-glow-v15{
   position:absolute;
   right:-46px;
@@ -89,8 +102,9 @@ input{outline:none;border:0;background:none;color:var(--txt)}
   background:rgba(255,36,72,.24);
   filter:blur(34px);
   pointer-events:none;
+  animation:heroGlowPulseV17 2.8s ease-in-out infinite;
 }
-.logo-stack-v15{position:relative;z-index:2;margin-top:0}
+.logo-stack-v15{position:relative;z-index:2;margin-top:0;animation:heroFloatV17 3.4s ease-in-out infinite}
 .logo-stack-v15::before,
 .logo-stack-v15::after{
   content:"";
@@ -100,14 +114,16 @@ input{outline:none;border:0;background:none;color:var(--txt)}
   height:1px;
   background:linear-gradient(90deg, transparent, rgba(255,74,98,.75), rgba(255,214,107,.8));
   opacity:.75;
+  animation:linePulseV17 2.4s ease-in-out infinite;
 }
 .logo-stack-v15::before{right:100%;margin-right:14px}
-.logo-stack-v15::after{left:100%;margin-left:14px;transform:rotate(180deg)}
+.logo-stack-v15::after{left:100%;margin-left:14px;transform:rotate(180deg);animation-delay:.35s}
 .hero-subtitle-v15{position:relative;z-index:2;margin-top:12px;color:#ff8996;text-shadow:0 0 12px rgba(255,36,72,.45)}
 .hero-subtitle-v15 span{width:64px;background:linear-gradient(90deg, transparent, rgba(255,74,98,.85), rgba(255,214,107,.85), transparent)}
 .page-login-v13 .login-hero-card-v15 .brand-logo{
   width:min(190px,52vw);
   filter:drop-shadow(0 0 30px rgba(255,36,72,.46)) drop-shadow(0 18px 30px rgba(0,0,0,.48));
+  animation:logoBreathV17 2.4s ease-in-out infinite;
 }
 .panel{
   background:linear-gradient(180deg, rgba(14,18,27,.96), rgba(7,10,16,.97));
@@ -1699,6 +1715,50 @@ input{outline:none;border:0;background:none;color:var(--txt)}
   border-color:rgba(255,109,129,.70);
   box-shadow:0 16px 30px rgba(139,6,28,.45),0 0 26px rgba(255,36,72,.25), inset 0 1px 0 rgba(255,255,255,.18);
 }
+.page-login-v13 .primary-btn{
+  position:relative;
+  overflow:hidden;
+  width:min(100%, 290px);
+  margin:16px auto 0;
+  min-height:64px;
+  border-radius:18px;
+  gap:10px;
+  padding:0 18px;
+}
+.page-login-v13 .primary-btn::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(120deg, transparent 0 24%, rgba(255,255,255,.16) 32%, transparent 40% 100%);
+  transform:translateX(-120%);
+  animation:btnShineV17 3s ease-in-out infinite;
+}
+.page-login-v13 .primary-btn svg{width:24px;height:24px}
+.page-login-v13 .primary-btn span{
+  position:relative;
+  z-index:1;
+  font-size:.98rem;
+  font-weight:1000;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  font-family:Inter, "Segoe UI", system-ui, sans-serif;
+}
+.page-login-v13 .secondary-btn span,
+.page-login-v13 .mini-title,
+.page-login-v13 .mini-caption,
+.page-login-v13 .hero-subtitle p,
+.page-login-v13 .footer-caption{
+  font-family:Inter, "Segoe UI", system-ui, sans-serif;
+}
+.page-login-v13 .secondary-btn{
+  min-height:54px;
+  border-radius:16px;
+}
+.page-login-v13 .secondary-btn span{
+  font-size:.82rem;
+  font-weight:900;
+  letter-spacing:.08em;
+}
 .page-dashboard-v13 .bottom-nav-v11{
   border-radius:28px 28px 0 0;
   background:linear-gradient(180deg, rgba(13,18,28,.92), rgba(3,5,10,.98));
@@ -1710,6 +1770,13 @@ input{outline:none;border:0;background:none;color:var(--txt)}
   border-color:rgba(255,118,135,.62);
   box-shadow:0 0 0 8px rgba(4,7,12,.92), 0 0 34px rgba(255,36,72,.42), inset 0 1px 0 rgba(255,255,255,.20);
 }
+
+@keyframes heroFloatV17{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes heroGlowPulseV17{0%,100%{opacity:.65;transform:scale(.96)}50%{opacity:1;transform:scale(1.08)}}
+@keyframes logoBreathV17{0%,100%{transform:scale(1);filter:drop-shadow(0 0 24px rgba(255,36,72,.38)) drop-shadow(0 18px 30px rgba(0,0,0,.48))}50%{transform:scale(1.02);filter:drop-shadow(0 0 38px rgba(255,36,72,.68)) drop-shadow(0 18px 34px rgba(0,0,0,.56))}}
+@keyframes loginScanSweepV17{0%,18%{left:-52%;opacity:0}28%,58%{opacity:.95}78%,100%{left:118%;opacity:0}}
+@keyframes linePulseV17{0%,100%{opacity:.42;transform:scaleX(.9)}50%{opacity:.95;transform:scaleX(1.06)}}
+@keyframes btnShineV17{0%,55%{transform:translateX(-120%)}78%,100%{transform:translateX(140%)}}
 
 /* Login screen also gets V13 gaming finish */
 .page-login-v13 .brand-logo{filter:drop-shadow(0 0 28px rgba(255,36,72,.44)) drop-shadow(0 18px 30px rgba(0,0,0,.45))}
@@ -1728,6 +1795,7 @@ input{outline:none;border:0;background:none;color:var(--txt)}
   border-color:rgba(255,255,255,.11);
 }
 .page-login-v13 .status-pill.online{box-shadow:0 0 20px rgba(33,242,143,.18)}
+.page-login-v13 .dual-actions{gap:10px}
 
 @media (max-width:430px){
   .page-dashboard-v13 .dashboard-shell-v11{padding-left:10px;padding-right:10px}
@@ -1924,4 +1992,8 @@ input{outline:none;border:0;background:none;color:var(--txt)}
   .page-login-v13 .login-hero-card-v15 .brand-logo{width:min(170px,50vw)}
   .hero-subtitle-v15{margin-top:10px;font-size:.68rem}
   .hero-subtitle-v15 span{width:42px}
+  .page-login-v13 .primary-btn{min-height:58px;width:100%;border-radius:16px}
+  .page-login-v13 .primary-btn span{font-size:.86rem;letter-spacing:.12em}
+  .page-login-v13 .secondary-btn{min-height:50px}
+  .page-login-v13 .secondary-btn span{font-size:.72rem}
 }
