@@ -1399,6 +1399,7 @@ input{outline:none;border:0;background:none;color:var(--txt)}
   box-shadow:0 14px 28px rgba(0,0,0,.42), 0 0 22px rgba(255,36,72,.12), inset 0 1px 0 rgba(255,255,255,.08);
 }
 .page-dashboard-v13 .notif-dot{background:var(--v13-gold);box-shadow:0 0 14px rgba(255,214,107,.9)}
+.notif-dot.hidden{opacity:0;transform:scale(.6);transition:.2s ease}
 
 /* Account card becomes a game profile console */
 .page-dashboard-v13 .account-card-v11{
@@ -1803,6 +1804,44 @@ input{outline:none;border:0;background:none;color:var(--txt)}
 .vip-plan-v14 p{margin:5px 0 0;color:#a6afbf;font-size:.72rem;line-height:1.25}
 .vip-plan-v14 button{min-height:42px;padding:0 12px;border-radius:14px;color:#fff;font-size:.72rem;font-weight:1000;white-space:nowrap;background:linear-gradient(135deg,#ff2448,#8c061a);border:1px solid rgba(255,108,126,.60);box-shadow:0 12px 24px rgba(139,6,28,.32),0 0 20px rgba(255,36,72,.14)}
 .modal-open-v14{overflow:hidden}
+.vip-plan-copy-v14{min-width:0;display:flex;flex-direction:column;justify-content:center}
+.vip-plan-copy-v14 h3{margin:0;color:#fff;font-size:1rem;letter-spacing:-.02em;line-height:1.1}
+.vip-plan-copy-v14 p{margin:6px 0 0;color:#a6afbf;font-size:.72rem;line-height:1.3;white-space:normal;word-break:break-word}
+.vip-plan-v14.forever .vip-plan-copy-v14 h3{font-size:.96rem}
+.vip-plan-v14.forever .vip-plan-copy-v14 p{font-size:.68rem}
+
+.notify-panel-v15,.settings-modal-v15{position:fixed;inset:0;z-index:130;display:none;align-items:flex-start;justify-content:center;padding:18px}
+.notify-panel-v15.show,.settings-modal-v15.show{display:flex}
+.notify-backdrop-v15,.settings-backdrop-v15{position:absolute;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(10px)}
+.notify-card-v15,.settings-card-v15{position:relative;width:min(430px,94vw);margin-top:14px;border-radius:28px;padding:18px;background:linear-gradient(180deg, rgba(16,20,31,.96), rgba(4,7,12,.98));border:1px solid rgba(255,255,255,.12);box-shadow:0 30px 80px rgba(0,0,0,.62),0 0 42px rgba(255,36,72,.18), inset 0 1px 0 rgba(255,255,255,.08)}
+.notify-head-v15,.settings-head-v15{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:12px}
+.notify-head-v15 span,.settings-head-v15 span{display:block;color:#ffd66b;font-size:.72rem;font-weight:1000;letter-spacing:.16em}
+.notify-head-v15 h3,.settings-head-v15 h3{margin:6px 0 0;color:#fff;font-size:1.24rem}
+.notify-actions-v15{display:flex;align-items:center;gap:8px}
+.notify-actions-v15 button,.ghost-close-v15,.settings-secondary-v15,.settings-primary-v15{border-radius:14px;min-height:38px;padding:0 12px;font-weight:800}
+.notify-actions-v15 button,.settings-secondary-v15{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);color:#d7dce5}
+.ghost-close-v15{width:38px;padding:0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:1.25rem}
+.notify-list-v15{display:flex;flex-direction:column;gap:10px}
+.notify-item-v15{width:100%;text-align:left;padding:14px 14px 12px;border-radius:20px;background:linear-gradient(180deg, rgba(15,20,29,.72), rgba(6,9,14,.88));border:1px solid rgba(255,255,255,.10);box-shadow:0 12px 22px rgba(0,0,0,.24);position:relative}
+.notify-item-v15.unread{border-color:rgba(255,214,107,.34);box-shadow:0 12px 22px rgba(0,0,0,.24), 0 0 16px rgba(255,214,107,.10)}
+.notify-item-v15.unread::before{content:"";position:absolute;right:14px;top:16px;width:9px;height:9px;border-radius:50%;background:#ffd66b;box-shadow:0 0 12px rgba(255,214,107,.95)}
+.notify-item-v15 strong{display:block;color:#fff;font-size:.96rem;line-height:1.2;padding-right:18px}
+.notify-item-v15 p{margin:6px 0 0;color:#a6afbf;font-size:.78rem;line-height:1.4}
+.notify-item-v15 small{display:block;margin-top:8px;color:#7b8596;font-size:.7rem}
+.settings-list-v15{display:flex;flex-direction:column;gap:10px}
+.settings-row-v15{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px;border-radius:18px;background:linear-gradient(180deg, rgba(15,20,29,.72), rgba(6,9,14,.88));border:1px solid rgba(255,255,255,.08)}
+.settings-row-v15 strong{display:block;color:#fff;font-size:.94rem}
+.settings-row-v15 small{display:block;margin-top:5px;color:#a6afbf;font-size:.76rem;line-height:1.35}
+.settings-row-v15 input{width:20px;height:20px;accent-color:#ff3458}
+.settings-foot-v15{display:flex;gap:10px;margin-top:14px}
+.settings-foot-v15 > *{flex:1}
+.settings-primary-v15{background:linear-gradient(135deg,#ff2448,#8c061a);border:1px solid rgba(255,108,126,.60);color:#fff;box-shadow:0 12px 24px rgba(139,6,28,.32),0 0 20px rgba(255,36,72,.14)}
+.mode-performance-v15 .panel,.mode-performance-v15 .action-card-v11,.mode-performance-v15 .feature-row-v11,.mode-performance-v15 .update-banner-v11,.mode-performance-v15 .community-link-v11,.mode-performance-v15 .drawer-card-v11,.mode-performance-v15 .notify-card-v15,.mode-performance-v15 .settings-card-v15{backdrop-filter:none !important;box-shadow:0 10px 18px rgba(0,0,0,.22) !important}
+.scanline-off-v15 .app-shell::before,.scanline-off-v15 .app-shell::after{display:none !important}
+.compact-dashboard-v15 .action-card-v11{min-height:104px;padding:12px 9px}
+.compact-dashboard-v15 .feature-row-v11{min-height:72px;padding:10px 12px}
+.compact-dashboard-v15 .update-banner-v11{min-height:132px;padding:14px}
+
 @media (max-width:430px){
   .runtime-hud-v14{padding:12px;border-radius:19px}
   .runtime-head-v14 b{font-size:.72rem}
@@ -1813,7 +1852,12 @@ input{outline:none;border:0;background:none;color:var(--txt)}
   .vip-modal-card-v14{border-radius:24px;padding:18px 12px 12px;max-height:88vh}
   .vip-modal-head-v14 h2{font-size:1.22rem}
   .vip-modal-head-v14 p{font-size:.72rem}
-  .vip-plan-v14{grid-template-columns:62px minmax(0,1fr);min-height:82px}
+  .vip-plan-v14{grid-template-columns:62px minmax(0,1fr);align-items:start;min-height:96px}
+  .vip-plan-copy-v14{padding-top:3px}
   .vip-plan-v14 button{grid-column:1 / -1;width:100%}
   .vip-plan-v14 b{min-height:50px;font-size:.96rem}
+  .notify-panel-v15,.settings-modal-v15{padding:10px}
+  .notify-card-v15,.settings-card-v15{width:min(100%,94vw);border-radius:24px;padding:16px 12px}
+  .notify-head-v15 h3,.settings-head-v15 h3{font-size:1.08rem}
+  .settings-foot-v15{flex-direction:column}
 }

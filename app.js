@@ -130,6 +130,11 @@ function getKeyInfo() {
   }
 }
 
+
+function scrollToSection(target) {
+  target?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 if (document.body.classList.contains("page-login")) {
   const keyInput = document.getElementById("keyInput");
   const togglePassword = document.getElementById("togglePassword");
@@ -393,6 +398,18 @@ if (document.body.classList.contains("page-dashboard")) {
   });
   supportZaloBtn?.addEventListener("click", () => window.open(zaloSupportUrl, "_blank", "noopener"));
   activateActionBtn?.addEventListener("click", () => document.getElementById("moduleList")?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  document.querySelectorAll(".bottom-nav-v11 .nav-item").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const label = btn.textContent || "";
+      if (label.includes("Kích hoạt")) scrollToSection(document.getElementById("moduleList"));
+      if (label.includes("Thông tin")) scrollToSection(document.getElementById("updateBanner"));
+      if (label.includes("Trang chủ")) scrollToSection(document.getElementById("dashboardTop"));
+    });
+  });
+  document.querySelector(".nav-hub")?.addEventListener("click", () => {
+    scrollToSection(runtimeHud);
+    showToast("Gaming hub đã sẵn sàng.", "success");
+  });
   document.addEventListener("keydown", event => {
     if (event.key === "Escape") closeVip();
   });
@@ -403,18 +420,159 @@ if (document.body.classList.contains("page-dashboard")) {
   const logoutBtn = document.getElementById("logoutBtn");
   const notifyBtn = document.getElementById("notifyBtn");
   const accountBtn = document.getElementById("accountBtn");
+  const drawerControlBtn = document.getElementById("drawerControlBtn");
+  const drawerAppearanceBtn = document.getElementById("drawerAppearanceBtn");
+  const drawerCommunityBtn = document.getElementById("drawerCommunityBtn");
+  const updateBanner = document.getElementById("updateBanner");
+  const communitySection = document.getElementById("communitySection");
+  const runtimeHud = document.getElementById("runtimeHud");
 
-  menuBtn?.addEventListener("click", () => sideDrawer.classList.add("show"));
-  closeDrawer?.addEventListener("click", () => sideDrawer.classList.remove("show"));
+  const notifyPanel = document.getElementById("notifyPanel");
+  const markAllReadBtn = document.getElementById("markAllReadBtn");
+  const notifDot = document.querySelector(".notif-dot");
+  const settingsModal = document.getElementById("settingsModal");
+  const perfModeToggle = document.getElementById("perfModeToggle");
+  const scanlineToggle = document.getElementById("scanlineToggle");
+  const compactToggle = document.getElementById("compactToggle");
+  const saveSettingsBtn = document.getElementById("saveSettingsBtn");
+  const resetModulesBtn = document.getElementById("resetModulesBtn");
+
+  function openDrawer() {
+    sideDrawer?.classList.add("show");
+  }
+  function closeDrawerFn() {
+    sideDrawer?.classList.remove("show");
+  }
+  function openNotifyPanel() {
+    if (!notifyPanel) return;
+    notifyPanel.classList.add("show");
+    notifyPanel.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open-v14");
+  }
+  function closeNotifyPanel() {
+    if (!notifyPanel) return;
+    notifyPanel.classList.remove("show");
+    notifyPanel.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open-v14");
+  }
+  function openSettingsModal() {
+    if (!settingsModal) return;
+    settingsModal.classList.add("show");
+    settingsModal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open-v14");
+  }
+  function closeSettingsModal() {
+    if (!settingsModal) return;
+    settingsModal.classList.remove("show");
+    settingsModal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open-v14");
+  }
+
+  function applyDashboardSettings() {
+    const perfMode = localStorage.getItem("aimlock_setting_perf") === "1";
+    const scanlineMode = localStorage.getItem("aimlock_setting_scanline") !== "0";
+    const compactMode = localStorage.getItem("aimlock_setting_compact") === "1";
+
+    document.body.classList.toggle("mode-performance-v15", perfMode);
+    document.body.classList.toggle("scanline-off-v15", !scanlineMode);
+    document.body.classList.toggle("compact-dashboard-v15", compactMode);
+
+    if (perfModeToggle) perfModeToggle.checked = perfMode;
+    if (scanlineToggle) scanlineToggle.checked = scanlineMode;
+    if (compactToggle) compactToggle.checked = compactMode;
+  }
+
+  function clearFeatureStorageAndUI() {
+    document.querySelectorAll(".toggle").forEach(toggle => {
+      const feature = toggle.dataset.feature;
+      if (feature) localStorage.removeItem(`aimlock_feature_${feature}`);
+      updateToggle(toggle, false);
+      setFeatureState(toggle, "STANDBY", false, false);
+    });
+    setRuntime("ENGINE RESET", "All modules returned to standby", 0, "READY › Modules reset");
+  }
+
+  applyDashboardSettings();
+
+  menuBtn?.addEventListener("click", openDrawer);
+  closeDrawer?.addEventListener("click", closeDrawerFn);
   sideDrawer?.addEventListener("click", event => {
-    if (event.target === sideDrawer) sideDrawer.classList.remove("show");
+    if (event.target === sideDrawer) closeDrawerFn();
   });
-  notifyBtn?.addEventListener("click", () => showToast("Bạn có 1 thông báo cập nhật giao diện.", "info"));
+
+  drawerControlBtn?.addEventListener("click", () => {
+    closeDrawerFn();
+    scrollToSection(runtimeHud);
+    showToast("Đã mở Trung tâm điều khiển runtime.", "success");
+  });
+
+  drawerAppearanceBtn?.addEventListener("click", () => {
+    closeDrawerFn();
+    openSettingsModal();
+  });
+
+  drawerCommunityBtn?.addEventListener("click", () => {
+    closeDrawerFn();
+    scrollToSection(communitySection);
+    showToast("Đã chuyển đến khu cộng đồng hỗ trợ.", "info");
+  });
+
+  notifyBtn?.addEventListener("click", openNotifyPanel);
+  notifyPanel?.querySelectorAll("[data-close-notify]").forEach(el => el.addEventListener("click", closeNotifyPanel));
+  markAllReadBtn?.addEventListener("click", () => {
+    notifyPanel?.querySelectorAll(".notify-item-v15").forEach(item => item.classList.remove("unread"));
+    notifDot?.classList.add("hidden");
+    showToast("Đã đánh dấu tất cả thông báo là đã đọc.", "success");
+  });
+
+  notifyPanel?.querySelectorAll("[data-notify-action]").forEach(item => {
+    item.addEventListener("click", () => {
+      item.classList.remove("unread");
+      if (!notifyPanel?.querySelector(".notify-item-v15.unread")) notifDot?.classList.add("hidden");
+      const action = item.dataset.notifyAction;
+      closeNotifyPanel();
+      if (action === "vip") {
+        openVipModal();
+        return;
+      }
+      if (action === "support") {
+        window.open(zaloSupportUrl, "_blank", "noopener");
+        return;
+      }
+      if (action === "update") {
+        scrollToSection(updateBanner);
+        showToast("Đã chuyển đến khu bản cập nhật mới.", "info");
+      }
+    });
+  });
+
+  document.querySelectorAll("[data-close-settings]").forEach(el => el.addEventListener("click", closeSettingsModal));
+  saveSettingsBtn?.addEventListener("click", () => {
+    localStorage.setItem("aimlock_setting_perf", perfModeToggle?.checked ? "1" : "0");
+    localStorage.setItem("aimlock_setting_scanline", scanlineToggle?.checked ? "1" : "0");
+    localStorage.setItem("aimlock_setting_compact", compactToggle?.checked ? "1" : "0");
+    applyDashboardSettings();
+    closeSettingsModal();
+    showToast("Đã lưu cài đặt giao diện HUD.", "success");
+  });
+
+  resetModulesBtn?.addEventListener("click", () => {
+    clearFeatureStorageAndUI();
+    showToast("Đã reset toàn bộ module về mặc định.", "warning");
+  });
+
   accountBtn?.addEventListener("click", () => showToast("Tài khoản đang hoạt động bình thường.", "success"));
   logoutBtn?.addEventListener("click", () => {
     localStorage.removeItem("aimlock_auth");
     showToast("Đã đăng xuất.", "warning");
     setTimeout(() => location.href = "index.html", 500);
+  });
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+      closeNotifyPanel();
+      closeSettingsModal();
+    }
   });
 }
 

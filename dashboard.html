@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body class="theme-dark page-dashboard page-dashboard-v11 page-dashboard-v13 page-dashboard-v14">
-  <main class="app-shell dashboard-shell-v11">
+  <main class="app-shell dashboard-shell-v11" id="dashboardTop">
     <header class="topbar-v11">
       <button class="icon-square icon-v11" id="menuBtn" type="button" aria-label="Menu">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
@@ -199,7 +199,7 @@
       </article>
     </section>
 
-    <section class="panel update-banner-v11">
+    <section class="panel update-banner-v11" id="updateBanner">
       <div class="update-icon-v11">
         <svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="60" cy="60" r="43" opacity=".2"/>
@@ -210,13 +210,13 @@
       </div>
       <div class="update-copy-v11">
         <span>BẢN CẬP NHẬT</span>
-        <h3>Cyber Gaming V14</h3>
-        <p>Thêm bảng gia hạn VIP, Zalo support, runtime HUD và hiệu ứng bật module realtime.</p>
+        <h3>Cyber Gaming V15</h3>
+        <p>Tối ưu bảng VIP, thêm menu có chức năng thật, trung tâm thông báo và HUD runtime nâng cấp.</p>
       </div>
       <button class="update-btn-v11 interactive" data-toast="Bạn đang dùng giao diện mới nhất." data-toast-type="success">XEM NGAY ›</button>
     </section>
 
-    <section class="community-card-v11">
+    <section class="community-card-v11" id="communitySection">
       <h3>CỘNG ĐỒNG</h3>
       <div class="quick-links two-col">
         <a class="quick-link community-link-v11" href="https://www.tiktok.com/" target="_blank" rel="noopener">
@@ -263,23 +263,43 @@
       </div>
       <div class="vip-plans-v14">
         <article class="vip-plan-v14">
-          <b>100K</b><h3>2 tuần</h3><p>Gói trải nghiệm nhanh.</p>
+          <b>100K</b>
+          <div class="vip-plan-copy-v14">
+            <h3>2 tuần</h3>
+            <p>Gói trải nghiệm nhanh.</p>
+          </div>
           <button type="button" data-plan="100K - 2 tuần">Nhắn Zalo</button>
         </article>
         <article class="vip-plan-v14 popular">
-          <b>200K</b><h3>1 tháng</h3><p>Antiban · Bảo hành.</p>
+          <b>200K</b>
+          <div class="vip-plan-copy-v14">
+            <h3>1 tháng</h3>
+            <p>Antiban · Bảo hành.</p>
+          </div>
           <button type="button" data-plan="200K - 1 tháng, antiban, bảo hành">Nhắn Zalo</button>
         </article>
         <article class="vip-plan-v14">
-          <b>300K</b><h3>2 tháng</h3><p>Antiban · Bảo hành.</p>
+          <b>300K</b>
+          <div class="vip-plan-copy-v14">
+            <h3>2 tháng</h3>
+            <p>Antiban · Bảo hành.</p>
+          </div>
           <button type="button" data-plan="300K - 2 tháng, antiban, bảo hành">Nhắn Zalo</button>
         </article>
         <article class="vip-plan-v14">
-          <b>400K</b><h3>5 tháng</h3><p>Antiban · Bảo hành.</p>
+          <b>400K</b>
+          <div class="vip-plan-copy-v14">
+            <h3>5 tháng</h3>
+            <p>Antiban · Bảo hành.</p>
+          </div>
           <button type="button" data-plan="400K - 5 tháng, antiban, bảo hành">Nhắn Zalo</button>
         </article>
         <article class="vip-plan-v14 forever">
-          <b>550K</b><h3>Vĩnh viễn</h3><p>Antiban · Bảo hành · Cầm đi solo · Leo rank · Tử chiến.</p>
+          <b>550K</b>
+          <div class="vip-plan-copy-v14">
+            <h3>Vĩnh viễn</h3>
+            <p>Antiban · Bảo hành · Cầm đi solo · Leo rank · Tử chiến.</p>
+          </div>
           <button type="button" data-plan="550K - vĩnh viễn, antiban, bảo hành, cầm đi solo, leo rank, tử chiến">Nhắn Zalo</button>
         </article>
       </div>
@@ -292,11 +312,76 @@
         <strong>AIMLOCK MENU</strong>
         <button id="closeDrawer" type="button">×</button>
       </div>
-      <button class="drawer-link interactive" data-toast="Mục Trung tâm điều khiển." data-toast-type="info">Trung tâm điều khiển</button>
-      <button class="drawer-link interactive" data-toast="Mục Cài đặt giao diện." data-toast-type="warning">Cài đặt giao diện</button>
-      <button class="drawer-link interactive" data-toast="Mục Hỗ trợ cộng đồng." data-toast-type="info">Hỗ trợ cộng đồng</button>
+      <button class="drawer-link interactive" id="drawerControlBtn" data-toast="Đang chuyển đến Trung tâm điều khiển." data-toast-type="info">Trung tâm điều khiển</button>
+      <button class="drawer-link interactive" id="drawerAppearanceBtn" data-toast="Mở cài đặt giao diện HUD." data-toast-type="warning">Cài đặt giao diện</button>
+      <button class="drawer-link interactive" id="drawerCommunityBtn" data-toast="Mở khu cộng đồng hỗ trợ." data-toast-type="info">Hỗ trợ cộng đồng</button>
       <button class="drawer-link danger" id="logoutBtn">Đăng xuất</button>
     </div>
+  </div>
+
+
+  <div class="notify-panel-v15" id="notifyPanel" aria-hidden="true">
+    <div class="notify-backdrop-v15" data-close-notify></div>
+    <section class="notify-card-v15" role="dialog" aria-modal="true" aria-labelledby="notifyTitle">
+      <div class="notify-head-v15">
+        <div>
+          <span>MESSAGE CENTER</span>
+          <h3 id="notifyTitle">Thông báo hệ thống</h3>
+        </div>
+        <div class="notify-actions-v15">
+          <button type="button" id="markAllReadBtn">Đánh dấu đã đọc</button>
+          <button type="button" class="ghost-close-v15" data-close-notify aria-label="Đóng">×</button>
+        </div>
+      </div>
+      <div class="notify-list-v15">
+        <button class="notify-item-v15 unread" type="button" data-notify-action="update">
+          <strong>Cyber Gaming V15 sẵn sàng</strong>
+          <p>Đã bổ sung menu thật, bảng giá VIP tối ưu và trung tâm thông báo.</p>
+          <small>Vừa xong</small>
+        </button>
+        <button class="notify-item-v15 unread" type="button" data-notify-action="vip">
+          <strong>Bảng giá VIP mới</strong>
+          <p>Gói 550K vĩnh viễn đã có antiban, bảo hành và hỗ trợ leo rank.</p>
+          <small>1 phút trước</small>
+        </button>
+        <button class="notify-item-v15" type="button" data-notify-action="support">
+          <strong>Hỗ trợ Zalo online</strong>
+          <p>Kết nối nhanh qua số 0333 635135 để nhận tư vấn nâng cấp.</p>
+          <small>Hôm nay</small>
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <div class="settings-modal-v15" id="settingsModal" aria-hidden="true">
+    <div class="settings-backdrop-v15" data-close-settings></div>
+    <section class="settings-card-v15" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <div class="settings-head-v15">
+        <div>
+          <span>HUD CONTROL</span>
+          <h3 id="settingsTitle">Cài đặt giao diện</h3>
+        </div>
+        <button type="button" class="ghost-close-v15" data-close-settings aria-label="Đóng">×</button>
+      </div>
+      <div class="settings-list-v15">
+        <label class="settings-row-v15">
+          <div><strong>Chế độ hiệu năng</strong><small>Giảm blur, tối ưu thao tác trên máy yếu.</small></div>
+          <input type="checkbox" id="perfModeToggle">
+        </label>
+        <label class="settings-row-v15">
+          <div><strong>Hiệu ứng scanline</strong><small>Bật lớp nền gaming đậm chất HUD.</small></div>
+          <input type="checkbox" id="scanlineToggle" checked>
+        </label>
+        <label class="settings-row-v15">
+          <div><strong>Thu gọn card</strong><small>Giảm chiều cao card để nhìn gọn hơn.</small></div>
+          <input type="checkbox" id="compactToggle">
+        </label>
+      </div>
+      <div class="settings-foot-v15">
+        <button type="button" class="settings-secondary-v15" id="resetModulesBtn">Reset module</button>
+        <button type="button" class="settings-primary-v15" id="saveSettingsBtn">Lưu cài đặt</button>
+      </div>
+    </section>
   </div>
 
   <div class="toast" id="toast"></div>
