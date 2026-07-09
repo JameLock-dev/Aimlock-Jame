@@ -1,6 +1,7 @@
 const API_BASE_URL = String(window.AIMLOCK_API_BASE_URL || "").trim().replace(/\/+$/, "");
 const IS_GITHUB_PAGES = /github\.io$/i.test(location.hostname);
 const STATIC_PREVIEW_MODE = IS_GITHUB_PAGES && !API_BASE_URL;
+const AIMLOCK_APP_VERSION = String(window.AIMLOCK_APP_VERSION || "1");
 
 const VALID_KEYS = ["Admin11", "JAME-FREE-KEY"];
 const DEMO_KEYS = {
@@ -135,13 +136,130 @@ function scrollToSection(target) {
   target?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+function normalizeVersion(value) {
+  const raw = String(value || "0").trim().toLowerCase().replace(/^v/, "");
+  const main = raw.split(/[^0-9.]/)[0] || "0";
+  return main.split(".").map(part => Number.parseInt(part, 10) || 0);
+}
+
+function compareVersions(a, b) {
+  const left = normalizeVersion(a);
+  const right = normalizeVersion(b);
+  const length = Math.max(left.length, right.length);
+  for (let i = 0; i < length; i += 1) {
+    const x = left[i] || 0;
+    const y = right[i] || 0;
+    if (x > y) return 1;
+    if (x < y) return -1;
+  }
+  return 0;
+}
+
+function asBool(value) {
+  return value === true || value === "true" || value === "1" || value === 1;
+}
+
 if (document.body.classList.contains("page-login")) {
   const keyInput = document.getElementById("keyInput");
   const togglePassword = document.getElementById("togglePassword");
   const activateBtn = document.getElementById("activateBtn");
   const pasteKeyBtn = document.getElementById("pasteKeyBtn");
   const loginStatus = document.getElementById("loginStatus");
+  const freeKeyBtn = document.getElementById("freeKeyBtn");
+  const zaloLinks = document.querySelectorAll('a[href*="zalo.me"]');
   const defaultButtonLabel = activateBtn?.querySelector("span")?.textContent || "KÍCH HOẠT KEY";
+  const appGate = { blocked: false, title: "", message: "", actionUrl: "" };
+
+  function ensureGateModal() {
+    let modal = document.getElementById("appGateModal");
+    if (modal) return modal;
+    modal = document.createElement("div");
+    modal.id = "appGateModal";
+    modal.className = "app-gate-modal-v26";
+    modal.innerHTML = `
+      <div class="app-gate-backdrop-v26"></div>
+      <section class="app-gate-card-v26" role="dialog" aria-modal="true" aria-labelledby="appGateTitle">
+        <div class="app-gate-icon-v26">!</div>
+        <h3 id="appGateTitle">Thông báo hệ thống</h3>
+        <p id="appGateMessage">App cần cập nhật để tiếp tục.</p>
+        <div class="app-gate-actions-v26">
+          <button type="button" id="appGateActionBtn">Tải bản mới</button>
+          <button type="button" id="appGateCloseBtn">Đã hiểu</button>
+        </div>
+      </section>
+    `;
+    document.body.appendChild(modal);
+    modal.querySelector("#appGateCloseBtn")?.addEventListener("click", () => {
+      modal.classList.remove("show");
+    });
+    modal.querySelector(".app-gate-backdrop-v26")?.addEventListener("click", () => {
+      modal.classList.remove("show");
+    });
+    modal.querySelector("#appGateActionBtn")?.addEventListener("click", () => {
+      if (appGate.actionUrl) window.open(appGate.actionUrl, "_blank", "noopener");
+      else showToast("Admin chưa cấu hình link tải bản mới.", "warning");
+    });
+    return modal;
+  }
+
+  function showGateModal() {
+    const modal = ensureGateModal();
+    const title = modal.querySelector("#appGateTitle");
+    const message = modal.querySelector("#appGateMessage");
+    if (title) title.textContent = appGate.title || "Thông báo hệ thống";
+    if (message) message.innerHTML = appGate.message || "App cần cập nhật để tiếp tục.";
+    modal.classList.add("show");
+  }
+
+  function blockLogin(title, message, actionUrl) {
+    appGate.blocked = true;
+    appGate.title = title || "CẦN CẬP NHẬT APP";
+    appGate.message = message || "Phiên bản bạn đang dùng đã cũ. Vui lòng tải bản mới để tiếp tục.";
+    appGate.actionUrl = actionUrl || "";
+    if (activateBtn) {
+      activateBtn.classList.add("is-disabled-v26");
+      activateBtn.querySelector("span").textContent = "CẦN CẬP NHẬT";
+    }
+    if (loginStatus) {
+      loginStatus.innerHTML = `<span class="dot"></span>${appGate.title}`;
+      loginStatus.style.color = "#ffd66b";
+    }
+    showToast(appGate.title, "warning");
+    setTimeout(showGateModal, 300);
+  }
+
+  function applyPublicAppSettings(data) {
+    const settings = data?.settings || {};
+    if (settings.freeKeyUrl && freeKeyBtn) freeKeyBtn.href = settings.freeKeyUrl;
+    if (settings.zaloUrl) zaloLinks.forEach(link => { link.href = settings.zaloUrl; });
+
+    const actionUrl = settings.boostLinkUrl || settings.freeKeyUrl || settings.zaloUrl || "";
+    const minimumVersion = settings.minVersion || settings.latestVersion || settings.currentVersion || "1";
+    const latestVersion = settings.latestVersion || minimumVersion;
+    const mustUpdate = asBool(settings.forceUpdate)
+      && (compareVersions(AIMLOCK_APP_VERSION, minimumVersion) < 0 || compareVersions(AIMLOCK_APP_VERSION, latestVersion) < 0);
+
+    if (asBool(settings.maintenance)) {
+      blockLogin(settings.maintenanceTitle || "APP ĐANG NÂNG CẤP", settings.maintenanceMessage || "Vui lòng quay lại sau.", actionUrl);
+      return;
+    }
+
+    if (mustUpdate) {
+      blockLogin(settings.forceTitle || `CẦN CẬP NHẬT APP V${latestVersion}`, settings.forceMessage || "Phiên bản bạn đang dùng đã cũ. Vui lòng tải bản mới để tiếp tục.", actionUrl);
+    }
+  }
+
+  async function loadPublicAppSettings() {
+    try {
+      if (STATIC_PREVIEW_MODE) return;
+      const data = await fetchJson("/api/app-settings");
+      applyPublicAppSettings(data);
+    } catch (_) {
+      // Không chặn app nếu server settings chưa sẵn sàng.
+    }
+  }
+
+  loadPublicAppSettings();
 
   togglePassword?.addEventListener("click", () => {
     keyInput.type = keyInput.type === "password" ? "text" : "password";
@@ -162,6 +280,10 @@ if (document.body.classList.contains("page-login")) {
   });
 
   activateBtn?.addEventListener("click", async () => {
+    if (appGate.blocked) {
+      showGateModal();
+      return;
+    }
     const value = keyInput.value.trim();
     if (!value) {
       showToast("Vui lòng nhập key trước khi kích hoạt.", "warning");
