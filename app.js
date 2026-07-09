@@ -438,6 +438,15 @@ if (document.body.classList.contains("page-dashboard")) {
   const resetModulesBtn = document.getElementById("resetModulesBtn");
   const updateModal = document.getElementById("updateModal");
   const updateNowBtn = document.getElementById("updateNowBtn");
+  const updateList = document.getElementById("updateList");
+  const notifyList = document.getElementById("notifyList");
+  const updateBannerLabel = document.getElementById("updateBannerLabel");
+  const updateBannerTitle = document.getElementById("updateBannerTitle");
+  const updateBannerText = document.getElementById("updateBannerText");
+  const updateModalTitle = document.getElementById("updateModalTitle");
+  const UPDATES_URL = "updates.json";
+  const UPDATE_SEEN_KEY = "aimlock_updates_seen_version";
+  let latestUpdateData = null;
 
   function openDrawer() {
     sideDrawer?.classList.add("show");
@@ -482,6 +491,94 @@ if (document.body.classList.contains("page-dashboard")) {
     document.body.classList.remove("modal-open-v14");
   }
 
+  function getSeenUpdateVersion() {
+    return localStorage.getItem(UPDATE_SEEN_KEY) || "";
+  }
+
+  function setSeenUpdateVersion(version) {
+    if (!version) return;
+    localStorage.setItem(UPDATE_SEEN_KEY, version);
+  }
+
+  function refreshNotifDot() {
+    const hasUnread = Boolean(notifyList?.querySelector(".notify-item-v15.unread"));
+    notifDot?.classList.toggle("hidden", !hasUnread);
+  }
+
+  function markLatestUpdateSeen() {
+    if (!latestUpdateData?.version) return;
+    setSeenUpdateVersion(latestUpdateData.version);
+    notifyList?.querySelector('[data-notify-action="update"]')?.classList.remove("unread");
+    refreshNotifDot();
+  }
+
+  function buildUpdateItemsMarkup(items = []) {
+    return items.map((item, index) => `
+      <article class="update-item-v20 ${index === 0 ? "latest" : ""}">
+        <b>${item.badge || String(index + 1).padStart(2, "0")}</b>
+        <div>
+          <strong>${item.title || "Cập nhật mới"}</strong>
+          <p>${item.description || ""}</p>
+        </div>
+      </article>
+    `).join("");
+  }
+
+  function renderNotificationCenter(data, hasUnreadUpdate) {
+    if (!notifyList) return;
+    const latestTitle = data.headline || `${data.title || "AIMLOCK JAME"} ${data.version || ""}`.trim();
+    const latestSummary = data.summary || "Đã có cập nhật mới cho hệ thống.";
+    const latestTime = data.time_label || "Vừa xong";
+    notifyList.innerHTML = `
+      <button class="notify-item-v15 ${hasUnreadUpdate ? "unread" : ""}" type="button" data-notify-action="update">
+        <strong>${latestTitle}</strong>
+        <p>${latestSummary}</p>
+        <small>${latestTime}</small>
+      </button>
+      <button class="notify-item-v15" type="button" data-notify-action="vip">
+        <strong>Bảng giá VIP mới</strong>
+        <p>Gói 550K vĩnh viễn đã có antiban, bảo hành và hỗ trợ leo rank.</p>
+        <small>Hôm nay</small>
+      </button>
+      <button class="notify-item-v15" type="button" data-notify-action="support">
+        <strong>Hỗ trợ Zalo online</strong>
+        <p>Kết nối nhanh qua số 0333 635135 để nhận tư vấn nâng cấp.</p>
+        <small>Luôn sẵn sàng</small>
+      </button>
+    `;
+    refreshNotifDot();
+  }
+
+  function renderUpdateCenter(data) {
+    latestUpdateData = data;
+    const hasUnreadUpdate = Boolean(data?.version) && getSeenUpdateVersion() !== data.version;
+
+    if (updateBannerLabel) updateBannerLabel.textContent = data.label || "BẢN CẬP NHẬT";
+    if (updateBannerTitle) updateBannerTitle.textContent = data.title || "AIMLOCK JAME";
+    if (updateBannerText) updateBannerText.textContent = data.summary || "Đã có cập nhật mới cho hệ thống.";
+    if (updateModalTitle) updateModalTitle.textContent = `Cập nhật mới ${data.title || "AIMLOCK JAME"}`;
+    if (updateList) updateList.innerHTML = buildUpdateItemsMarkup(data.items || []);
+    renderNotificationCenter(data, hasUnreadUpdate);
+
+    if (hasUnreadUpdate) {
+      setTimeout(() => {
+        showToast(`Có bản cập nhật mới ${data.version || ""}`.trim(), "success");
+      }, 600);
+    }
+  }
+
+  async function loadLatestUpdates() {
+    try {
+      const response = await fetch(`${UPDATES_URL}?t=${Date.now()}`, { cache: "no-store" });
+      if (!response.ok) throw new Error("Cannot load updates");
+      const data = await response.json();
+      if (!data || typeof data !== "object") return;
+      renderUpdateCenter(data);
+    } catch (_) {
+      refreshNotifDot();
+    }
+  }
+
   function applyDashboardSettings() {
     const perfMode = localStorage.getItem("aimlock_setting_perf") === "1";
     const scanlineMode = localStorage.getItem("aimlock_setting_scanline") !== "0";
@@ -507,6 +604,7 @@ if (document.body.classList.contains("page-dashboard")) {
   }
 
   applyDashboardSettings();
+  loadLatestUpdates();
 
   menuBtn?.addEventListener("click", openDrawer);
   closeDrawer?.addEventListener("click", closeDrawerFn);
@@ -534,35 +632,40 @@ if (document.body.classList.contains("page-dashboard")) {
   notifyBtn?.addEventListener("click", openNotifyPanel);
   notifyPanel?.querySelectorAll("[data-close-notify]").forEach(el => el.addEventListener("click", closeNotifyPanel));
   markAllReadBtn?.addEventListener("click", () => {
-    notifyPanel?.querySelectorAll(".notify-item-v15").forEach(item => item.classList.remove("unread"));
-    notifDot?.classList.add("hidden");
+    notifyList?.querySelectorAll(".notify-item-v15").forEach(item => item.classList.remove("unread"));
+    markLatestUpdateSeen();
+    refreshNotifDot();
     showToast("Đã đánh dấu tất cả thông báo là đã đọc.", "success");
   });
 
-  notifyPanel?.querySelectorAll("[data-notify-action]").forEach(item => {
-    item.addEventListener("click", () => {
-      item.classList.remove("unread");
-      if (!notifyPanel?.querySelector(".notify-item-v15.unread")) notifDot?.classList.add("hidden");
-      const action = item.dataset.notifyAction;
-      closeNotifyPanel();
-      if (action === "vip") {
-        openVipModal();
-        return;
-      }
-      if (action === "support") {
-        window.open(zaloSupportUrl, "_blank", "noopener");
-        return;
-      }
-      if (action === "update") {
-        openUpdateModal();
-        showToast("Đã mở trung tâm cập nhật mới.", "info");
-      }
-    });
+  notifyList?.addEventListener("click", event => {
+    const item = event.target.closest("[data-notify-action]");
+    if (!item) return;
+    item.classList.remove("unread");
+    const action = item.dataset.notifyAction;
+    if (action === "update") markLatestUpdateSeen();
+    refreshNotifDot();
+    closeNotifyPanel();
+    if (action === "vip") {
+      openVipModal();
+      return;
+    }
+    if (action === "support") {
+      window.open(zaloSupportUrl, "_blank", "noopener");
+      return;
+    }
+    if (action === "update") {
+      openUpdateModal();
+      showToast("Đã mở trung tâm cập nhật mới.", "info");
+    }
   });
 
   document.querySelectorAll("[data-close-settings]").forEach(el => el.addEventListener("click", closeSettingsModal));
   document.querySelectorAll("[data-close-update]").forEach(el => el.addEventListener("click", closeUpdateModal));
-  updateNowBtn?.addEventListener("click", openUpdateModal);
+  updateNowBtn?.addEventListener("click", () => {
+    markLatestUpdateSeen();
+    openUpdateModal();
+  });
   saveSettingsBtn?.addEventListener("click", () => {
     localStorage.setItem("aimlock_setting_perf", perfModeToggle?.checked ? "1" : "0");
     localStorage.setItem("aimlock_setting_scanline", scanlineToggle?.checked ? "1" : "0");
