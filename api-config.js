@@ -7,7 +7,7 @@
 
   Nếu bạn đã deploy server.js lên Railway và muốn dùng key thật,
   đổi dòng bên dưới thành domain Railway của bạn, ví dụ:
-  window.AIMLOCK_API_BASE_URL = "https://ten-app-cua-ban.up.railway.app";
+  window.AIMLOCK_API_BASE_URL = "https://aimlock-jame-production.up.railway.app";
 */
-window.AIMLOCK_API_BASE_URL = window.AIMLOCK_API_BASE_URL || localStorage.getItem("AIMLOCK_API_BASE_URL") || "";
+window.AIMLOCK_API_BASE_URL = "https://aimlock-jame-production.up.railway.app";
 window.AIMLOCK_APP_VERSION = window.AIMLOCK_APP_VERSION || "1";

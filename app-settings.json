@@ -19,19 +19,19 @@
     "title": "AIMLOCK JAME",
     "label": "BẢN CẬP NHẬT",
     "headline": "Phiên bản V2",
-    "summary": "App cần cập nhật lên V2 để tiếp tục sử dụng.",
+    "summary": "App đã được nối API Railway để nhận bắt buộc cập nhật / bảo trì từ admin.",
     "time_label": "Vừa cập nhật",
     "date": "2026-07-09",
     "items": [
       {
         "badge": "NEW",
-        "title": "CẦN CẬP NHẬT APP V2",
-        "description": "Phiên bản hiện tại đã cũ, vui lòng tải bản mới để tiếp tục."
+        "title": "Đã nối API Railway",
+        "description": "App sẽ đọc settings trực tiếp từ https://aimlock-jame-production.up.railway.app."
       },
       {
         "badge": "01",
-        "title": "Kết nối settings admin",
-        "description": "App đã kiểm tra bắt buộc cập nhật và bảo trì từ server."
+        "title": "Bắt buộc cập nhật / bảo trì",
+        "description": "Admin chỉnh trong Settings, app sẽ nhận trạng thái từ server."
       }
     ]
   }
