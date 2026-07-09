@@ -252,6 +252,92 @@
     </nav>
   </main>
 
+
+  <div class="module-modal-v24" id="moduleModal" aria-hidden="true">
+    <div class="module-backdrop-v24" data-close-module></div>
+    <section class="module-modal-card-v24" role="dialog" aria-modal="true" aria-labelledby="moduleModalTitle">
+      <div class="module-modal-head-v24">
+        <div>
+          <span>MODULE CENTER</span>
+          <h3 id="moduleModalTitle">Tab Module AIMLOCK</h3>
+        </div>
+        <button type="button" class="ghost-close-v15" data-close-module aria-label="Đóng">×</button>
+      </div>
+      <p class="module-modal-note-v24">Bật/tắt trực tiếp từng module. Trạng thái sẽ đồng bộ ngay với dashboard chính.</p>
+      <section class="feature-list-v11 feature-list-modal-v24" id="moduleModalList">
+        <article class="panel feature-row-v11">
+          <div class="feature-badge-v11">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="7" width="12" height="10" rx="1.5"/><path d="M9 4v3M15 4v3M9 17v3M15 17v3M3 10h3M3 14h3M18 10h3M18 14h3"/></svg>
+          </div>
+          <div class="feature-text-v11"><h4>BOOST FPS</h4><p>Dọn RAM nền + ổn định FPS</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+          <button class="toggle toggle-v11" data-feature="boostram" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
+        </article>
+        <article class="panel feature-row-v11">
+          <div class="feature-badge-v11">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.6"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
+          </div>
+          <div class="feature-text-v11"><h4>AIMBODY PRO</h4><p>Đồng bộ tâm thân + phản hồi nhanh</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+          <button class="toggle toggle-v11" data-feature="aimbody" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
+        </article>
+        <article class="panel feature-row-v11">
+          <div class="feature-badge-v11">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 7.8a5 5 0 0 0-8.2-1.5L12 7l-.6-.7a5 5 0 0 0-8.2 5.7L12 21l8.8-9a5 5 0 0 0 0-4.2Z"/><path d="M4 12h4l2-3 3 7 2-4h5"/></svg>
+          </div>
+          <div class="feature-text-v11"><h4>NHẸ TÂM</h4><p>Giảm giật tâm + thao tác mượt</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+          <button class="toggle toggle-v11" data-feature="nhetam" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
+        </article>
+        <article class="panel feature-row-v11">
+          <div class="feature-badge-v11">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 20 6v5c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10V6l8-3Z"/><rect x="8.5" y="11" width="7" height="5" rx="1"/><path d="M10 11V9a2 2 0 0 1 4 0v2"/></svg>
+          </div>
+          <div class="feature-text-v11"><h4>JAMELOCK</h4><p>Khóa cấu hình VIP + bảo vệ phiên</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+          <button class="toggle toggle-v11" data-feature="jamelock" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
+        </article>
+        <article class="panel feature-row-v11">
+          <div class="feature-badge-v11">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 20 6v5c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10V6l8-3Z"/><path d="m8.8 12.3 2.1 2.1 4.7-5"/></svg>
+          </div>
+          <div class="feature-text-v11"><h4>ANTIBAN SHIELD</h4><p>Kiểm tra lớp bảo vệ kết nối</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+          <button class="toggle toggle-v11" data-feature="antiban" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
+        </article>
+        <article class="panel feature-row-v11">
+          <div class="feature-badge-v11 ff-badge-v11">FF</div>
+          <div class="feature-text-v11"><h4>REG FF MAX</h4><p>Dọn cache FF + làm mới cấu hình</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+          <button class="toggle toggle-v11" data-feature="regff" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
+        </article>
+      </section>
+    </section>
+  </div>
+
+  <div class="hud-modal-v24" id="hudModal" aria-hidden="true">
+    <div class="hud-backdrop-v24" data-close-hud></div>
+    <section class="hud-modal-card-v24" role="dialog" aria-modal="true" aria-labelledby="hudModalTitle">
+      <div class="hud-modal-head-v24">
+        <div>
+          <span>HUD CONTROL</span>
+          <h3 id="hudModalTitle">Popup HUD AIMLOCK</h3>
+        </div>
+        <button type="button" class="ghost-close-v15" data-close-hud aria-label="Đóng">×</button>
+      </div>
+      <section class="panel runtime-hud-v14 runtime-hud-modal-v24" aria-label="Gaming runtime status popup">
+        <div class="runtime-head-v14">
+          <span class="runtime-dot-v14"></span>
+          <div>
+            <b id="runtimeTitlePopup">ENGINE STANDBY</b>
+            <small id="runtimeDetailPopup">Chọn module để khởi chạy hiệu ứng realtime.</small>
+          </div>
+          <em id="runtimePercentPopup">0%</em>
+        </div>
+        <div class="runtime-bar-v14"><i id="runtimeBarPopup"></i></div>
+        <div class="runtime-log-v14" id="runtimeLogPopup">READY › Secure gaming dashboard loaded</div>
+      </section>
+      <div class="hud-actions-v24">
+        <button type="button" class="account-action-v23" id="hudOpenModulesBtn">Mở tab Module</button>
+        <button type="button" class="account-action-v23" id="hudCloseBtn">Đóng HUD</button>
+      </div>
+    </section>
+  </div>
+
   <div class="account-modal-v23" id="accountModal" aria-hidden="true">
     <div class="account-backdrop-v23" data-close-account></div>
     <section class="account-modal-card-v23" role="dialog" aria-modal="true" aria-labelledby="accountModalTitle">

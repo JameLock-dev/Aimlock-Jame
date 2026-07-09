@@ -2158,3 +2158,28 @@ input{outline:none;border:0;background:none;color:var(--txt)}
   .account-modal-card-v23{width:min(100%,94vw);border-radius:24px;padding:16px 12px}
   .account-actions-v23{grid-template-columns:1fr}
 }
+
+
+/* V24 module tab + HUD popup */
+.module-modal-v24,.hud-modal-v24{position:fixed;inset:0;z-index:134;display:none;align-items:flex-end;justify-content:center;padding:14px}
+.module-modal-v24.show,.hud-modal-v24.show{display:flex}
+.module-backdrop-v24,.hud-backdrop-v24{position:absolute;inset:0;background:rgba(0,0,0,.74);backdrop-filter:blur(10px);opacity:0;transition:.24s ease}
+.module-modal-v24.show .module-backdrop-v24,.hud-modal-v24.show .hud-backdrop-v24{opacity:1}
+.module-modal-card-v24,.hud-modal-card-v24{position:relative;width:min(460px,96vw);max-height:min(86vh,860px);overflow:auto;border-radius:28px;padding:18px;background:linear-gradient(180deg, rgba(16,20,31,.98), rgba(4,7,12,.99));border:1px solid rgba(255,255,255,.12);box-shadow:0 30px 80px rgba(0,0,0,.62),0 0 42px rgba(255,36,72,.18), inset 0 1px 0 rgba(255,255,255,.08);transform:translateY(24px) scale(.98);opacity:0;transition:transform .28s cubic-bezier(.2,.8,.2,1), opacity .22s ease}
+.module-modal-v24.show .module-modal-card-v24,.hud-modal-v24.show .hud-modal-card-v24{transform:translateY(0) scale(1);opacity:1}
+.module-modal-head-v24,.hud-modal-head-v24{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:10px}
+.module-modal-head-v24 span,.hud-modal-head-v24 span{display:block;color:#ffd66b;font-size:.72rem;font-weight:1000;letter-spacing:.16em}
+.module-modal-head-v24 h3,.hud-modal-head-v24 h3{margin:6px 0 0;color:#fff;font-size:1.16rem;line-height:1.2}
+.module-modal-note-v24{margin:0 0 12px;color:#aeb6c5;font-size:.8rem;line-height:1.45}
+.feature-list-modal-v24{gap:10px}
+.feature-list-modal-v24 .feature-row-v11{min-height:74px}
+.runtime-hud-modal-v24{margin-top:6px}
+.hud-actions-v24{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.bottom-nav-v23 .nav-item-v23,.bottom-nav-v23 .nav-hub-v23{transition:transform .18s ease, box-shadow .22s ease, background .22s ease, border-color .22s ease, color .22s ease}
+.bottom-nav-v23 .nav-item-v23:active,.bottom-nav-v23 .nav-hub-v23:active{transform:translateY(1px) scale(.985)}
+.bottom-nav-v23 .nav-item-v23:hover,.bottom-nav-v23 .nav-hub-v23:hover{box-shadow:0 0 20px rgba(255,48,79,.16)}
+@media (max-width:430px){
+  .module-modal-v24,.hud-modal-v24{padding:8px}
+  .module-modal-card-v24,.hud-modal-card-v24{width:min(100%,96vw);padding:14px 10px 12px;border-radius:24px}
+  .hud-actions-v24{grid-template-columns:1fr}
+}

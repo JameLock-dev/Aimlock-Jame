@@ -2,30 +2,30 @@
   "version": "V1",
   "title": "AIMLOCK JAME",
   "label": "BẢN CẬP NHẬT",
-  "headline": "Phiên bản 1 chính thức",
-  "summary": "Đã làm lại thanh điều hướng cho rõ hơn, dễ dùng hơn và mỗi nút đều có chức năng hoạt động thật.",
+  "headline": "Phiên bản 1 nâng cấp điều hướng",
+  "summary": "Đã nâng cấp Module thành tab riêng, HUD thành popup riêng và thêm animation chuyển tab mượt hơn như app thật.",
   "time_label": "Vừa cập nhật",
   "date": "2026-07-09",
   "items": [
     {
       "badge": "NEW",
-      "title": "Bottom navigation mới",
-      "description": "Thiết kế lại thanh điều hướng phía dưới rõ ràng hơn với 5 mục: Trang chủ, Module, HUD, Cập nhật và Tài khoản."
+      "title": "Module tab riêng",
+      "description": "Bấm Module sẽ mở hẳn một tab/panel module riêng có thể bật tắt trực tiếp từng tính năng."
     },
     {
       "badge": "01",
-      "title": "Mỗi nút đều có chức năng thật",
-      "description": "Trang chủ cuộn lên đầu, Module mở danh sách tính năng, HUD mở khu runtime, Cập nhật mở update center, Tài khoản mở profile center."
+      "title": "HUD popup riêng",
+      "description": "Bấm HUD sẽ mở popup HUD riêng với runtime status đồng bộ realtime với dashboard chính."
     },
     {
       "badge": "02",
-      "title": "Profile Center mới",
-      "description": "Từ nút Tài khoản bạn có thể mở gia hạn VIP, mở thông báo, liên hệ Zalo hoặc đăng xuất."
+      "title": "Animation chuyển tab mượt hơn",
+      "description": "Các nút điều hướng dưới có hiệu ứng active, chuyển panel và popup mượt hơn như app thật."
     },
     {
       "badge": "03",
-      "title": "Hạ phiên bản về V1",
-      "description": "Toàn bộ hệ thống thông báo cập nhật tự động đã được chuyển về phiên bản 1 theo yêu cầu."
+      "title": "Vẫn giữ phiên bản V1",
+      "description": "Hệ thống update tự động vẫn giữ version là V1 theo yêu cầu của bạn."
     }
   ]
 }

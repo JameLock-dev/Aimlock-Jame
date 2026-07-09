@@ -274,6 +274,11 @@ if (document.body.classList.contains("page-dashboard")) {
   const runtimePercent = document.getElementById("runtimePercent");
   const runtimeBar = document.getElementById("runtimeBar");
   const runtimeLog = document.getElementById("runtimeLog");
+  const runtimeTitlePopup = document.getElementById("runtimeTitlePopup");
+  const runtimeDetailPopup = document.getElementById("runtimeDetailPopup");
+  const runtimePercentPopup = document.getElementById("runtimePercentPopup");
+  const runtimeBarPopup = document.getElementById("runtimeBarPopup");
+  const runtimeLogPopup = document.getElementById("runtimeLogPopup");
 
   const featureLabels = {
     boostram: { name: "BOOST FPS", boot: ["Clearing cache", "Stabilizing FPS", "Boost ready"], off: "FPS boost stopped" },
@@ -285,27 +290,38 @@ if (document.body.classList.contains("page-dashboard")) {
   };
 
   function setRuntime(title, detail, percent, log) {
-    if (runtimeTitle) runtimeTitle.textContent = title;
-    if (runtimeDetail) runtimeDetail.textContent = detail;
-    if (runtimePercent) runtimePercent.textContent = `${percent}%`;
-    if (runtimeBar) runtimeBar.style.width = `${percent}%`;
-    if (runtimeLog) runtimeLog.textContent = log;
+    [runtimeTitle, runtimeTitlePopup].forEach(el => { if (el) el.textContent = title; });
+    [runtimeDetail, runtimeDetailPopup].forEach(el => { if (el) el.textContent = detail; });
+    [runtimePercent, runtimePercentPopup].forEach(el => { if (el) el.textContent = `${percent}%`; });
+    [runtimeBar, runtimeBarPopup].forEach(el => { if (el) el.style.width = `${percent}%`; });
+    [runtimeLog, runtimeLogPopup].forEach(el => { if (el) el.textContent = log; });
+  }
+
+  function getFeatureToggles(feature) {
+    return Array.from(document.querySelectorAll(`.toggle[data-feature="${feature}"]`));
   }
 
   function setFeatureState(toggle, text, active = false, loading = false) {
-    const row = toggle.closest(".feature-row-v11");
-    const state = row?.querySelector(".feature-state-v14 em");
-    if (state) state.textContent = text;
-    row?.classList.toggle("is-active-v14", active);
-    row?.classList.toggle("is-booting-v14", loading);
+    const feature = toggle.dataset.feature;
+    getFeatureToggles(feature).forEach(item => {
+      const row = item.closest(".feature-row-v11");
+      const state = row?.querySelector(".feature-state-v14 em");
+      if (state) state.textContent = text;
+      row?.classList.toggle("is-active-v14", active);
+      row?.classList.toggle("is-booting-v14", loading);
+    });
   }
 
   function bootFeature(toggle, next) {
     const feature = toggle.dataset.feature;
     const config = featureLabels[feature] || { name: String(feature || "MODULE").toUpperCase(), boot: ["Loading", "Syncing", "Ready"], off: "Stopped" };
+    const linkedToggles = getFeatureToggles(feature);
 
     if (!next) {
-      updateToggle(toggle, false);
+      linkedToggles.forEach(item => {
+        item.disabled = false;
+        updateToggle(item, false);
+      });
       setStoredFeature(feature, false);
       setFeatureState(toggle, "STANDBY", false, false);
       setRuntime(`${config.name} OFFLINE`, config.off, 0, `STOP › ${config.off}`);
@@ -313,9 +329,11 @@ if (document.body.classList.contains("page-dashboard")) {
       return;
     }
 
-    toggle.disabled = true;
+    linkedToggles.forEach(item => {
+      item.disabled = true;
+      updateToggle(item, false);
+    });
     setFeatureState(toggle, "LOADING", false, true);
-    updateToggle(toggle, false);
     setRuntime(`${config.name} BOOTING`, config.boot[0], 18, `RUN › ${config.boot[0]}`);
     showToast(`Đang khởi chạy ${config.name}...`, "info");
 
@@ -332,8 +350,10 @@ if (document.body.classList.contains("page-dashboard")) {
     });
 
     setTimeout(() => {
-      toggle.disabled = false;
-      updateToggle(toggle, true);
+      linkedToggles.forEach(item => {
+        item.disabled = false;
+        updateToggle(item, true);
+      });
       setStoredFeature(feature, true);
       setFeatureState(toggle, "ACTIVE", true, false);
       setRuntime(`${config.name} ACTIVE`, "Realtime gaming mode is running", 100, `READY › ${config.name} active`);
@@ -343,7 +363,7 @@ if (document.body.classList.contains("page-dashboard")) {
 
   document.querySelectorAll(".toggle").forEach(toggle => {
     const feature = toggle.dataset.feature;
-    const hasDefaultOn = toggle.classList.contains("is-on");
+    const hasDefaultOn = document.querySelector(`.toggle[data-feature="${feature}"].is-on`) !== null;
     const saved = localStorage.getItem(`aimlock_feature_${feature}`);
     const initial = saved === null ? hasDefaultOn : getStoredFeature(feature);
     updateToggle(toggle, initial);
@@ -431,10 +451,14 @@ if (document.body.classList.contains("page-dashboard")) {
   const navHudBtn = document.getElementById("navHudBtn");
   const navUpdatesBtn = document.getElementById("navUpdatesBtn");
   const accountModal = document.getElementById("accountModal");
+  const moduleModal = document.getElementById("moduleModal");
+  const hudModal = document.getElementById("hudModal");
   const accountOpenVipBtn = document.getElementById("accountOpenVipBtn");
   const accountOpenNotifyBtn = document.getElementById("accountOpenNotifyBtn");
   const accountSupportBtn = document.getElementById("accountSupportBtn");
   const accountLogoutBtn = document.getElementById("accountLogoutBtn");
+  const hudOpenModulesBtn = document.getElementById("hudOpenModulesBtn");
+  const hudCloseBtn = document.getElementById("hudCloseBtn");
   const accountSection = document.getElementById("accountSection");
   const accountModalName = document.getElementById("accountModalName");
   const accountModalPlan = document.getElementById("accountModalPlan");
@@ -504,6 +528,30 @@ if (document.body.classList.contains("page-dashboard")) {
     if (!accountModal) return;
     accountModal.classList.remove("show");
     accountModal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open-v14");
+  }
+  function openModuleModal() {
+    if (!moduleModal) return;
+    moduleModal.classList.add("show");
+    moduleModal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open-v14");
+  }
+  function closeModuleModal() {
+    if (!moduleModal) return;
+    moduleModal.classList.remove("show");
+    moduleModal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open-v14");
+  }
+  function openHudModal() {
+    if (!hudModal) return;
+    hudModal.classList.add("show");
+    hudModal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open-v14");
+  }
+  function closeHudModal() {
+    if (!hudModal) return;
+    hudModal.classList.remove("show");
+    hudModal.setAttribute("aria-hidden", "true");
     document.body.classList.remove("modal-open-v14");
   }
   function setActiveBottomNav(activeEl) {
@@ -633,13 +681,13 @@ if (document.body.classList.contains("page-dashboard")) {
   });
   navModulesBtn?.addEventListener("click", () => {
     setActiveBottomNav(navModulesBtn);
-    scrollToSection(document.getElementById("moduleList"));
-    showToast("Đã mở khu Module.", "success");
+    openModuleModal();
+    showToast("Đã mở tab Module riêng.", "success");
   });
   navHudBtn?.addEventListener("click", () => {
     setActiveBottomNav(navHudBtn);
-    scrollToSection(runtimeHud);
-    showToast("Đã mở HUD điều khiển.", "success");
+    openHudModal();
+    showToast("Đã mở popup HUD riêng.", "success");
   });
   navUpdatesBtn?.addEventListener("click", () => {
     setActiveBottomNav(navUpdatesBtn);
@@ -727,6 +775,10 @@ if (document.body.classList.contains("page-dashboard")) {
   });
 
   document.querySelectorAll("[data-close-account]").forEach(el => el.addEventListener("click", closeAccountModal));
+  document.querySelectorAll("[data-close-module]").forEach(el => el.addEventListener("click", closeModuleModal));
+  document.querySelectorAll("[data-close-hud]").forEach(el => el.addEventListener("click", closeHudModal));
+  hudOpenModulesBtn?.addEventListener("click", () => { closeHudModal(); setActiveBottomNav(navModulesBtn); openModuleModal(); });
+  hudCloseBtn?.addEventListener("click", closeHudModal);
   accountOpenVipBtn?.addEventListener("click", () => { closeAccountModal(); openVipModal(); });
   accountOpenNotifyBtn?.addEventListener("click", () => { closeAccountModal(); openNotifyPanel(); });
   accountSupportBtn?.addEventListener("click", () => { window.open(zaloSupportUrl, "_blank", "noopener"); });
@@ -752,6 +804,8 @@ if (document.body.classList.contains("page-dashboard")) {
       closeSettingsModal();
       closeUpdateModal();
       closeAccountModal();
+      closeModuleModal();
+      closeHudModal();
     }
   });
 }
