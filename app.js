@@ -3,6 +3,30 @@ const IS_GITHUB_PAGES = /github\.io$/i.test(location.hostname);
 const STATIC_PREVIEW_MODE = IS_GITHUB_PAGES && !API_BASE_URL;
 const AIMLOCK_APP_VERSION = String(window.AIMLOCK_APP_VERSION || "1");
 
+
+function isAndroidApkRuntime() {
+  return !!(
+    window.AndroidBridge &&
+    (
+      typeof window.AndroidBridge.getVersionCode === "function" ||
+      typeof window.AndroidBridge.getStableDeviceId === "function" ||
+      typeof window.AndroidBridge.getAndroidId === "function"
+    )
+  );
+}
+
+function getRuntimeAppVersion() {
+  if (isAndroidApkRuntime() && typeof window.AndroidBridge.getVersionCode === "function") {
+    try {
+      return String(window.AndroidBridge.getVersionCode() || AIMLOCK_APP_VERSION || "1");
+    } catch (_) {}
+  }
+
+  return String(AIMLOCK_APP_VERSION || "1");
+}
+
+
+
 const VALID_KEYS = ["Admin11", "JAME-FREE-KEY"];
 const DEMO_KEYS = {
   "Admin11": {
@@ -242,16 +266,26 @@ if (document.body.classList.contains("page-login")) {
     if (settings.freeKeyUrl && freeKeyBtn) freeKeyBtn.href = settings.freeKeyUrl;
     if (settings.zaloUrl) zaloLinks.forEach(link => { link.href = settings.zaloUrl; });
 
-    const actionUrl = settings.boostLinkUrl || settings.freeKeyUrl || settings.zaloUrl || "";
+    const actionUrl = settings.updateUrl || settings.downloadUrl || settings.apkUrl || settings.boostLinkUrl || settings.freeKeyUrl || settings.zaloUrl || "";
     const minimumVersion = settings.minVersion || settings.latestVersion || settings.currentVersion || "1";
     const latestVersion = settings.latestVersion || minimumVersion;
-    const mustUpdate = asBool(settings.forceUpdate)
-      && (compareVersions(AIMLOCK_APP_VERSION, minimumVersion) < 0 || compareVersions(AIMLOCK_APP_VERSION, latestVersion) < 0);
 
+    // BẢO TRÌ: hiện cho cả web và APK.
     if (asBool(settings.maintenance)) {
       blockLogin(settings.maintenanceTitle || "APP ĐANG NÂNG CẤP", settings.maintenanceMessage || "Vui lòng quay lại sau.", "", "maintenance");
       return;
     }
+
+    // BẮT CẬP NHẬT: chỉ hiện trong APK Android WebView.
+    // Khi mở web bằng Chrome/GitHub/Railway thì bỏ qua forceUpdate, chỉ bảo trì mới hiện.
+    const isApk = isAndroidApkRuntime();
+    const runtimeVersion = getRuntimeAppVersion();
+    const mustUpdate = isApk
+      && asBool(settings.forceUpdate)
+      && (
+        compareVersions(runtimeVersion, minimumVersion) < 0 ||
+        compareVersions(runtimeVersion, latestVersion) < 0
+      );
 
     if (mustUpdate) {
       blockLogin(settings.forceTitle || `CẦN CẬP NHẬT APP V${latestVersion}`, settings.forceMessage || "Phiên bản bạn đang dùng đã cũ. Vui lòng tải bản mới để tiếp tục.", actionUrl, "update");
@@ -298,15 +332,27 @@ if (document.body.classList.contains("page-login")) {
 
   pasteKeyBtn?.addEventListener("click", async () => {
     try {
-      const text = await navigator.clipboard.readText();
+      let text = "";
+
+      // Trong APK WebView, navigator.clipboard thường bị chặn với file://
+      // nên ưu tiên đọc clipboard qua AndroidBridge native.
+      if (window.AndroidBridge && typeof window.AndroidBridge.getClipboardText === "function") {
+        text = window.AndroidBridge.getClipboardText() || "";
+      } else if (navigator.clipboard && typeof navigator.clipboard.readText === "function") {
+        text = await navigator.clipboard.readText();
+      }
+
+      text = String(text || "").trim();
+
       if (text) {
-        keyInput.value = text.trim();
+        keyInput.value = text;
+        keyInput.dispatchEvent(new Event("input", { bubbles: true }));
         showToast("Đã dán key từ clipboard.", "success");
       } else {
         showToast("Clipboard đang trống.", "warning");
       }
     } catch (_) {
-      showToast("Trình duyệt không cho phép đọc clipboard.", "error");
+      showToast("Không đọc được clipboard. Hãy nhập key thủ công.", "error");
     }
   });
 
