@@ -17,6 +17,8 @@ const DATABASE_URL = String(
   ""
 ).trim();
 
+const DEFAULT_KEY = String(process.env.DEFAULT_KEY || "").trim();
+
 function isRailwayInternalUrl(url) {
   return /railway\.internal/i.test(url || "");
 }
@@ -192,16 +194,21 @@ async function initDb() {
     ON CONFLICT (id) DO NOTHING;
   `);
 
-  // Key mẫu luôn còn hạn 365 ngày. Có thể đổi bằng DEFAULT_KEY trên Railway.
-  await pool.query(
-    `
-    INSERT INTO keys (key_value, type, expire, slot_used, slot_limit, status)
-    VALUES ($1, 'free', NOW() + INTERVAL '365 days', 0, 100, 'active')
-    ON CONFLICT (key_value) DO NOTHING;
-    `,
-    [process.env.DEFAULT_KEY || ""]
-  );
+  // Dọn key rỗng do các bản server cũ tạo ra khi DEFAULT_KEY chưa được đặt.
+  // Các thiết bị liên quan sẽ tự xóa nhờ khóa ngoại ON DELETE CASCADE.
+  await pool.query(`DELETE FROM keys WHERE BTRIM(key_value) = '';`);
 
+  // Chỉ tạo key mẫu khi Railway có biến DEFAULT_KEY hợp lệ.
+  if (DEFAULT_KEY) {
+    await pool.query(
+      `
+      INSERT INTO keys (key_value, type, expire, slot_used, slot_limit, status)
+      VALUES ($1, 'free', NOW() + INTERVAL '365 days', 0, 100, 'active')
+      ON CONFLICT (key_value) DO NOTHING;
+      `,
+      [DEFAULT_KEY]
+    );
+  }
 
   console.log("✅ Postgres connected & database ready");
 }
@@ -700,6 +707,7 @@ app.get("/api/admin/keys", requireDatabase, requireAdmin, async (req, res) => {
         GREATEST(k.slot_used, COUNT(kd.id)::int) AS slot_used
       FROM keys k
       LEFT JOIN key_devices kd ON kd.key_id = k.id
+      WHERE BTRIM(k.key_value) <> ''
       GROUP BY k.id
       ORDER BY k.created_at DESC, k.id DESC
     `);
@@ -878,6 +886,24 @@ app.delete("/api/admin/keys/:key/devices/:deviceId", requireDatabase, requireAdm
   }
 });
 
+// Fallback cho dữ liệu cũ có key rỗng. Frontend cũ có thể gọi DELETE /api/admin/keys/.
+app.delete("/api/admin/keys", requireDatabase, requireAdmin, async (req, res) => {
+  try {
+    const result = await pool.query(
+      "DELETE FROM keys WHERE BTRIM(key_value) = '' RETURNING id"
+    );
+
+    return res.json({
+      ok: true,
+      message: result.rowCount
+        ? "Đã xóa key rỗng khỏi database."
+        : "Không còn key rỗng trong database."
+    });
+  } catch (error) {
+    return res.status(500).json({ ok: false, message: dbErrorMessage(error) });
+  }
+});
+
 app.delete("/api/admin/keys/:key", requireDatabase, requireAdmin, async (req, res) => {
   try {
     const result = await pool.query(
@@ -892,6 +918,14 @@ app.delete("/api/admin/keys/:key", requireDatabase, requireAdmin, async (req, re
   } catch (error) {
     return res.status(500).json({ ok: false, message: dbErrorMessage(error) });
   }
+});
+
+// Luôn trả JSON thay vì trang HTML "Cannot METHOD /...".
+app.use((req, res) => {
+  return res.status(404).json({
+    ok: false,
+    message: `Không tồn tại API: ${req.method} ${req.originalUrl}`
+  });
 });
 
 initDb()
