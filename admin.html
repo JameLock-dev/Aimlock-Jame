@@ -6,6 +6,138 @@
   <title>AIMLOCK ADMIN</title>
   <link rel="stylesheet" href="admin.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* Bổ sung cho khối quản lý key — không cần sửa admin.css ngay */
+    .key-editor-grid {
+      display: grid;
+      grid-template-columns: minmax(230px, 1.4fr) minmax(150px, .8fr)
+                           minmax(210px, 1fr) minmax(110px, .55fr);
+      gap: 12px;
+      align-items: end;
+    }
+
+    .key-field-admin {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .key-field-admin > span {
+      color: #9fb0cf;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .key-field-admin input,
+    .key-field-admin select {
+      width: 100%;
+      min-height: 44px;
+      box-sizing: border-box;
+      border: 1px solid #24314a;
+      border-radius: 12px;
+      background: #030918;
+      color: #fff;
+      padding: 0 13px;
+      font-family: inherit;
+      font-weight: 600;
+      outline: none;
+    }
+
+    .key-field-admin input:focus,
+    .key-field-admin select:focus {
+      border-color: #ffcc00;
+      box-shadow: 0 0 0 3px rgba(255, 204, 0, .12);
+    }
+
+    .key-generator-row,
+    .key-expire-row,
+    .key-editor-actions,
+    .quick-expire-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .key-generator-row input,
+    .key-expire-row input {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .mini-admin-btn,
+    .quick-day-btn,
+    #newKeyModeBtn {
+      min-height: 38px;
+      border: 1px solid #31405d;
+      border-radius: 10px;
+      background: #152034;
+      color: #fff;
+      padding: 0 12px;
+      font-family: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .mini-admin-btn:hover,
+    .quick-day-btn:hover,
+    #newKeyModeBtn:hover {
+      border-color: #ffcc00;
+      color: #ffcc00;
+    }
+
+    .quick-expire-actions {
+      grid-column: 1 / -1;
+      flex-wrap: wrap;
+      margin-top: 2px;
+    }
+
+    .quick-expire-label {
+      color: #9fb0cf;
+      font-size: 12px;
+      font-weight: 700;
+      margin-right: 2px;
+    }
+
+    .key-editor-actions {
+      grid-column: 1 / -1;
+      justify-content: flex-end;
+      margin-top: 4px;
+    }
+
+    .key-editor-actions #saveKeyBtn {
+      min-width: 175px;
+    }
+
+    .key-form-note {
+      margin: 10px 0 0;
+      color: #8292af;
+      font-size: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .key-editor-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .key-editor-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .key-editor-actions {
+        justify-content: stretch;
+      }
+
+      .key-editor-actions button {
+        flex: 1;
+      }
+    }
+  </style>
+
 </head>
 <body>
   <main class="admin-page">
@@ -49,13 +181,94 @@
 
       <section class="card">
         <h2>Thêm / cập nhật key</h2>
-        <div class="form-row">
-          <input id="keyInput" type="text" placeholder="Admin password">
-          <input id="typeInput" type="text" placeholder="custom">
-          <input id="expireInput" type="datetime-local">
-          <input id="slotLimitInput" type="number" min="1" value="100" placeholder="Slot">
-          <button id="saveKeyBtn" type="button">Lưu key</button>
+
+        <div class="key-editor-grid">
+          <label class="key-field-admin">
+            <span>Mã key</span>
+            <div class="key-generator-row">
+              <input
+                id="keyInput"
+                type="text"
+                autocomplete="off"
+                placeholder="Ví dụ: AIMJAME-VIP-001"
+              >
+              <button
+                id="generateKeyBtn"
+                class="mini-admin-btn"
+                type="button"
+                title="Tạo nhanh một mã key ngẫu nhiên"
+              >Tạo key</button>
+            </div>
+          </label>
+
+          <label class="key-field-admin">
+            <span>Gói / Type</span>
+            <input
+              id="typeInput"
+              type="text"
+              list="vipTypePresets"
+              value="VIP PRO"
+              placeholder="VIP PRO"
+            >
+            <datalist id="vipTypePresets">
+              <option value="FREE"></option>
+              <option value="VIP"></option>
+              <option value="VIP PRO"></option>
+              <option value="PREMIUM"></option>
+              <option value="CUSTOM"></option>
+            </datalist>
+          </label>
+
+          <label class="key-field-admin">
+            <span>Ngày giờ hết hạn</span>
+            <div class="key-expire-row">
+              <input id="expireInput" type="datetime-local">
+              <button
+                id="expireNowBtn"
+                class="mini-admin-btn"
+                type="button"
+                title="Đặt lại thời hạn tính từ thời điểm hiện tại"
+              >Từ hôm nay</button>
+            </div>
+          </label>
+
+          <label class="key-field-admin">
+            <span>Giới hạn thiết bị</span>
+            <input
+              id="slotLimitInput"
+              type="number"
+              min="1"
+              max="255"
+              value="1"
+              placeholder="Slot"
+            >
+          </label>
+
+          <div class="quick-expire-actions" aria-label="Gia hạn nhanh">
+            <span class="quick-expire-label">Gia hạn nhanh:</span>
+            <button class="quick-day-btn" type="button" data-add-days="1">+1 ngày</button>
+            <button class="quick-day-btn" type="button" data-add-days="3">+3 ngày</button>
+            <button class="quick-day-btn" type="button" data-add-days="7">+7 ngày</button>
+            <button class="quick-day-btn" type="button" data-add-days="15">+15 ngày</button>
+            <button class="quick-day-btn" type="button" data-add-days="30">+30 ngày</button>
+            <button class="quick-day-btn" type="button" data-add-days="90">+90 ngày</button>
+            <button class="quick-day-btn" type="button" data-add-days="365">+1 năm</button>
+          </div>
+
+          <div class="key-editor-actions">
+            <button
+              id="newKeyModeBtn"
+              type="button"
+              title="Xóa dữ liệu đang nhập để tạo key mới"
+            >Tạo key mới</button>
+            <button id="saveKeyBtn" type="button">Lưu key</button>
+          </div>
         </div>
+
+        <p class="key-form-note">
+          Khi đang sửa một key, các nút “+ ngày” sẽ cộng tiếp từ hạn hiện tại;
+          nếu key đã hết hạn thì thời gian sẽ tính từ bây giờ.
+        </p>
         <div id="saveStatus" class="save-status">Sẵn sàng.</div>
       </section>
 
@@ -245,5 +458,109 @@
 
   <script src="api-config.js"></script>
   <script src="admin.js"></script>
+
+  <script>
+    (() => {
+      const keyInput = document.getElementById("keyInput");
+      const typeInput = document.getElementById("typeInput");
+      const expireInput = document.getElementById("expireInput");
+      const slotInput = document.getElementById("slotLimitInput");
+      const saveStatus = document.getElementById("saveStatus");
+      const saveKeyBtn = document.getElementById("saveKeyBtn");
+      const generateKeyBtn = document.getElementById("generateKeyBtn");
+      const expireNowBtn = document.getElementById("expireNowBtn");
+      const newKeyModeBtn = document.getElementById("newKeyModeBtn");
+
+      function toLocalDateTimeValue(date) {
+        const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+        return local.toISOString().slice(0, 16);
+      }
+
+      function validExpiryOrNow() {
+        const currentValue = expireInput.value
+          ? new Date(expireInput.value)
+          : null;
+
+        return currentValue && !Number.isNaN(currentValue.getTime())
+          && currentValue.getTime() > Date.now()
+          ? currentValue
+          : new Date();
+      }
+
+      function addDays(days) {
+        const base = validExpiryOrNow();
+        base.setDate(base.getDate() + Number(days));
+        base.setSeconds(0, 0);
+        expireInput.value = toLocalDateTimeValue(base);
+        saveStatus.textContent = `Đã cộng thêm ${days} ngày.`;
+      }
+
+      function setFromToday(days = 30) {
+        const date = new Date();
+        date.setDate(date.getDate() + Number(days));
+        date.setSeconds(0, 0);
+        expireInput.value = toLocalDateTimeValue(date);
+        saveStatus.textContent = `Đã đặt hạn ${days} ngày tính từ hôm nay.`;
+      }
+
+      function randomPart(length = 8) {
+        const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+        const bytes = new Uint32Array(length);
+
+        if (window.crypto && window.crypto.getRandomValues) {
+          window.crypto.getRandomValues(bytes);
+          return Array.from(bytes, value => chars[value % chars.length]).join("");
+        }
+
+        return Array.from(
+          { length },
+          () => chars[Math.floor(Math.random() * chars.length)]
+        ).join("");
+      }
+
+      generateKeyBtn?.addEventListener("click", () => {
+        const plan = (typeInput.value || "VIP")
+          .toUpperCase()
+          .replace(/[^A-Z0-9]+/g, "-")
+          .replace(/^-|-$/g, "");
+
+        keyInput.value = `AIMJAME-${plan || "VIP"}-${randomPart(8)}`;
+        keyInput.focus();
+        keyInput.select();
+        saveStatus.textContent = "Đã tạo mã key mới.";
+      });
+
+      document.querySelectorAll("[data-add-days]").forEach(button => {
+        button.addEventListener("click", () => {
+          addDays(button.dataset.addDays);
+        });
+      });
+
+      expireNowBtn?.addEventListener("click", () => setFromToday(30));
+
+      newKeyModeBtn?.addEventListener("click", () => {
+        keyInput.value = "";
+        typeInput.value = "VIP PRO";
+        slotInput.value = "1";
+        setFromToday(30);
+        saveKeyBtn.textContent = "Lưu key";
+        saveStatus.textContent = "Đã chuyển sang tạo key mới.";
+
+        /*
+          admin.js hiện tại có thể đang giữ ID key đang sửa trong biến nội bộ.
+          Phát sự kiện này để bạn có thể bắt trong admin.js nếu cần:
+          window.addEventListener("admin:new-key-mode", () => { editingKey = null; });
+        */
+        window.dispatchEvent(new CustomEvent("admin:new-key-mode"));
+        keyInput.focus();
+      });
+
+      if (!expireInput.value) {
+        setFromToday(30);
+        saveStatus.textContent = "Sẵn sàng.";
+      }
+    })();
+  </script>
+
 </body>
 </html>
