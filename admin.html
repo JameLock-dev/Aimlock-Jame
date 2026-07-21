@@ -103,78 +103,12 @@
 
     .key-editor-actions {
       grid-column: 1 / -1;
-      display: grid;
-      grid-template-columns: minmax(145px, .75fr) minmax(220px, 1.25fr);
-      gap: 12px;
-      width: min(100%, 430px);
-      margin-top: 12px;
-      margin-left: auto;
-      align-items: stretch;
-    }
-
-    .key-editor-actions button {
-      width: 100%;
-      min-height: 50px;
-      box-sizing: border-box;
-      border-radius: 13px;
-      padding: 0 20px;
-      font-family: inherit;
-      font-size: 14px;
-      font-weight: 800;
-      letter-spacing: .15px;
-      cursor: pointer;
-      transition:
-        transform .18s ease,
-        border-color .18s ease,
-        box-shadow .18s ease,
-        filter .18s ease;
-    }
-
-    .key-editor-actions #newKeyModeBtn {
-      min-height: 50px;
-      border: 1px solid #34425f;
-      background: #111a2b;
-      color: #f4f7ff;
+      justify-content: flex-end;
+      margin-top: 4px;
     }
 
     .key-editor-actions #saveKeyBtn {
-      min-width: 0;
-      min-height: 50px;
-      border: 1px solid rgba(255, 209, 54, .95);
-      background: linear-gradient(135deg, #ffd332 0%, #ffb11b 55%, #ff7d19 100%);
-      color: #111827;
-      box-shadow:
-        0 10px 24px rgba(255, 153, 24, .20),
-        inset 0 1px 0 rgba(255,255,255,.42);
-    }
-
-    .key-editor-actions #newKeyModeBtn:hover,
-    .key-editor-actions #saveKeyBtn:hover {
-      transform: translateY(-1px);
-    }
-
-    .key-editor-actions #newKeyModeBtn:hover {
-      border-color: #ffcf32;
-      color: #ffcf32;
-    }
-
-    .key-editor-actions #saveKeyBtn:hover {
-      filter: brightness(1.06);
-      box-shadow:
-        0 13px 30px rgba(255, 153, 24, .28),
-        inset 0 1px 0 rgba(255,255,255,.48);
-    }
-
-    .key-editor-actions #saveKeyBtn:active,
-    .key-editor-actions #newKeyModeBtn:active {
-      transform: translateY(0);
-    }
-
-    .key-editor-actions #saveKeyBtn:disabled {
-      cursor: wait;
-      opacity: .68;
-      filter: grayscale(.12);
-      transform: none;
+      min-width: 175px;
     }
 
     .key-form-note {
@@ -195,21 +129,123 @@
       }
 
       .key-editor-actions {
-        width: 100%;
-        grid-template-columns: 1fr;
-        margin-left: 0;
+        justify-content: stretch;
       }
 
-      .key-editor-actions #saveKeyBtn {
-        order: -1;
-        min-height: 54px;
-        font-size: 15px;
-      }
-
-      .key-editor-actions #newKeyModeBtn {
-        min-height: 46px;
+      .key-editor-actions button {
+        flex: 1;
       }
     }
+  
+    /* ===== Quản lý khóa key ===== */
+    .action-btn.lock-key {
+      border-color: rgba(255, 170, 0, .55) !important;
+      background: linear-gradient(135deg, #ffb000, #ff7a00) !important;
+      color: #121212 !important;
+      font-weight: 800;
+      box-shadow: 0 8px 20px rgba(255, 145, 0, .18);
+    }
+
+    .action-btn.unlock-key {
+      border-color: rgba(34, 224, 110, .55) !important;
+      background: rgba(34, 224, 110, .13) !important;
+      color: #42f58d !important;
+      font-weight: 800;
+    }
+
+    .action-btn.lock-key:hover,
+    .action-btn.unlock-key:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.08);
+    }
+
+    .key-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 28px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .key-status::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 10px currentColor;
+    }
+
+    .key-status.status-active {
+      color: #30ef83;
+      background: rgba(34, 224, 110, .09);
+      border: 1px solid rgba(34, 224, 110, .24);
+    }
+
+    .key-status.status-locked {
+      color: #ffb020;
+      background: rgba(255, 155, 0, .09);
+      border: 1px solid rgba(255, 155, 0, .28);
+    }
+
+    .key-status.status-expired {
+      color: #ff6c77;
+      background: rgba(239, 68, 68, .10);
+      border: 1px solid rgba(239, 68, 68, .28);
+    }
+
+    .key-status.status-other {
+      color: #a9b4c8;
+      background: rgba(169, 180, 200, .08);
+      border: 1px solid rgba(169, 180, 200, .20);
+    }
+
+    #keyTable tr.key-row-locked {
+      background: linear-gradient(
+        90deg,
+        rgba(255, 145, 0, .075),
+        transparent 62%
+      );
+    }
+
+    #keyTable tr.key-row-locked td:first-child {
+      color: #ffca55;
+    }
+
+    .lock-key-note {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: 8px;
+      color: #ffb020;
+      font-weight: 800;
+    }
+
+    @media (max-width: 720px) {
+      .action-group {
+        min-width: 330px;
+      }
+    }
+
+  
+    .action-btn:disabled {
+      opacity: .58;
+      cursor: wait;
+      transform: none !important;
+      filter: none !important;
+    }
+
+    .device-table-admin td:first-child {
+      max-width: 280px;
+      word-break: break-all;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+    }
+
   </style>
 
 </head>
@@ -335,13 +371,14 @@
               type="button"
               title="Xóa dữ liệu đang nhập để tạo key mới"
             >Tạo key mới</button>
-            <button id="saveKeyBtn" type="button">Lưu / cập nhật key</button>
+            <button id="saveKeyBtn" type="button">Lưu key</button>
           </div>
         </div>
 
         <p class="key-form-note">
           Khi đang sửa một key, các nút “+ ngày” sẽ cộng tiếp từ hạn hiện tại;
           nếu key đã hết hạn thì thời gian sẽ tính từ bây giờ.
+          Key đã khóa vẫn giữ trạng thái khóa khi bấm cập nhật.
         </p>
         <div id="saveStatus" class="save-status">Sẵn sàng.</div>
       </section>
@@ -532,6 +569,109 @@
 
   <script src="api-config.js"></script>
   <script src="admin.js"></script>
+
+  <script>
+    (() => {
+      const keyInput = document.getElementById("keyInput");
+      const typeInput = document.getElementById("typeInput");
+      const expireInput = document.getElementById("expireInput");
+      const slotInput = document.getElementById("slotLimitInput");
+      const saveStatus = document.getElementById("saveStatus");
+      const saveKeyBtn = document.getElementById("saveKeyBtn");
+      const generateKeyBtn = document.getElementById("generateKeyBtn");
+      const expireNowBtn = document.getElementById("expireNowBtn");
+      const newKeyModeBtn = document.getElementById("newKeyModeBtn");
+
+      function toLocalDateTimeValue(date) {
+        const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+        return local.toISOString().slice(0, 16);
+      }
+
+      function validExpiryOrNow() {
+        const currentValue = expireInput.value
+          ? new Date(expireInput.value)
+          : null;
+
+        return currentValue && !Number.isNaN(currentValue.getTime())
+          && currentValue.getTime() > Date.now()
+          ? currentValue
+          : new Date();
+      }
+
+      function addDays(days) {
+        const base = validExpiryOrNow();
+        base.setDate(base.getDate() + Number(days));
+        base.setSeconds(0, 0);
+        expireInput.value = toLocalDateTimeValue(base);
+        saveStatus.textContent = `Đã cộng thêm ${days} ngày.`;
+      }
+
+      function setFromToday(days = 30) {
+        const date = new Date();
+        date.setDate(date.getDate() + Number(days));
+        date.setSeconds(0, 0);
+        expireInput.value = toLocalDateTimeValue(date);
+        saveStatus.textContent = `Đã đặt hạn ${days} ngày tính từ hôm nay.`;
+      }
+
+      function randomPart(length = 8) {
+        const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+        const bytes = new Uint32Array(length);
+
+        if (window.crypto && window.crypto.getRandomValues) {
+          window.crypto.getRandomValues(bytes);
+          return Array.from(bytes, value => chars[value % chars.length]).join("");
+        }
+
+        return Array.from(
+          { length },
+          () => chars[Math.floor(Math.random() * chars.length)]
+        ).join("");
+      }
+
+      generateKeyBtn?.addEventListener("click", () => {
+        const plan = (typeInput.value || "VIP")
+          .toUpperCase()
+          .replace(/[^A-Z0-9]+/g, "-")
+          .replace(/^-|-$/g, "");
+
+        keyInput.value = `AIMJAME-${plan || "VIP"}-${randomPart(8)}`;
+        keyInput.focus();
+        keyInput.select();
+        saveStatus.textContent = "Đã tạo mã key mới.";
+      });
+
+      document.querySelectorAll("[data-add-days]").forEach(button => {
+        button.addEventListener("click", () => {
+          addDays(button.dataset.addDays);
+        });
+      });
+
+      expireNowBtn?.addEventListener("click", () => setFromToday(30));
+
+      newKeyModeBtn?.addEventListener("click", () => {
+        keyInput.value = "";
+        typeInput.value = "VIP PRO";
+        slotInput.value = "1";
+        setFromToday(30);
+        saveKeyBtn.textContent = "Lưu key";
+        saveStatus.textContent = "Đã chuyển sang tạo key mới.";
+
+        /*
+          admin.js hiện tại có thể đang giữ ID key đang sửa trong biến nội bộ.
+          Phát sự kiện này để bạn có thể bắt trong admin.js nếu cần:
+          window.addEventListener("admin:new-key-mode", () => { editingKey = null; });
+        */
+        window.dispatchEvent(new CustomEvent("admin:new-key-mode"));
+        keyInput.focus();
+      });
+
+      if (!expireInput.value) {
+        setFromToday(30);
+        saveStatus.textContent = "Sẵn sàng.";
+      }
+    })();
+  </script>
 
 </body>
 </html>

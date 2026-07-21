@@ -25,10 +25,6 @@ const deviceTable = document.getElementById("deviceTable");
 const deviceHelp = document.getElementById("deviceHelp");
 const adminLogoutTop = document.getElementById("adminLogoutTop");
 
-const generateKeyBtn = document.getElementById("generateKeyBtn");
-const expireNowBtn = document.getElementById("expireNowBtn");
-const newKeyModeBtn = document.getElementById("newKeyModeBtn");
-
 const settingsFields = {
   freeKeyUrl: document.getElementById("settingFreeKeyUrl"),
   zaloUrl: document.getElementById("settingZaloUrl"),
@@ -57,8 +53,7 @@ const settingsStatus = document.getElementById("settingsStatus");
 
 let adminPass = localStorage.getItem("aimlockAdminPassword") || "";
 let selectedDeviceKey = "";
-let editingKey = "";
-let editingSlotUsed = 0;
+let editingKeyStatus = "active";
 
 function apiUrl(path) {
   const cleanPath = String(path || "").startsWith("/") ? path : `/${path}`;
@@ -115,96 +110,6 @@ function toInputDateTime(value) {
   if (Number.isNaN(date.getTime())) return "";
   const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
   return local.toISOString().slice(0, 16);
-}
-
-
-function toLocalDateTimeValue(date) {
-  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-  return local.toISOString().slice(0, 16);
-}
-
-function setExpireFromToday(days = 30, updateMessage = true) {
-  const date = new Date();
-  date.setDate(date.getDate() + Number(days));
-  date.setSeconds(0, 0);
-  expireInput.value = toLocalDateTimeValue(date);
-
-  if (updateMessage && saveStatus) {
-    saveStatus.textContent = `Đã đặt hạn ${days} ngày tính từ hôm nay.`;
-    saveStatus.style.color = "#22e06e";
-  }
-}
-
-function addDaysToExpire(days) {
-  const current = expireInput.value ? new Date(expireInput.value) : null;
-  const base = current &&
-    !Number.isNaN(current.getTime()) &&
-    current.getTime() > Date.now()
-      ? current
-      : new Date();
-
-  base.setDate(base.getDate() + Number(days));
-  base.setSeconds(0, 0);
-  expireInput.value = toLocalDateTimeValue(base);
-
-  if (saveStatus) {
-    saveStatus.textContent = `Đã cộng thêm ${days} ngày.`;
-    saveStatus.style.color = "#22e06e";
-  }
-}
-
-function randomKeyPart(length = 8) {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  const bytes = new Uint32Array(length);
-
-  if (window.crypto?.getRandomValues) {
-    window.crypto.getRandomValues(bytes);
-    return Array.from(bytes, value => chars[value % chars.length]).join("");
-  }
-
-  return Array.from(
-    { length },
-    () => chars[Math.floor(Math.random() * chars.length)]
-  ).join("");
-}
-
-function resetKeyForm(options = {}) {
-  const { message = "Sẵn sàng tạo key mới.", keepStatusColor = false } = options;
-
-  editingKey = "";
-  editingSlotUsed = 0;
-
-  keyInput.value = "";
-  keyInput.disabled = false;
-  typeInput.value = "VIP PRO";
-  slotLimitInput.value = "1";
-  saveKeyBtn.textContent = "Lưu / cập nhật key";
-  setExpireFromToday(30, false);
-
-  if (saveStatus) {
-    saveStatus.textContent = message;
-    if (!keepStatusColor) saveStatus.style.color = "#22e06e";
-  }
-}
-
-function generateNewKey() {
-  if (editingKey) {
-    resetKeyForm({ message: "Đã chuyển sang tạo key mới." });
-  }
-
-  const plan = (typeInput.value || "VIP")
-    .toUpperCase()
-    .replace(/[^A-Z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
-
-  keyInput.value = `AIMJAME-${plan || "VIP"}-${randomKeyPart(8)}`;
-  keyInput.focus();
-  keyInput.select();
-
-  if (saveStatus) {
-    saveStatus.textContent = "Đã tạo mã key mới.";
-    saveStatus.style.color = "#22e06e";
-  }
 }
 
 function demoKeys() {
@@ -401,22 +306,172 @@ async function loadStats() {
   }
 }
 
+
+function normalizeKeyStatus(value) {
+  const status = String(value || "active").trim().toLowerCase();
+
+  if (["locked", "blocked", "disabled", "revoked"].includes(status)) {
+    return "locked";
+  }
+
+  if (status === "expired") return "expired";
+  if (status === "active") return "active";
+  return status || "active";
+}
+
+function keyStatusMeta(value) {
+  const status = normalizeKeyStatus(value);
+
+  if (status === "active") {
+    return {
+      value: "active",
+      label: "Hoạt động",
+      className: "status-active"
+    };
+  }
+
+  if (status === "locked") {
+    return {
+      value: "locked",
+      label: "Đã khóa",
+      className: "status-locked"
+    };
+  }
+
+  if (status === "expired") {
+    return {
+      value: "expired",
+      label: "Hết hạn",
+      className: "status-expired"
+    };
+  }
+
+  return {
+    value: status,
+    label: status,
+    className: "status-other"
+  };
+}
+
+function payloadForStatusUpdate(item, status) {
+  return {
+    key: item.key,
+    type: item.type || "custom",
+    expire: item.expire || new Date(Date.now() + 7 * 86400000).toISOString(),
+    slotLimit: Number(item.slotLimit || 1),
+    status
+  };
+}
+
+async function toggleKeyLock(row) {
+  const item = JSON.parse(row?.dataset.payload || "{}");
+  const status = normalizeKeyStatus(item.status);
+
+  if (!item.key) return;
+
+  if (status === "expired") {
+    saveStatus.textContent =
+      `Key ${item.key} đã hết hạn. Hãy bấm Sửa và gia hạn trước khi mở lại.`;
+    saveStatus.style.color = "#ffb020";
+    return;
+  }
+
+  const willLock = status === "active";
+  const nextStatus = willLock ? "locked" : "active";
+  const actionText = willLock ? "khóa" : "mở khóa";
+
+  if (!confirm(
+    willLock
+      ? `Khóa key ${item.key}? Người dùng sẽ không thể đăng nhập bằng key này.`
+      : `Mở khóa key ${item.key}? Key sẽ dùng lại được nếu vẫn còn hạn.`
+  )) {
+    return;
+  }
+
+  if (STATIC_PREVIEW_MODE) {
+    item.status = nextStatus;
+    row.dataset.payload = JSON.stringify(item);
+    const meta = keyStatusMeta(nextStatus);
+    const statusCell = row.querySelector(".key-status");
+
+    if (statusCell) {
+      statusCell.className = `key-status ${meta.className}`;
+      statusCell.textContent = meta.label;
+    }
+
+    const button = row.querySelector(".toggle-lock");
+    if (button) {
+      button.className =
+        `action-btn toggle-lock ${willLock ? "unlock-key" : "lock-key"}`;
+      button.textContent = willLock ? "Mở khóa" : "Khóa";
+    }
+
+    row.classList.toggle("key-row-locked", willLock);
+    saveStatus.textContent = `Demo: đã ${actionText} key ${item.key}.`;
+    saveStatus.style.color = "#ffd000";
+    return;
+  }
+
+  try {
+    const data = await fetchJson("/api/admin/keys", {
+      method: "POST",
+      headers: headers(),
+      body: JSON.stringify(payloadForStatusUpdate(item, nextStatus))
+    });
+
+    saveStatus.textContent =
+      data.message ||
+      (willLock
+        ? `Đã khóa key ${item.key}.`
+        : `Đã mở khóa key ${item.key}.`);
+
+    saveStatus.style.color = data.ok ? "#22e06e" : "#ef4444";
+
+    if (data.ok) {
+      if (keyInput.value.trim() === item.key) {
+        editingKeyStatus = nextStatus;
+      }
+
+      await loadKeys();
+    }
+  } catch (error) {
+    saveStatus.textContent =
+      error.message || `Không thể ${actionText} key.`;
+    saveStatus.style.color = "#ef4444";
+  }
+}
+
 function renderKeys(keys) {
   keyTable.innerHTML = "";
 
   keys.forEach((item) => {
+    const meta = keyStatusMeta(item.status);
+    const canToggleLock = meta.value !== "expired";
+    const lockButton = canToggleLock
+      ? (
+          meta.value === "active"
+            ? `<button class="action-btn toggle-lock lock-key" data-key="${item.key}">Khóa</button>`
+            : `<button class="action-btn toggle-lock unlock-key" data-key="${item.key}">Mở khóa</button>`
+        )
+      : `<button class="action-btn toggle-lock lock-key" data-key="${item.key}" disabled title="Hãy gia hạn key trước">Hết hạn</button>`;
+
     const tr = document.createElement("tr");
+    tr.classList.toggle("key-row-locked", meta.value === "locked");
+
     tr.innerHTML = `
       <td>${item.key}</td>
       <td>${item.type}</td>
       <td>${formatExpire(item.expire)}</td>
       <td>${item.slotUsed || 0}/${item.slotLimit || 1}</td>
-      <td><span class="key-status">${item.status === "active" ? "Hoạt động" : item.status}</span></td>
+      <td>
+        <span class="key-status ${meta.className}">${meta.label}</span>
+      </td>
       <td>
         <div class="action-group">
           <button class="action-btn edit" data-key="${item.key}">Sửa</button>
           <button class="action-btn devices" data-key="${item.key}">Thiết bị</button>
           <button class="action-btn reset" data-key="${item.key}">Reset máy</button>
+          ${lockButton}
           <button class="action-btn delete" data-key="${item.key}">Xóa</button>
         </div>
       </td>
@@ -444,14 +499,51 @@ function renderDevices(key, devices) {
   }
 
   devices.forEach((device, index) => {
-    const deviceId = device.deviceId || device.device_id || "--";
+    const deviceId =
+      device.deviceId ||
+      device.device_id ||
+      device.id ||
+      "--";
+
+    const deviceName =
+      device.deviceName ||
+      device.device_name ||
+      device.name ||
+      `Máy ${index + 1}`;
+
+    const firstSeen =
+      device.firstSeen ||
+      device.first_seen ||
+      device.firstUsedAt ||
+      device.first_used_at ||
+      device.created_at ||
+      device.createdAt;
+
+    const lastSeen =
+      device.lastSeen ||
+      device.last_seen ||
+      device.lastUsedAt ||
+      device.last_used_at ||
+      device.updated_at ||
+      device.updatedAt ||
+      firstSeen;
+
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${deviceId}</td>
-      <td>${device.deviceName || device.device_name || `Máy ${index + 1}`}</td>
-      <td>${formatExpire(device.firstSeen || device.created_at || device.createdAt)}</td>
-      <td>${formatExpire(device.lastSeen || device.last_seen || device.lastSeenAt)}</td>
-      <td><button class="action-btn delete delete-device" data-key="${key}" data-device="${deviceId}">Gỡ máy</button></td>
+      <td title="${deviceId}">${deviceId}</td>
+      <td>${deviceName}</td>
+      <td>${formatExpire(firstSeen)}</td>
+      <td>${formatExpire(lastSeen)}</td>
+      <td>
+        <button
+          class="action-btn delete delete-device"
+          data-key="${key}"
+          data-device="${deviceId}"
+          type="button"
+        >
+          Gỡ máy
+        </button>
+      </td>
     `;
     deviceTable.appendChild(tr);
   });
@@ -468,12 +560,36 @@ async function loadDevices(key) {
   }
 
   try {
-    const data = await fetchJson(`/api/admin/keys/${encodeURIComponent(key)}/devices`, { headers: headers() });
-    renderDevices(key, data.devices || []);
-    saveStatus.textContent = data.message || `Đã tải thiết bị của key ${key}.`;
+    const data = await fetchJson(
+      `/api/admin/keys/${encodeURIComponent(key)}/devices`,
+      { headers: headers() }
+    );
+
+    const devices =
+      Array.isArray(data.devices)
+        ? data.devices
+        : Array.isArray(data.data?.devices)
+          ? data.data.devices
+          : Array.isArray(data.data)
+            ? data.data
+            : [];
+
+    renderDevices(key, devices);
+
+    saveStatus.textContent =
+      data.message ||
+      (
+        devices.length
+          ? `Đã tải ${devices.length} thiết bị của key ${key}.`
+          : `Key ${key} chưa gắn thiết bị nào.`
+      );
+
     saveStatus.style.color = "#22e06e";
   } catch (error) {
-    saveStatus.textContent = error.message || "Không tải được thiết bị.";
+    renderDevices(key, []);
+    saveStatus.textContent =
+      error.message ||
+      "Không tải được thiết bị. Kiểm tra API Railway và mật khẩu admin.";
     saveStatus.style.color = "#ef4444";
   }
 }
@@ -490,16 +606,38 @@ async function resetDevices(key) {
   }
 
   try {
-    const data = await fetchJson(`/api/admin/keys/${encodeURIComponent(key)}/reset-devices`, {
-      method: "POST",
-      headers: headers()
-    });
-    saveStatus.textContent = data.message || "Đã reset máy.";
+    let data;
+
+    try {
+      // Endpoint chuẩn của server AIMLOCK hiện tại.
+      data = await fetchJson(
+        `/api/admin/keys/${encodeURIComponent(key)}/devices`,
+        {
+          method: "DELETE",
+          headers: headers()
+        }
+      );
+    } catch (deleteError) {
+      // Tương thích với một số server cũ từng dùng route POST.
+      data = await fetchJson(
+        `/api/admin/keys/${encodeURIComponent(key)}/reset-devices`,
+        {
+          method: "POST",
+          headers: headers()
+        }
+      );
+    }
+
+    saveStatus.textContent =
+      data.message || `Đã reset toàn bộ thiết bị của key ${key}.`;
     saveStatus.style.color = data.ok ? "#22e06e" : "#ef4444";
+
     await loadKeys();
-    await loadDevices(key);
+    renderDevices(key, []);
   } catch (error) {
-    saveStatus.textContent = error.message || "Lỗi reset máy.";
+    saveStatus.textContent =
+      error.message ||
+      "Không reset được máy. Kiểm tra server Railway đã có route reset thiết bị.";
     saveStatus.style.color = "#ef4444";
   }
 }
@@ -590,20 +728,14 @@ async function saveKey() {
     ? new Date(expireInput.value).toISOString()
     : new Date(Date.now() + 7 * 86400000).toISOString();
 
-  const slotLimit = Math.max(1, Math.min(255, Number(slotLimitInput.value || 1)));
-
   const payload = {
     key,
-    type: typeInput.value.trim() || "VIP PRO",
+    type: typeInput.value.trim() || "custom",
     expire,
-    slotLimit,
-    slotUsed: editingKey ? editingSlotUsed : 0,
-    status: "active"
+    slotLimit: Number(slotLimitInput.value || 1),
+    slotUsed: 0,
+    status: editingKeyStatus || "active"
   };
-
-  const wasEditing = Boolean(editingKey);
-  saveKeyBtn.disabled = true;
-  saveKeyBtn.textContent = wasEditing ? "ĐANG CẬP NHẬT..." : "ĐANG LƯU...";
 
   try {
     const data = await fetchJson("/api/admin/keys", {
@@ -612,21 +744,20 @@ async function saveKey() {
       body: JSON.stringify(payload)
     });
 
-    saveStatus.textContent = data.message || (wasEditing ? "Đã cập nhật key" : "Đã lưu key");
+    saveStatus.textContent = data.message || "Đã lưu key";
     saveStatus.style.color = data.ok ? "#22e06e" : "#ef4444";
 
     if (data.ok) {
-      resetKeyForm({
-        message: wasEditing ? "Cập nhật key thành công." : "Tạo key thành công."
-      });
-      await loadKeys();
+      keyInput.value = "";
+      typeInput.value = "";
+      expireInput.value = "";
+      slotLimitInput.value = "100";
+      editingKeyStatus = "active";
+      loadKeys();
     }
   } catch (error) {
     saveStatus.textContent = error.message || "Lỗi lưu key.";
     saveStatus.style.color = "#ef4444";
-    saveKeyBtn.textContent = wasEditing ? "Cập nhật key" : "Lưu / cập nhật key";
-  } finally {
-    saveKeyBtn.disabled = false;
   }
 }
 
@@ -657,24 +788,18 @@ async function deleteKey(key) {
 function editKey(row) {
   const item = JSON.parse(row.dataset.payload || "{}");
 
-  editingKey = item.key || "";
-  editingSlotUsed = Number(item.slotUsed || 0);
-
-  keyInput.value = editingKey;
-  keyInput.disabled = true;
-  typeInput.value = item.type || "VIP PRO";
+  keyInput.value = item.key || "";
+  typeInput.value = item.type || "custom";
   expireInput.value = toInputDateTime(item.expire);
   slotLimitInput.value = item.slotLimit || 1;
-  saveKeyBtn.textContent = "Cập nhật key";
+  editingKeyStatus = normalizeKeyStatus(item.status);
 
-  document.querySelector(".key-editor-grid")?.scrollIntoView({
-    behavior: "smooth",
-    block: "center"
-  });
-
+  window.scrollTo({ top: 0, behavior: "smooth" });
   saveStatus.textContent = STATIC_PREVIEW_MODE
     ? `Đang xem demo key: ${item.key}`
-    : `Đang sửa key: ${item.key}`;
+    : `Đang sửa key: ${item.key} · ${
+        editingKeyStatus === "locked" ? "ĐANG KHÓA" : "HOẠT ĐỘNG"
+      }`;
   saveStatus.style.color = "#ffd000";
 }
 
@@ -685,19 +810,6 @@ adminPassword.addEventListener("keydown", (event) => {
 
 saveKeyBtn.addEventListener("click", saveKey);
 reloadBtn.addEventListener("click", loadKeys);
-
-generateKeyBtn?.addEventListener("click", generateNewKey);
-expireNowBtn?.addEventListener("click", () => setExpireFromToday(30));
-newKeyModeBtn?.addEventListener("click", () => {
-  resetKeyForm({ message: "Đã chuyển sang tạo key mới." });
-  keyInput.focus();
-});
-
-document.querySelectorAll("[data-add-days]").forEach((button) => {
-  button.addEventListener("click", () => {
-    addDaysToExpire(Number(button.dataset.addDays || 0));
-  });
-});
 saveSettingsBtn?.addEventListener("click", saveSettings);
 loadSettingsBtn?.addEventListener("click", loadSettings);
 previewSettingsBtn?.addEventListener("click", () => window.open("index.html", "_blank"));
@@ -706,6 +818,7 @@ keyTable.addEventListener("click", (event) => {
   const editBtn = event.target.closest(".edit");
   const devicesBtn = event.target.closest(".devices");
   const resetBtn = event.target.closest(".reset");
+  const lockBtn = event.target.closest(".toggle-lock");
   const deleteBtn = event.target.closest(".delete");
 
   if (editBtn) {
@@ -714,13 +827,39 @@ keyTable.addEventListener("click", (event) => {
   }
 
   if (devicesBtn) {
-    loadDevices(devicesBtn.dataset.key);
-    document.querySelector(".devices-card-admin")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    const originalText = devicesBtn.textContent;
+    devicesBtn.disabled = true;
+    devicesBtn.textContent = "Đang tải...";
+
+    loadDevices(devicesBtn.dataset.key)
+      .finally(() => {
+        devicesBtn.disabled = false;
+        devicesBtn.textContent = originalText;
+      });
+
+    document
+      .querySelector(".devices-card-admin")
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
     return;
   }
 
   if (resetBtn) {
-    resetDevices(resetBtn.dataset.key);
+    const originalText = resetBtn.textContent;
+    resetBtn.disabled = true;
+    resetBtn.textContent = "Đang reset...";
+
+    resetDevices(resetBtn.dataset.key)
+      .finally(() => {
+        resetBtn.disabled = false;
+        resetBtn.textContent = originalText;
+      });
+    return;
+  }
+
+  if (lockBtn) {
+    if (!lockBtn.disabled) {
+      toggleKeyLock(lockBtn.closest("tr"));
+    }
     return;
   }
 
@@ -749,9 +888,9 @@ if (adminPass) {
   loginAdmin();
 }
 
-if (!expireInput.value) {
-  setExpireFromToday(30, false);
-}
-
 loadStats();
 setInterval(loadStats, 4000);
+
+window.addEventListener("admin:new-key-mode", () => {
+  editingKeyStatus = "active";
+});
