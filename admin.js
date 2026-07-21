@@ -25,6 +25,10 @@ const deviceTable = document.getElementById("deviceTable");
 const deviceHelp = document.getElementById("deviceHelp");
 const adminLogoutTop = document.getElementById("adminLogoutTop");
 
+const generateKeyBtn = document.getElementById("generateKeyBtn");
+const expireNowBtn = document.getElementById("expireNowBtn");
+const newKeyModeBtn = document.getElementById("newKeyModeBtn");
+
 const settingsFields = {
   freeKeyUrl: document.getElementById("settingFreeKeyUrl"),
   zaloUrl: document.getElementById("settingZaloUrl"),
@@ -53,6 +57,8 @@ const settingsStatus = document.getElementById("settingsStatus");
 
 let adminPass = localStorage.getItem("aimlockAdminPassword") || "";
 let selectedDeviceKey = "";
+let editingKey = "";
+let editingSlotUsed = 0;
 
 function apiUrl(path) {
   const cleanPath = String(path || "").startsWith("/") ? path : `/${path}`;
@@ -109,6 +115,96 @@ function toInputDateTime(value) {
   if (Number.isNaN(date.getTime())) return "";
   const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
   return local.toISOString().slice(0, 16);
+}
+
+
+function toLocalDateTimeValue(date) {
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 16);
+}
+
+function setExpireFromToday(days = 30, updateMessage = true) {
+  const date = new Date();
+  date.setDate(date.getDate() + Number(days));
+  date.setSeconds(0, 0);
+  expireInput.value = toLocalDateTimeValue(date);
+
+  if (updateMessage && saveStatus) {
+    saveStatus.textContent = `Đã đặt hạn ${days} ngày tính từ hôm nay.`;
+    saveStatus.style.color = "#22e06e";
+  }
+}
+
+function addDaysToExpire(days) {
+  const current = expireInput.value ? new Date(expireInput.value) : null;
+  const base = current &&
+    !Number.isNaN(current.getTime()) &&
+    current.getTime() > Date.now()
+      ? current
+      : new Date();
+
+  base.setDate(base.getDate() + Number(days));
+  base.setSeconds(0, 0);
+  expireInput.value = toLocalDateTimeValue(base);
+
+  if (saveStatus) {
+    saveStatus.textContent = `Đã cộng thêm ${days} ngày.`;
+    saveStatus.style.color = "#22e06e";
+  }
+}
+
+function randomKeyPart(length = 8) {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const bytes = new Uint32Array(length);
+
+  if (window.crypto?.getRandomValues) {
+    window.crypto.getRandomValues(bytes);
+    return Array.from(bytes, value => chars[value % chars.length]).join("");
+  }
+
+  return Array.from(
+    { length },
+    () => chars[Math.floor(Math.random() * chars.length)]
+  ).join("");
+}
+
+function resetKeyForm(options = {}) {
+  const { message = "Sẵn sàng tạo key mới.", keepStatusColor = false } = options;
+
+  editingKey = "";
+  editingSlotUsed = 0;
+
+  keyInput.value = "";
+  keyInput.disabled = false;
+  typeInput.value = "VIP PRO";
+  slotLimitInput.value = "1";
+  saveKeyBtn.textContent = "Lưu key";
+  setExpireFromToday(30, false);
+
+  if (saveStatus) {
+    saveStatus.textContent = message;
+    if (!keepStatusColor) saveStatus.style.color = "#22e06e";
+  }
+}
+
+function generateNewKey() {
+  if (editingKey) {
+    resetKeyForm({ message: "Đã chuyển sang tạo key mới." });
+  }
+
+  const plan = (typeInput.value || "VIP")
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+
+  keyInput.value = `AIMJAME-${plan || "VIP"}-${randomKeyPart(8)}`;
+  keyInput.focus();
+  keyInput.select();
+
+  if (saveStatus) {
+    saveStatus.textContent = "Đã tạo mã key mới.";
+    saveStatus.style.color = "#22e06e";
+  }
 }
 
 function demoKeys() {
@@ -494,14 +590,20 @@ async function saveKey() {
     ? new Date(expireInput.value).toISOString()
     : new Date(Date.now() + 7 * 86400000).toISOString();
 
+  const slotLimit = Math.max(1, Math.min(255, Number(slotLimitInput.value || 1)));
+
   const payload = {
     key,
-    type: typeInput.value.trim() || "custom",
+    type: typeInput.value.trim() || "VIP PRO",
     expire,
-    slotLimit: Number(slotLimitInput.value || 1),
-    slotUsed: 0,
+    slotLimit,
+    slotUsed: editingKey ? editingSlotUsed : 0,
     status: "active"
   };
+
+  const wasEditing = Boolean(editingKey);
+  saveKeyBtn.disabled = true;
+  saveKeyBtn.textContent = wasEditing ? "ĐANG CẬP NHẬT..." : "ĐANG LƯU...";
 
   try {
     const data = await fetchJson("/api/admin/keys", {
@@ -510,19 +612,21 @@ async function saveKey() {
       body: JSON.stringify(payload)
     });
 
-    saveStatus.textContent = data.message || "Đã lưu key";
+    saveStatus.textContent = data.message || (wasEditing ? "Đã cập nhật key" : "Đã lưu key");
     saveStatus.style.color = data.ok ? "#22e06e" : "#ef4444";
 
     if (data.ok) {
-      keyInput.value = "";
-      typeInput.value = "";
-      expireInput.value = "";
-      slotLimitInput.value = "100";
-      loadKeys();
+      resetKeyForm({
+        message: wasEditing ? "Cập nhật key thành công." : "Tạo key thành công."
+      });
+      await loadKeys();
     }
   } catch (error) {
     saveStatus.textContent = error.message || "Lỗi lưu key.";
     saveStatus.style.color = "#ef4444";
+    saveKeyBtn.textContent = wasEditing ? "Cập nhật key" : "Lưu key";
+  } finally {
+    saveKeyBtn.disabled = false;
   }
 }
 
@@ -553,12 +657,21 @@ async function deleteKey(key) {
 function editKey(row) {
   const item = JSON.parse(row.dataset.payload || "{}");
 
-  keyInput.value = item.key || "";
-  typeInput.value = item.type || "custom";
+  editingKey = item.key || "";
+  editingSlotUsed = Number(item.slotUsed || 0);
+
+  keyInput.value = editingKey;
+  keyInput.disabled = true;
+  typeInput.value = item.type || "VIP PRO";
   expireInput.value = toInputDateTime(item.expire);
   slotLimitInput.value = item.slotLimit || 1;
+  saveKeyBtn.textContent = "Cập nhật key";
 
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  document.querySelector(".key-editor-grid")?.scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+  });
+
   saveStatus.textContent = STATIC_PREVIEW_MODE
     ? `Đang xem demo key: ${item.key}`
     : `Đang sửa key: ${item.key}`;
@@ -572,6 +685,19 @@ adminPassword.addEventListener("keydown", (event) => {
 
 saveKeyBtn.addEventListener("click", saveKey);
 reloadBtn.addEventListener("click", loadKeys);
+
+generateKeyBtn?.addEventListener("click", generateNewKey);
+expireNowBtn?.addEventListener("click", () => setExpireFromToday(30));
+newKeyModeBtn?.addEventListener("click", () => {
+  resetKeyForm({ message: "Đã chuyển sang tạo key mới." });
+  keyInput.focus();
+});
+
+document.querySelectorAll("[data-add-days]").forEach((button) => {
+  button.addEventListener("click", () => {
+    addDaysToExpire(Number(button.dataset.addDays || 0));
+  });
+});
 saveSettingsBtn?.addEventListener("click", saveSettings);
 loadSettingsBtn?.addEventListener("click", loadSettings);
 previewSettingsBtn?.addEventListener("click", () => window.open("index.html", "_blank"));
@@ -621,6 +747,10 @@ adminLogoutTop?.addEventListener("click", () => {
 if (adminPass) {
   adminPassword.value = adminPass;
   loginAdmin();
+}
+
+if (!expireInput.value) {
+  setExpireFromToday(30, false);
 }
 
 loadStats();
