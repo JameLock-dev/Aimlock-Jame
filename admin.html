@@ -108,7 +108,17 @@
     }
 
     .key-editor-actions #saveKeyBtn {
-      min-width: 175px;
+      min-width: 205px !important;
+      min-height: 44px !important;
+      padding: 0 22px !important;
+      border-radius: 11px !important;
+      font-size: 14px !important;
+      font-weight: 800 !important;
+      display: inline-flex !important;
+      align-items: center;
+      justify-content: center;
+      line-height: 1 !important;
+      white-space: nowrap;
     }
 
     .key-form-note {
@@ -126,6 +136,15 @@
     @media (max-width: 620px) {
       .key-editor-grid {
         grid-template-columns: 1fr;
+      }
+
+      .key-editor-actions {
+        width: 100%;
+      }
+
+      .key-editor-actions #saveKeyBtn {
+        flex: 1;
+        min-width: 0 !important;
       }
 
       .key-editor-actions {
