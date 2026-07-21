@@ -2,6 +2,12 @@ const APP_CONFIG = window.AIMLOCK_CONFIG || {};
 const API_BASE = APP_CONFIG.apiBase || "https://aimlock-jame-production.up.railway.app";
 const DEMO_MODE = Boolean(APP_CONFIG.demoMode);
 const DEMO_FORCE_LOGIN = Boolean(APP_CONFIG.forceLogin);
+const CURRENT_PAGE = (location.pathname.split("/").pop() || "index.html").toLowerCase();
+const IS_LOGIN_PAGE = document.body.classList.contains("page-login");
+const APP_PAGE = String(
+  APP_CONFIG.appPage ||
+  (CURRENT_PAGE === "index.html" ? "app.html" : "index.html")
+).trim() || "index.html";
 const $ = (id) => document.getElementById(id);
 
 const KEY_INPUT_SELECTORS = [
@@ -23,6 +29,7 @@ const TOGGLE_KEY_SELECTORS = [
   "#showKeyBtn",
   "#eyeKeyBtn",
   "#passwordToggle",
+  "#togglePassword",
   "[data-toggle-key]",
   "[data-show-key]",
   ".toggle-key-btn",
@@ -221,8 +228,8 @@ function showToast(msg){
 function setActivationStatus(message = "Kích Hoạt AIMLOCK JAME", state = ""){
   if(!loginStatus) return;
 
-  loginStatus.innerHTML = `<span class="green-dot"></span> ${message}`;
-  loginStatus.className = `login-status-v2${state ? ` ${state}` : ""}`;
+  loginStatus.innerHTML = `<span class="dot"></span>${message}`;
+  loginStatus.className = `ready-state${state ? ` ${state}` : ""}`;
 }
 function nowTime(){return new Date().toLocaleTimeString("vi-VN",{hour12:false});}
 function lockApp(lock){
@@ -307,12 +314,16 @@ function normalizeVipPlan(info){
 }
 
 function ensureVipPlanText(){
-  // Ưu tiên đúng phần tử đã có sẵn trong HTML.
-  // Giao diện hiện tại của bạn dùng id="vipPlan", không phải vipPlanText.
+  // Chỉ hiển thị gói VIP ở trang app có sẵn vị trí vipPlan/vipPlanText.
+  // Không tự chèn badge nổi vào trang đăng nhập.
   vipPlanText = $("vipPlanText") || $("vipPlan") || vipPlanText;
 
   if(vipPlanText && document.body.contains(vipPlanText)) {
     return vipPlanText;
+  }
+
+  if(IS_LOGIN_PAGE || (!keyExpireText && !keySlotText)) {
+    return null;
   }
 
   vipPlanText = document.createElement("strong");
@@ -354,6 +365,25 @@ function renderKeyInfo(info){
   if(planEl) planEl.textContent = normalizeVipPlan(keyInfo);
   if(keyExpireText) keyExpireText.textContent = formatExpire(keyInfo.expire);
   if(keySlotText) keySlotText.textContent = `${Number(keyInfo.slotUsed || 0)}/${Number(keyInfo.slotLimit || 1)}`;
+}
+
+function openActivatedApp(){
+  if(IS_LOGIN_PAGE){
+    const target = new URL(APP_PAGE, location.href);
+
+    // Chặn vòng lặp nếu cấu hình nhầm trang app trùng trang đăng nhập.
+    if(target.href === location.href){
+      throw new Error(
+        `Trang app đang trùng trang đăng nhập (${APP_PAGE}). ` +
+        "Hãy đặt AIMLOCK_CONFIG.appPage thành tên file trang app, ví dụ app.html."
+      );
+    }
+
+    window.location.replace(target.href);
+    return;
+  }
+
+  lockApp(false);
 }
 function detectDevice(){
   const ua=navigator.userAgent||"";
@@ -422,21 +452,21 @@ async function verifyKey(){
   const key = input?.value?.trim() || "";
 
   if(!input){
-    loginStatus.innerHTML='<span class="green-dot"></span> Không tìm thấy ô nhập key trong giao diện.';
-    loginStatus.className='login-status-v2 error';
+    setActivationStatus("Không tìm thấy ô nhập key trong giao diện.", "error");
     showToast('Lỗi ô nhập key');
     return;
   }
 
   if(!key || /^[•●*]+$/.test(key)){
-    loginStatus.innerHTML='<span class="green-dot"></span> Vui lòng nhập hoặc dán key thật.';
-    loginStatus.className='login-status-v2 error';
+    setActivationStatus("Vui lòng nhập hoặc dán key thật.", "error");
     input.focus();
     showToast('Thiếu key');
     return;
   }
-  loginStatus.innerHTML='<span class="green-dot"></span> Đang kiểm tra Postgres key server...'; loginStatus.className='login-status-v2';
-  activateBtn.disabled=true; activateBtn.textContent='ĐANG KÍCH HOẠT...';
+  setActivationStatus("Đang kiểm tra Postgres key server...");
+  const activateLabel = activateBtn?.querySelector("span");
+  if(activateBtn) activateBtn.disabled = true;
+  if(activateLabel) activateLabel.textContent = "ĐANG KÍCH HOẠT...";
   try{
     const data=await apiFetch('/api/verify-key',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key,deviceId:deviceId()})});
     const keyInfo = {...(data.key || {}), loginKey: key};
@@ -446,12 +476,23 @@ async function verifyKey(){
     renderKeyInfo(keyInfo);
     setActivationStatus("Kích Hoạt AIMLOCK JAME", "success");
     showToast("Đăng nhập thành công");
-    lockApp(false);
-    requestAnimationFrame(() => lockApp(false));
-    setTimeout(() => lockApp(false), 250);
     updateStats();
-  }catch(err){loginStatus.innerHTML=`<span class="green-dot"></span> ${err.message||'Key không hợp lệ.'}`; loginStatus.className='login-status-v2 error'; showToast('Kích hoạt thất bại');}
-  finally{activateBtn.disabled=false; activateBtn.textContent='⚡ KÍCH HOẠT JAME';}
+
+    setTimeout(() => {
+      try{
+        openActivatedApp();
+      }catch(error){
+        setActivationStatus(error.message || "Không mở được trang app.", "error");
+        showToast("Sai cấu hình trang app");
+      }
+    }, 250);
+  }catch(err){
+    setActivationStatus(err.message || "Key không hợp lệ.", "error");
+    showToast("Kích hoạt thất bại");
+  }finally{
+    if(activateBtn) activateBtn.disabled = false;
+    if(activateLabel) activateLabel.textContent = "KÍCH HOẠT AIMLOCK";
+  }
 }
 async function updateStats(){
   try{
@@ -478,9 +519,27 @@ function initSavedLogin(){
   if(DEMO_MODE && !DEMO_FORCE_LOGIN){localStorage.setItem('jameLoginUnlocked','true'); localStorage.setItem('jameKeyInfo', JSON.stringify({type:'FREE',expire:'2100-01-01T06:59:59.000Z',slotUsed:1,slotLimit:1}));}
   try{
     const saved=JSON.parse(localStorage.getItem('jameKeyInfo')||'null');
-    if(localStorage.getItem('jameLoginUnlocked')==='true' && saved){renderKeyInfo(saved); lockApp(false); return;}
+    if(localStorage.getItem('jameLoginUnlocked')==='true' && saved){
+      renderKeyInfo(saved);
+
+      if(IS_LOGIN_PAGE){
+        setTimeout(() => {
+          try{
+            openActivatedApp();
+          }catch(error){
+            setActivationStatus(error.message || "Không mở được trang app.", "error");
+          }
+        }, 50);
+      }else{
+        lockApp(false);
+      }
+      return;
+    }
   }catch{}
-  lockApp(true);
+
+  if(!IS_LOGIN_PAGE){
+    lockApp(true);
+  }
 }
 function logout(){
   localStorage.removeItem('jameLoginUnlocked');
@@ -554,7 +613,6 @@ async function pasteKeyFromClipboard(event){
 }
 
 activateBtn?.addEventListener('click', verifyKey);
-freeKeyBtn?.addEventListener('click',()=>window.open('https://www.tiktok.com/@jame.ff.11','_blank','noopener'));
 contactKeyBtn?.addEventListener('click',()=>window.open('https://zalo.me/0333635135','_blank','noopener'));
 menuBtn?.addEventListener('click', openMenu);
 closeMenuBtn?.addEventListener('click', closeMenu);
