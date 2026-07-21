@@ -1041,7 +1041,7 @@ if (document.getElementById("mainApp")) {
       </button>
       <button class="notify-item-v15" type="button" data-notify-action="vip">
         <strong>Bảng giá VIP mới</strong>
-        <p>Gói 550K vĩnh viễn đã có antiban, bảo hành và hỗ trợ leo rank.</p>
+        <p>Gói 750K vĩnh viễn đã có antiban, bảo hành và hỗ trợ leo rank.</p>
         <small>Hôm nay</small>
       </button>
       <button class="notify-item-v15" type="button" data-notify-action="support">
