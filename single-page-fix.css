@@ -1,0 +1,50 @@
+
+/* AIMLOCK JAME — single-page touch/click repair */
+
+[hidden] {
+  display: none !important;
+}
+
+html[data-aimlock-auth="1"] #loginScreen {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+html:not([data-aimlock-auth="1"]) #mainApp {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+html[data-aimlock-auth="1"] #mainApp {
+  display: block !important;
+  visibility: visible !important;
+  position: relative;
+  z-index: 1;
+  pointer-events: auto !important;
+}
+
+#mainApp button,
+#mainApp a,
+#mainApp input,
+#mainApp select,
+#mainApp textarea,
+#mainApp [role="button"],
+#mainApp .toggle,
+#mainApp .interactive {
+  pointer-events: auto !important;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#mainApp .toggle {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#loginScreen[hidden],
+#mainApp[hidden] {
+  display: none !important;
+}

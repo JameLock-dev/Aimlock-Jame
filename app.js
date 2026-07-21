@@ -466,7 +466,15 @@ if (document.getElementById("loginScreen") && !isAimlockAuthenticated()) {
       saveSessionFromKey(data, value);
       loginStatus.innerHTML = '<span class="dot"></span>Kích hoạt Thành công AIMLOCK JAME';
       showToast(data.message || "Kích hoạt Thành công AIMLOCK JAME. Đang vào dashboard...", "success");
-      setTimeout(reloadAimlockSinglePage, 650);
+      setTimeout(() => {
+        syncSinglePageAuthUI();
+
+        if (typeof window.AIMLOCK_ENTER_APP === "function") {
+          window.AIMLOCK_ENTER_APP();
+        } else {
+          window.location.reload();
+        }
+      }, 350);
     } catch (error) {
       activateBtn.classList.remove("loading");
       activateBtn.querySelector("span").textContent = defaultButtonLabel;
@@ -484,7 +492,7 @@ if (document.getElementById("loginScreen") && !isAimlockAuthenticated()) {
   });
 }
 
-if (document.getElementById("mainApp") && isAimlockAuthenticated()) {
+if (document.getElementById("mainApp")) {
   syncSinglePageAuthUI();
 
   const helloName = document.getElementById("helloName");
@@ -507,22 +515,52 @@ if (document.getElementById("mainApp") && isAimlockAuthenticated()) {
   const activeKeysModalBody = document.getElementById("activeKeysModalBody");
   const todayModalBody = document.getElementById("todayModalBody");
 
-  const keyInfo = getKeyInfo();
-  const daysLeft = getDaysLeft(keyInfo.expire || new Date(Date.now() + 30 * 86400000).toISOString());
-  const progress = keyInfo.type === "admin" ? 100 : clamp(Math.round((daysLeft / 30) * 100), 0, 100);
+  let keyInfo = getKeyInfo();
+  let daysLeft = 0;
+  let progress = 0;
   let currentStats = {
     online: STATIC_PREVIEW_MODE ? 1 : 0,
-    activeKeys: Number(keyInfo.slotLimit || 2),
+    activeKeys: 2,
     today: 1
   };
 
-  if (helloName) helloName.textContent = localStorage.getItem("aimlock_user") || "JAME FF";
-  if (vipPlan) vipPlan.textContent = normalizeKeyPlan(keyInfo);
-  if (vipExpireDate) vipExpireDate.textContent = formatDate(keyInfo.expire || new Date(Date.now() + 30 * 86400000).toISOString());
-  if (vipDaysText) vipDaysText.textContent = keyInfo.type === "admin" ? "Quyền admin không giới hạn" : `Còn ${daysLeft} ngày VIP`;
-  if (vipPercentText) vipPercentText.textContent = `${progress}%`;
-  if (vipProgressBar) requestAnimationFrame(() => { vipProgressBar.style.width = `${progress}%`; });
-  if (slotText) slotText.textContent = `${Number(keyInfo.slotUsed || 1)}/${Number(keyInfo.slotLimit || 2)}`;
+  function refreshDashboardSession() {
+    keyInfo = getKeyInfo();
+    const fallbackExpire = new Date(Date.now() + 30 * 86400000).toISOString();
+    daysLeft = getDaysLeft(keyInfo.expire || fallbackExpire);
+    progress = String(keyInfo.type || "").toLowerCase() === "admin"
+      ? 100
+      : clamp(Math.round((daysLeft / 30) * 100), 0, 100);
+
+    currentStats.activeKeys = Number(keyInfo.slotLimit || 2);
+
+    if (helloName) {
+      helloName.textContent =
+        localStorage.getItem("aimlock_user") || "JAME FF";
+    }
+    if (vipPlan) vipPlan.textContent = normalizeKeyPlan(keyInfo);
+    if (vipExpireDate) {
+      vipExpireDate.textContent = formatDate(keyInfo.expire || fallbackExpire);
+    }
+    if (vipDaysText) {
+      vipDaysText.textContent =
+        String(keyInfo.type || "").toLowerCase() === "admin"
+          ? "Quyền admin không giới hạn"
+          : `Còn ${daysLeft} ngày VIP`;
+    }
+    if (vipPercentText) vipPercentText.textContent = `${progress}%`;
+    if (vipProgressBar) {
+      requestAnimationFrame(() => {
+        vipProgressBar.style.width = `${progress}%`;
+      });
+    }
+    if (slotText) {
+      slotText.textContent =
+        `${Number(keyInfo.slotUsed || 1)}/${Number(keyInfo.slotLimit || 2)}`;
+    }
+  }
+
+  refreshDashboardSession();
 
   async function loadDashboardStats() {
     const cards = document.querySelectorAll("[data-stat-card]");
@@ -1207,7 +1245,17 @@ if (document.getElementById("mainApp") && isAimlockAuthenticated()) {
     localStorage.removeItem("aimlock_key_info");
     localStorage.removeItem("aimlock_active_key");
     showToast("Đã đăng xuất.", "warning");
-    setTimeout(reloadAimlockSinglePage, 500);
+    setTimeout(() => {
+      syncSinglePageAuthUI();
+      const input = document.getElementById("keyInput");
+      const status = document.getElementById("loginStatus");
+      if (input) input.value = "";
+      if (status) {
+        status.textContent = "Sẵn sàng kích hoạt";
+        status.style.color = "";
+      }
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    }, 300);
   });
   document.getElementById("accountKeyBtn")?.addEventListener("click", () => {
     setActiveBottomNav(accountBtn);
@@ -1219,8 +1267,26 @@ if (document.getElementById("mainApp") && isAimlockAuthenticated()) {
     localStorage.removeItem("aimlock_key_info");
     localStorage.removeItem("aimlock_active_key");
     showToast("Đã đăng xuất.", "warning");
-    setTimeout(reloadAimlockSinglePage, 500);
+    setTimeout(() => {
+      syncSinglePageAuthUI();
+      const input = document.getElementById("keyInput");
+      const status = document.getElementById("loginStatus");
+      if (input) input.value = "";
+      if (status) {
+        status.textContent = "Sẵn sàng kích hoạt";
+        status.style.color = "";
+      }
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    }, 300);
   });
+
+  window.AIMLOCK_ENTER_APP = function () {
+    refreshDashboardSession();
+    syncSinglePageAuthUI();
+    loadDashboardStats();
+    setActiveBottomNav(navHomeBtn);
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  };
 
   document.addEventListener("keydown", event => {
     if (event.key === "Escape") {
@@ -1243,59 +1309,14 @@ function updateToggle(toggle, on) {
   const label = toggle.querySelector(".label");
   if (label) label.textContent = on ? "ON" : "OFF";
 }
-document.addEventListener("DOMContentLoaded", function () {
-  const notifyBtn = document.getElementById("notifyBtn");
-  const notifyPanel = document.getElementById("notifyPanel");
-  const markAllReadBtn = document.getElementById("markAllReadBtn");
 
-  if (!notifyBtn || !notifyPanel) {
-    console.error("Không tìm thấy notifyBtn hoặc notifyPanel");
-    return;
+window.addEventListener("pageshow", () => {
+  syncSinglePageAuthUI();
+
+  if (
+    isAimlockAuthenticated() &&
+    typeof window.AIMLOCK_ENTER_APP === "function"
+  ) {
+    window.AIMLOCK_ENTER_APP();
   }
-
-  function openNotifyPanel() {
-    notifyPanel.classList.add("is-open");
-    notifyPanel.setAttribute("aria-hidden", "false");
-    document.body.classList.add("modal-open");
-  }
-
-  function closeNotifyPanel() {
-    notifyPanel.classList.remove("is-open");
-    notifyPanel.setAttribute("aria-hidden", "true");
-    document.body.classList.remove("modal-open");
-  }
-
-  notifyBtn.addEventListener("click", function (event) {
-    event.preventDefault();
-    event.stopPropagation();
-    openNotifyPanel();
-  });
-
-  notifyPanel
-    .querySelectorAll("[data-close-notify]")
-    .forEach(function (button) {
-      button.addEventListener("click", function (event) {
-        event.preventDefault();
-        closeNotifyPanel();
-      });
-    });
-
-  if (markAllReadBtn) {
-    markAllReadBtn.addEventListener("click", function () {
-      notifyPanel
-        .querySelectorAll(".notify-item-v15.unread")
-        .forEach(function (item) {
-          item.classList.remove("unread");
-        });
-
-      const dot = document.querySelector(".notif-dot");
-      if (dot) dot.style.display = "none";
-    });
-  }
-
-  document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape") {
-      closeNotifyPanel();
-    }
-  });
 });
