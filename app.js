@@ -100,8 +100,78 @@ function getPasteKeyBtn() {
   return pasteKeyBtn;
 }
 
-const appShell = $("appShell");
-const loginOverlay = $("loginOverlay");
+const APP_SHELL_SELECTORS = [
+  "#appShell",
+  "#mainApp",
+  "#app",
+  "[data-app-shell]",
+  "[data-protected-app]",
+  ".app-shell",
+  ".main-app",
+  ".protected-app",
+  ".app-content"
+];
+
+const LOGIN_OVERLAY_SELECTORS = [
+  "#loginOverlay",
+  "#loginScreen",
+  "#activationScreen",
+  "[data-login-overlay]",
+  "[data-activation-screen]",
+  ".login-overlay",
+  ".login-screen",
+  ".activation-screen",
+  ".auth-overlay",
+  ".auth-screen",
+  ".login-gate"
+];
+
+let appShell = $("appShell");
+let loginOverlay = $("loginOverlay");
+
+function firstMatch(selectors) {
+  for (const selector of selectors) {
+    const element = document.querySelector(selector);
+    if (element) return element;
+  }
+  return null;
+}
+
+function resolveAppShell() {
+  if (appShell && document.body.contains(appShell)) return appShell;
+
+  appShell = firstMatch(APP_SHELL_SELECTORS);
+
+  if (!appShell) {
+    appShell = Array.from(document.querySelectorAll("main, section, div"))
+      .find((element) =>
+        element.classList.contains("locked") ||
+        element.classList.contains("app-locked") ||
+        element.hasAttribute("data-protected-app")
+      ) || null;
+  }
+
+  return appShell;
+}
+
+function resolveLoginOverlay() {
+  if (loginOverlay && document.body.contains(loginOverlay)) return loginOverlay;
+
+  loginOverlay = firstMatch(LOGIN_OVERLAY_SELECTORS);
+
+  if (!loginOverlay) {
+    const input = getLoginKeyInput();
+    loginOverlay = input?.closest(
+      "#loginOverlay, #loginScreen, #activationScreen, " +
+      "[data-login-overlay], [data-activation-screen], " +
+      ".login-overlay, .login-screen, .activation-screen, " +
+      ".auth-overlay, .auth-screen, .login-gate"
+    ) || null;
+  }
+
+  return loginOverlay;
+}
+
 const activateBtn = $("activateBtn");
 const loginStatus = $("loginStatus");
 const freeKeyBtn = $("freeKeyBtn");
@@ -147,8 +217,80 @@ function showToast(msg){
   clearTimeout(showToast._t);
   showToast._t = setTimeout(()=>toast.classList.remove("show"),2200);
 }
+
+function setActivationStatus(message = "Kích Hoạt AIMLOCK JAME", state = ""){
+  if(!loginStatus) return;
+
+  loginStatus.innerHTML = `<span class="green-dot"></span> ${message}`;
+  loginStatus.className = `login-status-v2${state ? ` ${state}` : ""}`;
+}
 function nowTime(){return new Date().toLocaleTimeString("vi-VN",{hour12:false});}
-function lockApp(lock){appShell?.classList.toggle("locked",lock); loginOverlay?.classList.toggle("hidden",!lock)}
+function lockApp(lock){
+  const shell = resolveAppShell();
+  const overlay = resolveLoginOverlay();
+
+  document.documentElement.classList.toggle("aimlock-locked", lock);
+  document.body.classList.toggle("aimlock-locked", lock);
+  document.body.classList.toggle("app-unlocked", !lock);
+
+  if(shell){
+    ["locked", "app-locked", "is-locked", "blurred", "disabled"]
+      .forEach(className => shell.classList.toggle(className, lock));
+
+    shell.setAttribute("aria-hidden", String(lock));
+
+    if(lock){
+      shell.style.removeProperty("display");
+      shell.style.removeProperty("visibility");
+      shell.style.removeProperty("opacity");
+      shell.style.removeProperty("pointer-events");
+    }else{
+      shell.hidden = false;
+      shell.style.setProperty("display", "", "");
+      shell.style.setProperty("visibility", "visible", "important");
+      shell.style.setProperty("opacity", "1", "important");
+      shell.style.setProperty("pointer-events", "auto", "important");
+    }
+  }
+
+  if(overlay){
+    overlay.classList.toggle("hidden", !lock);
+    overlay.classList.toggle("is-hidden", !lock);
+    overlay.classList.toggle("active", lock);
+    overlay.setAttribute("aria-hidden", String(!lock));
+
+    if(lock){
+      overlay.hidden = false;
+      overlay.style.removeProperty("display");
+      overlay.style.removeProperty("visibility");
+      overlay.style.removeProperty("opacity");
+      overlay.style.removeProperty("pointer-events");
+    }else{
+      overlay.hidden = true;
+      overlay.style.setProperty("display", "none", "important");
+      overlay.style.setProperty("visibility", "hidden", "important");
+      overlay.style.setProperty("opacity", "0", "important");
+      overlay.style.setProperty("pointer-events", "none", "important");
+    }
+  }
+
+  if(!lock){
+    document.querySelectorAll(
+      "[data-show-after-login], .show-after-login, .app-after-login, " +
+      ".protected-content, #dashboard, #homeScreen"
+    ).forEach((element) => {
+      element.hidden = false;
+      element.classList.remove("hidden", "is-hidden", "locked", "app-locked");
+      element.setAttribute("aria-hidden", "false");
+      element.style.removeProperty("display");
+      element.style.setProperty("visibility", "visible", "important");
+      element.style.setProperty("opacity", "1", "important");
+      element.style.setProperty("pointer-events", "auto", "important");
+    });
+
+    window.dispatchEvent(new CustomEvent("aimlock:unlocked"));
+  }
+}
 function deviceId(){let id=localStorage.getItem("deviceId"); if(!id){id="DEV-"+Math.random().toString(36).slice(2,10).toUpperCase(); localStorage.setItem("deviceId",id)} return id;}
 function formatExpire(expire){const d=new Date(expire); if(Number.isNaN(d.getTime())) return expire||"--"; return d.toLocaleString("vi-VN",{hour:"2-digit",minute:"2-digit",second:"2-digit",day:"2-digit",month:"2-digit",year:"numeric"});}
 
@@ -302,10 +444,14 @@ async function verifyKey(){
     localStorage.setItem('jameKeyInfo', JSON.stringify(keyInfo));
     localStorage.setItem('jameActiveKey', key);
     renderKeyInfo(keyInfo);
-    loginStatus.innerHTML='<span class="green-dot"></span> Kích Hoạt AIMLOCK JAME'; loginStatus.className='login-status-v2 success';
-    showToast('Đăng nhập thành công'); setTimeout(()=>lockApp(false), 450); updateStats();
+    setActivationStatus("Kích Hoạt AIMLOCK JAME", "success");
+    showToast("Đăng nhập thành công");
+    lockApp(false);
+    requestAnimationFrame(() => lockApp(false));
+    setTimeout(() => lockApp(false), 250);
+    updateStats();
   }catch(err){loginStatus.innerHTML=`<span class="green-dot"></span> ${err.message||'Key không hợp lệ.'}`; loginStatus.className='login-status-v2 error'; showToast('Kích hoạt thất bại');}
-  finally{activateBtn.disabled=false; activateBtn.textContent='⚡ KÍCH HOẠT AIMLOCK JAME';}
+  finally{activateBtn.disabled=false; activateBtn.textContent='⚡ KÍCH HOẠT JAME';}
 }
 async function updateStats(){
   try{
@@ -344,8 +490,7 @@ function logout(){
   const input = getLoginKeyInput();
   if(input) input.value='';
 
-  loginStatus.innerHTML='<span class="green-dot"></span> Sẵn sàng kích hoạt';
-  loginStatus.className='login-status-v2';
+  setActivationStatus("Kích Hoạt AIMLOCK JAME");
   lockApp(true);
   closeMenu();
   showToast('Đã đăng xuất');
@@ -400,8 +545,7 @@ async function pasteKeyFromClipboard(event){
 
     input.value = text;
     input.dispatchEvent(new Event('input', { bubbles: true }));
-    loginStatus.innerHTML='<span class="green-dot"></span> Đã dán key, sẵn sàng kích hoạt.';
-    loginStatus.className='login-status-v2 success';
+    setActivationStatus("Kích Hoạt AIMLOCK JAME", "success");
     showToast('Đã dán key');
   }catch(error){
     input.focus();
@@ -457,6 +601,7 @@ document.addEventListener('keydown', (event)=>{
 });
 
 ensureVipPlanText();
+setActivationStatus("Kích Hoạt AIMLOCK JAME");
 initSavedLogin();
 detectDevice();
 renderFeatures();
