@@ -178,7 +178,7 @@ function resetKeyForm(options = {}) {
   keyInput.disabled = false;
   typeInput.value = "VIP PRO";
   slotLimitInput.value = "1";
-  saveKeyBtn.textContent = "Lưu key";
+  saveKeyBtn.textContent = "Lưu / cập nhật key";
   setExpireFromToday(30, false);
 
   if (saveStatus) {
@@ -624,7 +624,7 @@ async function saveKey() {
   } catch (error) {
     saveStatus.textContent = error.message || "Lỗi lưu key.";
     saveStatus.style.color = "#ef4444";
-    saveKeyBtn.textContent = wasEditing ? "Cập nhật key" : "Lưu key";
+    saveKeyBtn.textContent = wasEditing ? "Cập nhật key" : "Lưu / cập nhật key";
   } finally {
     saveKeyBtn.disabled = false;
   }

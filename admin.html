@@ -103,12 +103,78 @@
 
     .key-editor-actions {
       grid-column: 1 / -1;
-      justify-content: flex-end;
-      margin-top: 4px;
+      display: grid;
+      grid-template-columns: minmax(145px, .75fr) minmax(220px, 1.25fr);
+      gap: 12px;
+      width: min(100%, 430px);
+      margin-top: 12px;
+      margin-left: auto;
+      align-items: stretch;
+    }
+
+    .key-editor-actions button {
+      width: 100%;
+      min-height: 50px;
+      box-sizing: border-box;
+      border-radius: 13px;
+      padding: 0 20px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: .15px;
+      cursor: pointer;
+      transition:
+        transform .18s ease,
+        border-color .18s ease,
+        box-shadow .18s ease,
+        filter .18s ease;
+    }
+
+    .key-editor-actions #newKeyModeBtn {
+      min-height: 50px;
+      border: 1px solid #34425f;
+      background: #111a2b;
+      color: #f4f7ff;
     }
 
     .key-editor-actions #saveKeyBtn {
-      min-width: 175px;
+      min-width: 0;
+      min-height: 50px;
+      border: 1px solid rgba(255, 209, 54, .95);
+      background: linear-gradient(135deg, #ffd332 0%, #ffb11b 55%, #ff7d19 100%);
+      color: #111827;
+      box-shadow:
+        0 10px 24px rgba(255, 153, 24, .20),
+        inset 0 1px 0 rgba(255,255,255,.42);
+    }
+
+    .key-editor-actions #newKeyModeBtn:hover,
+    .key-editor-actions #saveKeyBtn:hover {
+      transform: translateY(-1px);
+    }
+
+    .key-editor-actions #newKeyModeBtn:hover {
+      border-color: #ffcf32;
+      color: #ffcf32;
+    }
+
+    .key-editor-actions #saveKeyBtn:hover {
+      filter: brightness(1.06);
+      box-shadow:
+        0 13px 30px rgba(255, 153, 24, .28),
+        inset 0 1px 0 rgba(255,255,255,.48);
+    }
+
+    .key-editor-actions #saveKeyBtn:active,
+    .key-editor-actions #newKeyModeBtn:active {
+      transform: translateY(0);
+    }
+
+    .key-editor-actions #saveKeyBtn:disabled {
+      cursor: wait;
+      opacity: .68;
+      filter: grayscale(.12);
+      transform: none;
     }
 
     .key-form-note {
@@ -129,11 +195,19 @@
       }
 
       .key-editor-actions {
-        justify-content: stretch;
+        width: 100%;
+        grid-template-columns: 1fr;
+        margin-left: 0;
       }
 
-      .key-editor-actions button {
-        flex: 1;
+      .key-editor-actions #saveKeyBtn {
+        order: -1;
+        min-height: 54px;
+        font-size: 15px;
+      }
+
+      .key-editor-actions #newKeyModeBtn {
+        min-height: 46px;
       }
     }
   </style>
@@ -261,7 +335,7 @@
               type="button"
               title="Xóa dữ liệu đang nhập để tạo key mới"
             >Tạo key mới</button>
-            <button id="saveKeyBtn" type="button">Lưu key</button>
+            <button id="saveKeyBtn" type="button">Lưu / cập nhật key</button>
           </div>
         </div>
 
