@@ -7,7 +7,6 @@ const { Pool } = require("pg");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Admin11";
 
 // Ưu tiên DATABASE_PUBLIC_URL để tránh lỗi ENOTFOUND postgres.railway.internal.
 // Trên Railway App Service nên đặt: DATABASE_URL=${{Postgres.DATABASE_PUBLIC_URL}}
@@ -100,12 +99,7 @@ function requireDatabase(req, res, next) {
 }
 
 function requireAdmin(req, res, next) {
-  const password = req.headers["x-admin-password"];
-
-  if (password !== ADMIN_PASSWORD) {
-    return res.status(401).json({ ok: false, message: "Sai mật khẩu admin." });
-  }
-
+  // Đã tắt xác thực mật khẩu admin.
   next();
 }
 
@@ -208,15 +202,6 @@ async function initDb() {
     [process.env.DEFAULT_KEY || ""]
   );
 
-  // Cho phép Admin11 cũng là key mẫu trong database.
-  await pool.query(
-    `
-    INSERT INTO keys (key_value, type, expire, slot_used, slot_limit, status)
-    VALUES ($1, 'admin', NOW() + INTERVAL '3650 days', 0, 100, 'active')
-    ON CONFLICT (key_value) DO NOTHING;
-    `,
-    [ADMIN_PASSWORD]
-  );
 
   console.log("✅ Postgres connected & database ready");
 }
@@ -539,7 +524,7 @@ app.get("/api/app-settings", async (req, res) => {
   }
 });
 
-// Admin lưu settings. Cần header x-admin-password đúng ADMIN_PASSWORD.
+// Admin lưu settings. Không yêu cầu mật khẩu.
 app.post("/api/app-settings", requireAdmin, async (req, res) => {
   try {
     const saved = await saveAppSettingsToDb(req.body || {});
@@ -604,21 +589,6 @@ app.post("/api/verify-key", async (req, res) => {
     return res.status(400).json({ ok: false, message: "Vui lòng nhập Password / Key." });
   }
 
-  // Admin password đăng nhập được kể cả khi Postgres đang lỗi.
-  if (input === ADMIN_PASSWORD) {
-    return res.json({
-      ok: true,
-      message: "Đăng nhập Admin thành công.",
-      key: {
-        key: "ADMIN",
-        type: "admin",
-        expire: "2099-12-31T23:59:59.000Z",
-        slotUsed: 1,
-        slotLimit: 1,
-        status: "active"
-      }
-    });
-  }
 
   if (!pool || !DATABASE_URL) {
     return res.status(500).json({
@@ -931,7 +901,6 @@ initDb()
   .finally(() => {
     app.listen(PORT, () => {
       console.log(`✅ AIMLOCK JAME server running on port ${PORT}`);
-      console.log(`✅ Admin password: ${ADMIN_PASSWORD}`);
       console.log(`✅ Database URL mode: ${DATABASE_URL ? (isRailwayInternalUrl(DATABASE_URL) ? "internal" : "public/external") : "missing"}`);
     });
   });
