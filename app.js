@@ -302,10 +302,10 @@ async function verifyKey(){
     localStorage.setItem('jameKeyInfo', JSON.stringify(keyInfo));
     localStorage.setItem('jameActiveKey', key);
     renderKeyInfo(keyInfo);
-    loginStatus.innerHTML='<span class="green-dot"></span> Sẵn sàng kích hoạt'; loginStatus.className='login-status-v2 success';
+    loginStatus.innerHTML='<span class="green-dot"></span> Kích Hoạt AIMLOCK JAME'; loginStatus.className='login-status-v2 success';
     showToast('Đăng nhập thành công'); setTimeout(()=>lockApp(false), 450); updateStats();
   }catch(err){loginStatus.innerHTML=`<span class="green-dot"></span> ${err.message||'Key không hợp lệ.'}`; loginStatus.className='login-status-v2 error'; showToast('Kích hoạt thất bại');}
-  finally{activateBtn.disabled=false; activateBtn.textContent='⚡ KÍCH HOẠT JAME';}
+  finally{activateBtn.disabled=false; activateBtn.textContent='⚡ KÍCH HOẠT AIMLOCK JAME';}
 }
 async function updateStats(){
   try{
