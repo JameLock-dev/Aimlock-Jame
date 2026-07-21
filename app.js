@@ -4,10 +4,104 @@ const DEMO_MODE = Boolean(APP_CONFIG.demoMode);
 const DEMO_FORCE_LOGIN = Boolean(APP_CONFIG.forceLogin);
 const $ = (id) => document.getElementById(id);
 
+const KEY_INPUT_SELECTORS = [
+  "#loginKeyInput",
+  "#keyInput",
+  "#passwordInput",
+  "#licenseKeyInput",
+  "input[name='key']",
+  "input[name='licenseKey']",
+  "[data-key-input]",
+  ".login-key-input",
+  ".key-input-v2",
+  "#loginOverlay input[type='password']",
+  "#loginOverlay input[type='text']"
+];
+
+const TOGGLE_KEY_SELECTORS = [
+  "#toggleKeyBtn",
+  "#showKeyBtn",
+  "#eyeKeyBtn",
+  "#passwordToggle",
+  "[data-toggle-key]",
+  "[data-show-key]",
+  ".toggle-key-btn",
+  ".password-toggle",
+  ".key-eye-btn"
+].join(",");
+
+const PASTE_KEY_SELECTORS = [
+  "#pasteKeyBtn",
+  "#pasteBtn",
+  "[data-paste-key]",
+  ".paste-key-btn"
+].join(",");
+
+function findButtonByText(pattern) {
+  return Array.from(document.querySelectorAll("button"))
+    .find((button) => pattern.test((button.textContent || "").trim()));
+}
+
+function resolveLoginKeyInput() {
+  for (const selector of KEY_INPUT_SELECTORS) {
+    const element = document.querySelector(selector);
+    if (element instanceof HTMLInputElement) return element;
+  }
+  return null;
+}
+
+function resolveToggleKeyBtn(input) {
+  const knownButton = document.querySelector(TOGGLE_KEY_SELECTORS);
+  if (knownButton) return knownButton;
+
+  const wrapper = input?.closest(
+    ".key-input-wrap, .login-key-wrap, .password-field, .input-shell, .login-input-v2"
+  ) || input?.parentElement;
+
+  if (!wrapper) return null;
+
+  return Array.from(wrapper.querySelectorAll("button")).find((button) => {
+    const text = (button.textContent || "").trim();
+    return !/KÍCH\s*HOẠT|DÁN\s*KEY|NHẬN\s*KEY/i.test(text);
+  }) || null;
+}
+
+function resolvePasteKeyBtn() {
+  return document.querySelector(PASTE_KEY_SELECTORS)
+    || findButtonByText(/DÁN\s*KEY/i);
+}
+
+let loginKeyInput = resolveLoginKeyInput();
+let toggleKeyBtn = resolveToggleKeyBtn(loginKeyInput);
+let pasteKeyBtn = resolvePasteKeyBtn();
+
+function getLoginKeyInput() {
+  if (loginKeyInput && document.body.contains(loginKeyInput)) {
+    return loginKeyInput;
+  }
+  loginKeyInput = resolveLoginKeyInput();
+  return loginKeyInput;
+}
+
+function getToggleKeyBtn() {
+  const input = getLoginKeyInput();
+  if (toggleKeyBtn && document.body.contains(toggleKeyBtn)) {
+    return toggleKeyBtn;
+  }
+  toggleKeyBtn = resolveToggleKeyBtn(input);
+  return toggleKeyBtn;
+}
+
+function getPasteKeyBtn() {
+  if (pasteKeyBtn && document.body.contains(pasteKeyBtn)) {
+    return pasteKeyBtn;
+  }
+  pasteKeyBtn = resolvePasteKeyBtn();
+  return pasteKeyBtn;
+}
+
 const appShell = $("appShell");
 const loginOverlay = $("loginOverlay");
-const loginKeyInput = $("loginKeyInput");
-const toggleKeyBtn = $("toggleKeyBtn");
 const activateBtn = $("activateBtn");
 const loginStatus = $("loginStatus");
 const freeKeyBtn = $("freeKeyBtn");
@@ -182,8 +276,23 @@ async function applyFeatureAction(name, value){
 async function setFeature(name, value){const s=getFeatures(); s[name]=Boolean(value); saveFeatures(s); renderFeatures(); try{await applyFeatureAction(name,value);}catch(err){s[name]=false; saveFeatures(s); renderFeatures(); throw err;}}
 async function toggleFeature(name){const s=getFeatures(); const next=!s[name]; try{await setFeature(name,next); showToast(`${labelFeature(name)}: ${next?"ON":"OFF"}`);}catch(err){showToast(err.message||`${labelFeature(name)} thất bại`);}}
 async function verifyKey(){
-  const key = loginKeyInput?.value.trim();
-  if(!key){loginStatus.innerHTML='<span class="green-dot"></span> Vui lòng nhập Password / Key.'; loginStatus.className='login-status-v2 error'; showToast('Thiếu key'); return;}
+  const input = getLoginKeyInput();
+  const key = input?.value?.trim() || "";
+
+  if(!input){
+    loginStatus.innerHTML='<span class="green-dot"></span> Không tìm thấy ô nhập key trong giao diện.';
+    loginStatus.className='login-status-v2 error';
+    showToast('Lỗi ô nhập key');
+    return;
+  }
+
+  if(!key || /^[•●*]+$/.test(key)){
+    loginStatus.innerHTML='<span class="green-dot"></span> Vui lòng nhập hoặc dán key thật.';
+    loginStatus.className='login-status-v2 error';
+    input.focus();
+    showToast('Thiếu key');
+    return;
+  }
   loginStatus.innerHTML='<span class="green-dot"></span> Đang kiểm tra Postgres key server...'; loginStatus.className='login-status-v2';
   activateBtn.disabled=true; activateBtn.textContent='ĐANG KÍCH HOẠT...';
   try{
@@ -227,11 +336,80 @@ function initSavedLogin(){
   }catch{}
   lockApp(true);
 }
-function logout(){localStorage.removeItem('jameLoginUnlocked'); localStorage.removeItem('jameKeyInfo'); localStorage.removeItem('jameActiveKey'); if(loginKeyInput) loginKeyInput.value=''; loginStatus.innerHTML='<span class="green-dot"></span> Sẵn sàng kích hoạt'; loginStatus.className='login-status-v2'; lockApp(true); closeMenu(); showToast('Đã đăng xuất');}
+function logout(){
+  localStorage.removeItem('jameLoginUnlocked');
+  localStorage.removeItem('jameKeyInfo');
+  localStorage.removeItem('jameActiveKey');
 
-toggleKeyBtn?.addEventListener('click',()=>{const isPass=loginKeyInput.type==='password'; loginKeyInput.type=isPass?'text':'password'; toggleKeyBtn.textContent=isPass?'🙈':'👁';});
+  const input = getLoginKeyInput();
+  if(input) input.value='';
+
+  loginStatus.innerHTML='<span class="green-dot"></span> Sẵn sàng kích hoạt';
+  loginStatus.className='login-status-v2';
+  lockApp(true);
+  closeMenu();
+  showToast('Đã đăng xuất');
+}
+
+function toggleKeyVisibility(event){
+  event?.preventDefault();
+
+  const input = getLoginKeyInput();
+  const button = getToggleKeyBtn();
+
+  if(!input){
+    showToast('Không tìm thấy ô nhập key');
+    return;
+  }
+
+  const showKey = input.type === 'password';
+  input.type = showKey ? 'text' : 'password';
+
+  if(button){
+    button.setAttribute('aria-pressed', String(showKey));
+    button.setAttribute('aria-label', showKey ? 'Ẩn key' : 'Hiện key');
+    button.classList.toggle('is-key-visible', showKey);
+
+    const iconText = button.querySelector('[data-eye-text], .eye-text');
+    if(iconText) iconText.textContent = showKey ? 'Ẩn' : 'Xem';
+  }
+
+  input.focus();
+}
+
+async function pasteKeyFromClipboard(event){
+  event?.preventDefault();
+
+  const input = getLoginKeyInput();
+  if(!input){
+    showToast('Không tìm thấy ô nhập key');
+    return;
+  }
+
+  try{
+    if(!navigator.clipboard?.readText){
+      throw new Error('Clipboard API không khả dụng');
+    }
+
+    const text = (await navigator.clipboard.readText()).trim();
+    if(!text){
+      showToast('Clipboard đang trống');
+      input.focus();
+      return;
+    }
+
+    input.value = text;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    loginStatus.innerHTML='<span class="green-dot"></span> Đã dán key, sẵn sàng kích hoạt.';
+    loginStatus.className='login-status-v2 success';
+    showToast('Đã dán key');
+  }catch(error){
+    input.focus();
+    showToast('Chạm giữ ô nhập để dán key');
+  }
+}
+
 activateBtn?.addEventListener('click', verifyKey);
-loginKeyInput?.addEventListener('keydown',e=>{if(e.key==='Enter') verifyKey();});
 freeKeyBtn?.addEventListener('click',()=>window.open('https://www.tiktok.com/@jame.ff.11','_blank','noopener'));
 contactKeyBtn?.addEventListener('click',()=>window.open('https://zalo.me/0333635135','_blank','noopener'));
 menuBtn?.addEventListener('click', openMenu);
@@ -243,12 +421,39 @@ infoDoneBtn?.addEventListener('click', closeModals);
 copyDeviceBtn?.addEventListener('click', async()=>{try{await navigator.clipboard.writeText(deviceId()); showToast('Đã copy Device ID');}catch{showToast(deviceId());}});
 
 document.addEventListener('click', async(e)=>{
+  const clickedButton = e.target.closest('button');
+  const keyToggleButton = getToggleKeyBtn();
+  const keyPasteButton = getPasteKeyBtn();
+
+  if(clickedButton && (
+    clickedButton === keyToggleButton ||
+    clickedButton.matches?.(TOGGLE_KEY_SELECTORS)
+  )){
+    return toggleKeyVisibility(e);
+  }
+
+  if(clickedButton && (
+    clickedButton === keyPasteButton ||
+    clickedButton.matches?.(PASTE_KEY_SELECTORS) ||
+    /DÁN\s*KEY/i.test((clickedButton.textContent || '').trim())
+  )){
+    return pasteKeyFromClipboard(e);
+  }
+
   const toggleBtn=e.target.closest('[data-toggle-feature]');
   const openBtn=e.target.closest('[data-open-feature]');
   const closeBtn=e.target.closest('[data-close-modal]');
   if(toggleBtn) return toggleFeature(toggleBtn.dataset.toggleFeature);
   if(openBtn) return openModal(openBtn.dataset.openFeature);
   if(closeBtn) return closeModals();
+});
+
+document.addEventListener('keydown', (event)=>{
+  const input = getLoginKeyInput();
+  if(event.key === 'Enter' && input && event.target === input){
+    event.preventDefault();
+    verifyKey();
+  }
 });
 
 ensureVipPlanText();
