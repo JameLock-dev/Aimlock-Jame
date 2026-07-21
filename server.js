@@ -205,7 +205,7 @@ async function initDb() {
     VALUES ($1, 'free', NOW() + INTERVAL '365 days', 0, 100, 'active')
     ON CONFLICT (key_value) DO NOTHING;
     `,
-    [process.env.DEFAULT_KEY || "JAMEADMINKEY"]
+    [process.env.DEFAULT_KEY || ""]
   );
 
   // Cho phép Admin11 cũng là key mẫu trong database.
