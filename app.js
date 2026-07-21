@@ -43,7 +43,7 @@ const DEMO_KEYS = {
   },
   "JAME-FREE-KEY": {
     key: "JAME-FREE-KEY",
-    type: "vip",
+    type: "FREE",
     expire: new Date(Date.now() + 30 * 86400000).toISOString(),
     slotUsed: 1,
     slotLimit: 2,
@@ -173,11 +173,19 @@ function normalizeKeyPlan(keyInfo = {}) {
     keyInfo.vipType ??
     keyInfo.keyType ??
     ""
-  ).trim();
+  )
+    .trim()
+    .toUpperCase()
+    .replace(/[_-]+/g, " ")
+    .replace(/\s+/g, " ");
 
   if (!raw) return "CHƯA XÁC ĐỊNH";
-  if (raw.toLowerCase() === "admin") return "ADMIN";
-  return raw.toUpperCase();
+  if (raw === "ADMIN") return "ADMIN";
+  if (raw === "FREE") return "FREE";
+  if (raw === "VIP") return "VIP";
+  if (raw === "VIPPRO" || raw === "VIP PRO") return "VIP PRO";
+
+  return raw;
 }
 
 
@@ -208,7 +216,42 @@ function asBool(value) {
   return value === true || value === "true" || value === "1" || value === 1;
 }
 
-if (document.body.classList.contains("page-login")) {
+
+function isAimlockAuthenticated() {
+  return localStorage.getItem("aimlock_auth") === "1";
+}
+
+function syncSinglePageAuthUI() {
+  const unlocked = isAimlockAuthenticated();
+  const loginScreen = document.getElementById("loginScreen");
+  const mainApp = document.getElementById("mainApp");
+
+  document.documentElement.dataset.aimlockAuth = unlocked ? "1" : "0";
+
+  if (loginScreen) loginScreen.hidden = unlocked;
+  if (mainApp) mainApp.hidden = !unlocked;
+
+  document.body.classList.toggle("page-login", !unlocked);
+  document.body.classList.toggle("page-login-v13", !unlocked);
+
+  [
+    "page-dashboard",
+    "page-dashboard-v11",
+    "page-dashboard-v13",
+    "page-dashboard-v14"
+  ].forEach(className => {
+    document.body.classList.toggle(className, unlocked);
+  });
+}
+
+function reloadAimlockSinglePage() {
+  syncSinglePageAuthUI();
+  window.location.reload();
+}
+
+syncSinglePageAuthUI();
+
+if (document.getElementById("loginScreen") && !isAimlockAuthenticated()) {
   const keyInput = document.getElementById("keyInput");
   const togglePassword = document.getElementById("togglePassword");
   const activateBtn = document.getElementById("activateBtn");
@@ -423,7 +466,7 @@ if (document.body.classList.contains("page-login")) {
       saveSessionFromKey(data, value);
       loginStatus.innerHTML = '<span class="dot"></span>Kích hoạt Thành công AIMLOCK JAME';
       showToast(data.message || "Kích hoạt Thành công AIMLOCK JAME. Đang vào dashboard...", "success");
-      setTimeout(() => location.href = "dashboard.html", 650);
+      setTimeout(reloadAimlockSinglePage, 650);
     } catch (error) {
       activateBtn.classList.remove("loading");
       activateBtn.querySelector("span").textContent = defaultButtonLabel;
@@ -441,10 +484,8 @@ if (document.body.classList.contains("page-login")) {
   });
 }
 
-if (document.body.classList.contains("page-dashboard")) {
-  if (localStorage.getItem("aimlock_auth") !== "1") {
-    location.href = "index.html";
-  }
+if (document.getElementById("mainApp") && isAimlockAuthenticated()) {
+  syncSinglePageAuthUI();
 
   const helloName = document.getElementById("helloName");
   const vipPlan = document.getElementById("vipPlan");
@@ -962,7 +1003,7 @@ if (document.body.classList.contains("page-dashboard")) {
       </button>
       <button class="notify-item-v15" type="button" data-notify-action="vip">
         <strong>Bảng giá VIP mới</strong>
-        <p>Gói 750K vĩnh viễn đã có antiban, bảo hành và hỗ trợ leo rank.</p>
+        <p>Gói 550K vĩnh viễn đã có antiban, bảo hành và hỗ trợ leo rank.</p>
         <small>Hôm nay</small>
       </button>
       <button class="notify-item-v15" type="button" data-notify-action="support">
@@ -1166,7 +1207,7 @@ if (document.body.classList.contains("page-dashboard")) {
     localStorage.removeItem("aimlock_key_info");
     localStorage.removeItem("aimlock_active_key");
     showToast("Đã đăng xuất.", "warning");
-    setTimeout(() => location.href = "index.html", 500);
+    setTimeout(reloadAimlockSinglePage, 500);
   });
   document.getElementById("accountKeyBtn")?.addEventListener("click", () => {
     setActiveBottomNav(accountBtn);
@@ -1178,7 +1219,7 @@ if (document.body.classList.contains("page-dashboard")) {
     localStorage.removeItem("aimlock_key_info");
     localStorage.removeItem("aimlock_active_key");
     showToast("Đã đăng xuất.", "warning");
-    setTimeout(() => location.href = "index.html", 500);
+    setTimeout(reloadAimlockSinglePage, 500);
   });
 
   document.addEventListener("keydown", event => {
