@@ -3,223 +3,77 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AIMLOCK JAME - Dashboard</title>
+  <title>AIMLOCK JAME - Login</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body class="theme-dark page-dashboard page-dashboard-v11 page-dashboard-v13 page-dashboard-v14">
-  <main class="app-shell dashboard-shell-v11" id="dashboardTop">
-    <header class="topbar-v11">
-      <button class="icon-square icon-v11" id="menuBtn" type="button" aria-label="Menu">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-      </button>
-
-      <div class="brand-center-v11">
-        <img src="logo.png" alt="AIMLOCK JAME" class="top-logo-v11" />
-        <span>PRIVATE CONTROL</span>
-      </div>
-
-      <button class="icon-square icon-v11" id="notifyBtn" type="button" aria-label="Thông báo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 17H5.5a1.5 1.5 0 0 1-1.2-2.4L6 12.5V10a6 6 0 0 1 12 0v2.5l1.7 2.1A1.5 1.5 0 0 1 18.5 17H15"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
-        <span class="notif-dot"></span>
-      </button>
-    </header>
-
-    <section class="account-card-v11 panel" id="accountSection">
-      <div class="account-glow-v11"></div>
-      <div class="avatar-orbit-v11">
-        <div class="avatar-ring-v11">
-          <img src="logo.png" alt="AIMLOCK JAME" />
+<body class="theme-dark page-login page-login-v13">
+  <main class="app-shell login-shell">
+    <section class="hero-block hero-block-v15">
+      <div class="login-hero-card-v15">
+        <div class="login-hero-glow-v15"></div>
+        <div class="logo-stack large logo-stack-v15">
+          <div class="logo-orbit-v18">
+            <span class="logo-ring-v18 outer"></span>
+            <span class="logo-ring-v18 inner"></span>
+            <img src="logo.png" alt="AIMLOCK JAME" class="brand-logo" />
+          </div>
         </div>
-        <div class="online-chip-v11 pulse-v11"><span></span>ONLINE</div>
-      </div>
-
-      <div class="account-copy-v11">
-        <span class="eyebrow-v11">Xin chào,</span>
-        <h1 id="helloName">JAME FF</h1>
-        <div class="vip-meta-v11">
-          <b id="vipPlan">VIP PRO</b>
-          <small>Hết hạn: <em id="vipExpireDate">--/--/----</em></small>
+        <div class="hero-subtitle hero-subtitle-v15">
+          <span></span>
+          <p>PRIVATE GAMING ACCESS</p>
+          <span></span>
         </div>
-        <div class="vip-progress-head-v11">
-          <span id="vipDaysText">Đang tải ngày VIP...</span>
-          <strong id="vipPercentText">0%</strong>
-        </div>
-        <div class="vip-progress-v11" aria-label="VIP progress">
-          <i id="vipProgressBar" style="width: 0%"></i>
-        </div>
-      </div>
-
-      <button class="account-key-v11 interactive" id="accountKeyBtn" data-toast="Key VIP đang hoạt động ổn định." data-toast-type="success">
-        <span>Active Slot</span>
-        <strong id="slotText">--/--</strong>
-      </button>
-    </section>
-
-
-
-    <section class="gaming-strip-v13" aria-label="Gaming status">
-      <div class="gaming-chip-v13">
-        <span class="status-lamp-v13"></span>
-        <b>CORE ONLINE</b>
-        <small>Secure session</small>
-      </div>
-      <div class="gaming-chip-v13">
-        <span class="status-lamp-v13 gold"></span>
-        <b>VIP BOOST</b>
-        <small>Priority mode</small>
-      </div>
-      <div class="gaming-chip-v13">
-        <span class="status-lamp-v13 red"></span>
-        <b>LOW PING</b>
-        <small>Stable link</small>
       </div>
     </section>
 
-    <section class="stats-grid-v11" aria-label="Dashboard statistics">
-      <button class="panel stat-card-v11 is-loading interactive" id="statOnlineCard" data-stat-card data-toast="Đang đồng bộ số người online." data-toast-type="info">
-        <div class="stat-icon-v11 pulse-v11">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 11a4 4 0 1 0-8 0"/><path d="M4 20a8 8 0 0 1 16 0"/><path d="M19 10a3 3 0 0 1 2 5"/><path d="M3 15a3 3 0 0 1 2-5"/></svg>
+    <section class="panel login-panel">
+      <div class="panel-head login-head">
+        <div class="mini-brand">
+          <img src="logo.png" alt="AIMLOCK JAME" class="mini-logo" />
+          <div>
+            <div class="mini-title">AIMLOCK JAME</div>
+            <div class="mini-caption">BY JAME FF</div>
+          </div>
         </div>
-        <div class="stat-title">ONLINE</div>
-        <div class="stat-value" id="statOnline">--</div>
-        <div class="stat-sub">Người dùng</div>
-        <span class="skeleton-line-v11"></span>
-      </button>
-
-      <button class="panel stat-card-v11 is-loading interactive" id="statActiveCard" data-stat-card data-toast="Đang kiểm tra key hoạt động." data-toast-type="info">
-        <div class="stat-icon-v11">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="12.5" r="3.5"/><path d="M11 12.5h10l-2 2 2 2-2 2"/></svg>
-        </div>
-        <div class="stat-title">ACTIVE KEYS</div>
-        <div class="stat-value" id="statActive">--</div>
-        <div class="stat-sub">Đang hoạt động</div>
-        <span class="skeleton-line-v11"></span>
-      </button>
-
-      <button class="panel stat-card-v11 is-loading interactive" id="statTodayCard" data-stat-card data-toast="Đang lấy lượt kích hoạt hôm nay." data-toast-type="info">
-        <div class="stat-icon-v11 fill">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>
-        </div>
-        <div class="stat-title">TODAY</div>
-        <div class="stat-value" id="statToday">--</div>
-        <div class="stat-sub">Lượt kích hoạt</div>
-        <span class="skeleton-line-v11"></span>
-      </button>
-    </section>
-
-    <section class="quick-actions-v11">
-      <div class="section-heading-v11">
-        <span></span><h3>QUICK ACTIONS</h3><span></span>
+        <div class="status-pill online"><span class="dot"></span>ONLINE</div>
       </div>
-      <div class="action-grid-v11">
-        <button class="panel action-card-v11 interactive" id="activateActionBtn" data-toast="Mở trung tâm module game." data-toast-type="success">
-          <i>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/></svg>
-          </i>
-          <b>Kích hoạt key</b>
-          <small>Unlock module game</small>
-        </button>
-        <button class="panel action-card-v11 interactive" id="renewVipBtn" data-toast="Mở bảng giá gia hạn VIP." data-toast-type="info">
-          <i>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 15 9l7 .6-5.3 4.6 1.6 6.8L12 17.4 5.7 21l1.6-6.8L2 9.6 9 9l3-7Z"/></svg>
-          </i>
-          <b>Gia hạn VIP</b>
-          <small>Xem gói VIP / bảo hành</small>
-        </button>
-        <button class="panel action-card-v11 interactive" id="supportZaloBtn" data-toast="Mở Zalo hỗ trợ 0333 635135." data-toast-type="success">
-          <i>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v8Z"/><path d="M8 9h8M8 13h5"/></svg>
-          </i>
-          <b>Hỗ trợ</b>
-          <small>Zalo 0333 635135</small>
+
+      <div class="input-wrap">
+        <span class="input-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.2"/></svg>
+        </span>
+        <input id="keyInput" type="password" placeholder="Nhập mật khẩu hoặc Key Mua" autocomplete="off" />
+        <button class="ghost-icon" id="togglePassword" type="button" aria-label="Hiện key">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="3"/></svg>
         </button>
       </div>
-    </section>
 
-    <div class="section-heading-v11 modules-title-v11"><span></span><h3>MODULES</h3><span></span></div>
-
-    <section class="panel runtime-hud-v14" id="runtimeHud" aria-label="Gaming runtime status">
-      <div class="runtime-head-v14">
-        <span class="runtime-dot-v14"></span>
-        <div>
-          <b id="runtimeTitle">ENGINE STANDBY</b>
-          <small id="runtimeDetail">Chọn module để khởi chạy hiệu ứng realtime.</small>
-        </div>
-        <em id="runtimePercent">0%</em>
+      <div class="dual-actions">
+        <a class="secondary-btn key-action-v27 free-key-v27" id="freeKeyBtn" href="https://link-cua-ban.com/lay-key" target="_blank" rel="noopener">
+          <span class="key-icon-badge" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="12" r="3.5"/><path d="M11.5 12H22"/><path d="M18 12v-2.5"/><path d="M20.5 12v2.5"/></svg>
+          </span>
+          <span class="key-copy-v35"><strong>NHẬN KEY MIỄN PHÍ</strong></span>
+          <span class="key-arrow-v29" aria-hidden="true">›</span>
+        </a>
+        <button class="secondary-btn key-action-v27 paste-key-v27" id="pasteKeyBtn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="8" y="3" width="8" height="4" rx="1.5"/><path d="M8 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><path d="M9 12h6M9 16h6"/></svg>
+          <span>DÁN KEY</span>
+        </button>
       </div>
-      <div class="runtime-bar-v14"><i id="runtimeBar"></i></div>
-      <div class="runtime-log-v14" id="runtimeLog">READY › Secure gaming dashboard loaded</div>
+
+      <button class="primary-btn" id="activateBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>
+        <span>KÍCH HOẠT AIMLOCK</span>
+      </button>
+
+      <div class="ready-state" id="loginStatus"><span class="dot"></span>Kích Hoạt AIMLOCK JAME</div>
     </section>
 
-    <section class="feature-list-v11" id="moduleList">
-      <article class="panel feature-row-v11">
-        <div class="feature-badge-v11">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="7" width="12" height="10" rx="1.5"/><path d="M9 4v3M15 4v3M9 17v3M15 17v3M3 10h3M3 14h3M18 10h3M18 14h3"/></svg>
-        </div>
-        <div class="feature-text-v11"><h4>BOOST FPS</h4><p>Tối ưu tài nguyên nền, giữ khung hình ổn định khi combat.</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
-        <button class="toggle toggle-v11" data-feature="boostram" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
-      </article>
-
-      <article class="panel feature-row-v11">
-        <div class="feature-badge-v11">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.6"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
-        </div>
-        <div class="feature-text-v11"><h4>AIMBODY PRO</h4><p>Tinh chỉnh phản hồi điều khiển, hỗ trợ cảm giác thao tác chính xác hơn.</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
-        <button class="toggle toggle-v11 is-on" data-feature="aimbody" aria-pressed="true"><span class="thumb"></span><span class="label">ON</span></button>
-      </article>
-
-      <article class="panel feature-row-v11">
-        <div class="feature-badge-v11">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 7.8a5 5 0 0 0-8.2-1.5L12 7l-.6-.7a5 5 0 0 0-8.2 5.7L12 21l8.8-9a5 5 0 0 0 0-4.2Z"/><path d="M4 12h4l2-3 3 7 2-4h5"/></svg>
-        </div>
-        <div class="feature-text-v11"><h4>NHẸ TÂM</h4><p>Làm mượt phản hồi input, giảm cảm giác rung và giật khi thao tác.</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
-        <button class="toggle toggle-v11" data-feature="nhetam" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
-      </article>
-
-      <article class="panel feature-row-v11">
-        <div class="feature-badge-v11">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 20 6v5c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10V6l8-3Z"/><rect x="8.5" y="11" width="7" height="5" rx="1"/><path d="M10 11V9a2 2 0 0 1 4 0v2"/></svg>
-        </div>
-        <div class="feature-text-v11"><h4>JAMELOCK</h4><p>Khóa cấu hình cá nhân và bảo vệ phiên sử dụng.</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
-        <button class="toggle toggle-v11" data-feature="jamelock" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
-      </article>
-
-      <article class="panel feature-row-v11">
-        <div class="feature-badge-v11">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 20 6v5c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10V6l8-3Z"/><path d="m8.8 12.3 2.1 2.1 4.7-5"/></svg>
-        </div>
-        <div class="feature-text-v11"><h4>ANTIBAND SHIELD</h4><p>Bật Chống quét , Chống Ban Acc Từ Vip1 Đến Vip8</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
-        <button class="toggle toggle-v11" data-feature="antiban" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
-      </article>
-
-      <article class="panel feature-row-v11">
-        <div class="feature-badge-v11 ff-badge-v11">FF</div>
-        <div class="feature-text-v11"><h4>REG FF</h4><p>Tối Ưu Game Và Hỗ Trợ Anh Em Kéo Đỏ</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
-        <button class="toggle toggle-v11" data-feature="regff" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
-      </article>
-    </section>
-
-    <section class="panel update-banner-v11" id="updateBanner">
-      <div class="update-icon-v11">
-        <svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="60" cy="60" r="43" opacity=".2"/>
-          <path d="M28 70h18l28 17V33L46 50H28v20Z"/>
-          <path d="M81 44c10 8 10 24 0 32"/>
-          <path d="M89 34c15 13 15 39 0 52" opacity=".55"/>
-        </svg>
-      </div>
-      <div class="update-copy-v11" id="updateBannerCopy">
-        <span id="updateBannerLabel">BẢN CẬP NHẬT</span>
-        <h3 id="updateBannerTitle">AIMLOCK JAME</h3>
-        <p id="updateBannerText">Bản giao diện chính thức với VIP HUD, menu thật và trung tâm cập nhật mới.</p>
-      </div>
-      <button class="update-btn-v11 interactive" id="updateNowBtn" data-toast="Đang mở trung tâm cập nhật mới." data-toast-type="success">XEM NGAY ›</button>
-    </section>
-
-    <section class="community-card-v11" id="communitySection">
-      <h3>CỘNG ĐỒNG</h3>
+    <section class="quick-links-card compact">
+      <h3>KẾT NỐI NHANH</h3>
       <div class="quick-links two-col">
-        <a class="quick-link community-link-v11 tiktok-link-v29" href="https://www.tiktok.com/@jame.ff.11" target="_blank" rel="noopener">
+        <a class="quick-link social-link-v27 tiktok-link-v27" href="https://www.tiktok.com/@jame.ff.11" target="_blank" rel="noopener">
           <span class="social-mark tiktok-mark" aria-hidden="true">
             <svg viewBox="0 0 64 64" focusable="false" aria-hidden="true">
               <path class="tt-shadow-cyan" d="M39 11c2.2 5.6 6.8 10.5 12.8 13.1v8.5c-4.9-.2-9.4-1.7-13-4.2v12.8c0 8.8-7.2 16-16 16s-16-7.2-16-16 7.2-16 16-16c1.3 0 2.5.2 3.7.4v8.8c-1.1-.4-2.3-.6-3.6-.6-4 0-7.2 3.2-7.2 7.2s3.2 7.2 7.2 7.2 7.5-3.1 7.5-8.1V7.8H39z"/>
@@ -227,375 +81,17 @@
               <path class="tt-main" d="M39.7 10.2c2.2 5.6 6.8 10.5 12.8 13.1v8.5c-4.9-.2-9.4-1.7-13-4.2v12.8c0 8.8-7.2 16-16 16s-16-7.2-16-16 7.2-16 16-16c1.3 0 2.5.2 3.7.4v8.8c-1.1-.4-2.3-.6-3.6-.6-4 0-7.2 3.2-7.2 7.2s3.2 7.2 7.2 7.2 7.5-3.1 7.5-8.1V7h8.6z"/>
             </svg>
           </span>
-          <span><b>TikTok</b><small>AIMLOCK JAME</small></span>
-          <em>›</em>
+          <span>TikTok</span>
         </a>
-        <a class="quick-link community-link-v11 zalo-link-v29" href="https://zalo.me/0333635135" target="_blank" rel="noopener">
+        <a class="quick-link social-link-v27 zalo-link-v27" href="https://zalo.me/0333635135" target="_blank" rel="noopener">
           <span class="social-mark zalo-mark" aria-hidden="true"><span>Zalo</span></span>
-          <span><b>Zalo</b><small>0333 635135</small></span>
-          <em>›</em>
+          <span>Zalo</span>
         </a>
       </div>
     </section>
 
-    <nav class="bottom-nav bottom-nav-v11 bottom-nav-v23" aria-label="Điều hướng nhanh">
-      <button class="nav-item nav-item-v23 active interactive" id="navHomeBtn" type="button">
-        <span>⌂</span><small>Trang chủ</small>
-      </button>
-      <button class="nav-item nav-item-v23 interactive" id="navModulesBtn" type="button">
-        <span>⚡</span><small>Module</small>
-      </button>
-      <button class="nav-hub nav-hub-v23 interactive" id="navHudBtn" type="button">
-        <span>◎</span>
-        <small>HUD</small>
-      </button>
-      <button class="nav-item nav-item-v23 interactive" id="navUpdatesBtn" type="button">
-        <span>ⓘ</span><small>Cập nhật</small>
-      </button>
-      <button class="nav-item nav-item-v23 interactive" id="accountBtn" type="button">
-        <span>◌</span><small>Tài khoản</small>
-      </button>
-    </nav>
+    <div class="footer-caption">PRIVATE CONTROL CENTER</div>
   </main>
-
-
-
-  <div class="stat-modal-v25" id="onlineModal" aria-hidden="true">
-    <div class="stat-backdrop-v25" data-close-stat></div>
-    <section class="stat-modal-card-v25" role="dialog" aria-modal="true" aria-labelledby="onlineModalTitle">
-      <div class="stat-modal-head-v25">
-        <div>
-          <span>SESSION STATUS</span>
-          <h3 id="onlineModalTitle">Danh sách online / session</h3>
-        </div>
-        <button type="button" class="ghost-close-v15" data-close-stat aria-label="Đóng">×</button>
-      </div>
-      <div class="stat-modal-body-v25" id="onlineModalBody"></div>
-    </section>
-  </div>
-
-  <div class="stat-modal-v25" id="activeKeysModal" aria-hidden="true">
-    <div class="stat-backdrop-v25" data-close-stat></div>
-    <section class="stat-modal-card-v25" role="dialog" aria-modal="true" aria-labelledby="activeKeysModalTitle">
-      <div class="stat-modal-head-v25">
-        <div>
-          <span>KEY MANAGER</span>
-          <h3 id="activeKeysModalTitle">Quản lý key đang hoạt động</h3>
-        </div>
-        <button type="button" class="ghost-close-v15" data-close-stat aria-label="Đóng">×</button>
-      </div>
-      <div class="stat-modal-body-v25" id="activeKeysModalBody"></div>
-    </section>
-  </div>
-
-  <div class="stat-modal-v25" id="todayModal" aria-hidden="true">
-    <div class="stat-backdrop-v25" data-close-stat></div>
-    <section class="stat-modal-card-v25" role="dialog" aria-modal="true" aria-labelledby="todayModalTitle">
-      <div class="stat-modal-head-v25">
-        <div>
-          <span>ACTIVITY LOG</span>
-          <h3 id="todayModalTitle">Lịch sử kích hoạt trong ngày</h3>
-        </div>
-        <button type="button" class="ghost-close-v15" data-close-stat aria-label="Đóng">×</button>
-      </div>
-      <div class="stat-modal-body-v25" id="todayModalBody"></div>
-    </section>
-  </div>
-
-  <div class="module-modal-v24" id="moduleModal" aria-hidden="true">
-    <div class="module-backdrop-v24" data-close-module></div>
-    <section class="module-modal-card-v24" role="dialog" aria-modal="true" aria-labelledby="moduleModalTitle">
-      <div class="module-modal-head-v24">
-        <div>
-          <span>MODULE CENTER</span>
-          <h3 id="moduleModalTitle">Tab Module AIMLOCK</h3>
-        </div>
-        <button type="button" class="ghost-close-v15" data-close-module aria-label="Đóng">×</button>
-      </div>
-      <p class="module-modal-note-v24">Bật/tắt trực tiếp từng module. Trạng thái sẽ đồng bộ ngay với dashboard chính.</p>
-      <section class="feature-list-v11 feature-list-modal-v24" id="moduleModalList">
-        <article class="panel feature-row-v11">
-          <div class="feature-badge-v11">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="7" width="12" height="10" rx="1.5"/><path d="M9 4v3M15 4v3M9 17v3M15 17v3M3 10h3M3 14h3M18 10h3M18 14h3"/></svg>
-          </div>
-          <div class="feature-text-v11"><h4>BOOST FPS</h4><p>Tối ưu tài nguyên nền, giữ khung hình ổn định khi combat.</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
-          <button class="toggle toggle-v11" data-feature="boostram" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
-        </article>
-        <article class="panel feature-row-v11">
-          <div class="feature-badge-v11">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.6"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
-          </div>
-          <div class="feature-text-v11"><h4>AIMBODY PRO</h4><p>Tinh chỉnh phản hồi điều khiển, hỗ trợ cảm giác thao tác chính xác hơn.</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
-          <button class="toggle toggle-v11" data-feature="aimbody" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
-        </article>
-        <article class="panel feature-row-v11">
-          <div class="feature-badge-v11">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 7.8a5 5 0 0 0-8.2-1.5L12 7l-.6-.7a5 5 0 0 0-8.2 5.7L12 21l8.8-9a5 5 0 0 0 0-4.2Z"/><path d="M4 12h4l2-3 3 7 2-4h5"/></svg>
-          </div>
-          <div class="feature-text-v11"><h4>NHẸ TÂM</h4><p>Làm mượt phản hồi input, giảm cảm giác rung và giật khi thao tác.</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
-          <button class="toggle toggle-v11" data-feature="nhetam" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
-        </article>
-        <article class="panel feature-row-v11">
-          <div class="feature-badge-v11">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 20 6v5c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10V6l8-3Z"/><rect x="8.5" y="11" width="7" height="5" rx="1"/><path d="M10 11V9a2 2 0 0 1 4 0v2"/></svg>
-          </div>
-          <div class="feature-text-v11"><h4>JAMELOCK</h4><p>Khóa cấu hình cá nhân và bảo vệ phiên sử dụng.</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
-          <button class="toggle toggle-v11" data-feature="jamelock" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
-        </article>
-        <article class="panel feature-row-v11">
-          <div class="feature-badge-v11">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 20 6v5c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10V6l8-3Z"/><path d="m8.8 12.3 2.1 2.1 4.7-5"/></svg>
-          </div>
-          <div class="feature-text-v11"><h4>ANTIBAND SHIELD</h4><p>Bật Chống quét , Chống Ban Acc Từ Vip1 Đến Vip8</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
-          <button class="toggle toggle-v11" data-feature="antiban" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
-        </article>
-        <article class="panel feature-row-v11">
-          <div class="feature-badge-v11 ff-badge-v11">FF</div>
-          <div class="feature-text-v11"><h4>REG FF</h4><p>Tối Ưu Game Và Hỗ Trợ Anh Em Kéo Đỏ</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
-          <button class="toggle toggle-v11" data-feature="regff" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
-        </article>
-      </section>
-    </section>
-  </div>
-
-  <div class="hud-modal-v24" id="hudModal" aria-hidden="true">
-    <div class="hud-backdrop-v24" data-close-hud></div>
-    <section class="hud-modal-card-v24" role="dialog" aria-modal="true" aria-labelledby="hudModalTitle">
-      <div class="hud-modal-head-v24">
-        <div>
-          <span>HUD CONTROL</span>
-          <h3 id="hudModalTitle">Popup HUD AIMLOCK</h3>
-        </div>
-        <button type="button" class="ghost-close-v15" data-close-hud aria-label="Đóng">×</button>
-      </div>
-      <section class="panel runtime-hud-v14 runtime-hud-modal-v24" aria-label="Gaming runtime status popup">
-        <div class="runtime-head-v14">
-          <span class="runtime-dot-v14"></span>
-          <div>
-            <b id="runtimeTitlePopup">ENGINE STANDBY</b>
-            <small id="runtimeDetailPopup">Chọn module để khởi chạy hiệu ứng realtime.</small>
-          </div>
-          <em id="runtimePercentPopup">0%</em>
-        </div>
-        <div class="runtime-bar-v14"><i id="runtimeBarPopup"></i></div>
-        <div class="runtime-log-v14" id="runtimeLogPopup">READY › Secure gaming dashboard loaded</div>
-      </section>
-      <div class="hud-actions-v24">
-        <button type="button" class="account-action-v23" id="hudOpenModulesBtn">Mở tab Module</button>
-        <button type="button" class="account-action-v23" id="hudCloseBtn">Đóng HUD</button>
-      </div>
-    </section>
-  </div>
-
-  <div class="account-modal-v23" id="accountModal" aria-hidden="true">
-    <div class="account-backdrop-v23" data-close-account></div>
-    <section class="account-modal-card-v23" role="dialog" aria-modal="true" aria-labelledby="accountModalTitle">
-      <div class="account-modal-head-v23">
-        <div>
-          <span>PROFILE CENTER</span>
-          <h3 id="accountModalTitle">Tài khoản AIMLOCK JAME</h3>
-        </div>
-        <button type="button" class="ghost-close-v15" data-close-account aria-label="Đóng">×</button>
-      </div>
-      <div class="account-summary-v23">
-        <div class="account-avatar-v23"><img src="logo.png" alt="AIMLOCK JAME"></div>
-        <div class="account-copy-v23">
-          <strong id="accountModalName">ADMIN JAME</strong>
-          <small id="accountModalPlan">Gói: AIMLOCK VIP</small>
-          <b id="accountModalExpire">HSD: 01/01/2100</b>
-        </div>
-      </div>
-      <div class="account-actions-v23">
-        <button type="button" class="account-action-v23" id="accountOpenVipBtn">Mở gia hạn VIP</button>
-        <button type="button" class="account-action-v23" id="accountOpenNotifyBtn">Mở thông báo</button>
-        <button type="button" class="account-action-v23" id="accountSupportBtn">Liên hệ Zalo</button>
-        <button type="button" class="account-action-v23 danger" id="accountLogoutBtn">Đăng xuất</button>
-      </div>
-    </section>
-  </div>
-
-  <div class="vip-modal-v14" id="vipModal" aria-hidden="true">
-    <div class="vip-modal-backdrop-v14" data-close-vip></div>
-    <section class="vip-modal-card-v14" role="dialog" aria-modal="true" aria-labelledby="vipModalTitle">
-      <button class="vip-close-v14" type="button" id="closeVipModal" aria-label="Đóng">×</button>
-      <div class="vip-modal-head-v14">
-        <span>VIP UPGRADE CENTER</span>
-        <h2 id="vipModalTitle">Gia hạn AIMLOCK JAME</h2>
-        <p>Chọn gói phù hợp, bấm “Nhắn Zalo” để liên hệ hỗ trợ 0333 635135.</p>
-      </div>
-      <div class="vip-plans-v14">
-        <article class="vip-plan-v14">
-          <b>100K</b>
-          <div class="vip-plan-copy-v14">
-            <h3>2 tuần</h3>
-            <p>Gói trải nghiệm nhanh.</p>
-          </div>
-          <button type="button" data-plan="100K - 2 tuần">Nhắn Zalo</button>
-        </article>
-        <article class="vip-plan-v14 popular">
-          <b>200K</b>
-          <div class="vip-plan-copy-v14">
-            <h3>1 tháng</h3>
-            <p>Antiban · Bảo hành.</p>
-          </div>
-          <button type="button" data-plan="200K - 1 tháng, antiban, bảo hành">Nhắn Zalo</button>
-        </article>
-        <article class="vip-plan-v14">
-          <b>300K</b>
-          <div class="vip-plan-copy-v14">
-            <h3>2 tháng</h3>
-            <p>Antiban · Bảo hành.</p>
-          </div>
-          <button type="button" data-plan="300K - 2 tháng, antiban, bảo hành">Nhắn Zalo</button>
-        </article>
-        <article class="vip-plan-v14">
-          <b>400K</b>
-          <div class="vip-plan-copy-v14">
-            <h3>5 tháng</h3>
-            <p>Antiban · Bảo hành.</p>
-          </div>
-          <button type="button" data-plan="400K - 5 tháng, antiban, bảo hành">Nhắn Zalo</button>
-        </article>
-        <article class="vip-plan-v14 forever">
-          <b>550K</b>
-          <div class="vip-plan-copy-v14">
-            <h3>Vĩnh viễn</h3>
-            <p>Antiban · Bảo hành · Cầm đi solo · Leo rank · Tử chiến.</p>
-          </div>
-          <button type="button" data-plan="550K - vĩnh viễn, antiban, bảo hành, cầm đi solo, leo rank, tử chiến">Nhắn Zalo</button>
-        </article>
-      </div>
-    </section>
-  </div>
-
-  <div class="side-drawer" id="sideDrawer">
-    <div class="drawer-card drawer-card-v11">
-      <div class="drawer-head">
-        <strong>AIMLOCK MENU</strong>
-        <button id="closeDrawer" type="button">×</button>
-      </div>
-      <button class="drawer-link interactive" id="drawerControlBtn" data-toast="Đang chuyển đến Trung tâm điều khiển." data-toast-type="info">Trung tâm điều khiển</button>
-      <button class="drawer-link interactive" id="drawerAppearanceBtn" data-toast="Mở cài đặt giao diện HUD." data-toast-type="warning">Cài đặt giao diện</button>
-      <button class="drawer-link interactive" id="drawerCommunityBtn" data-toast="Mở khu cộng đồng hỗ trợ." data-toast-type="info">Hỗ trợ cộng đồng</button>
-      <button class="drawer-link danger" id="logoutBtn">Đăng xuất</button>
-    </div>
-  </div>
-
-
-
-  <div class="update-modal-v20" id="updateModal" aria-hidden="true">
-    <div class="update-backdrop-v20" data-close-update></div>
-    <section class="update-modal-card-v20" role="dialog" aria-modal="true" aria-labelledby="updateModalTitle">
-      <div class="update-modal-head-v20">
-        <div>
-          <span>UPDATE CENTER</span>
-          <h3 id="updateModalTitle">Cập nhật mới AIMLOCK JAME</h3>
-        </div>
-        <button type="button" class="ghost-close-v15" data-close-update aria-label="Đóng">×</button>
-      </div>
-      <div class="update-list-v20" id="updateList">
-        <article class="update-item-v20 latest">
-          <b>NEW</b>
-          <div>
-            <strong>HUD VIP mới</strong>
-            <p>Tối ưu card tài khoản, trạng thái online và progress VIP đẹp hơn.</p>
-          </div>
-        </article>
-        <article class="update-item-v20">
-          <b>01</b>
-          <div>
-            <strong>Aimlock Menu có chức năng thật</strong>
-            <p>Trung tâm điều khiển, cài đặt giao diện và hỗ trợ cộng đồng đã hoạt động.</p>
-          </div>
-        </article>
-        <article class="update-item-v20">
-          <b>02</b>
-          <div>
-            <strong>Thông báo hoạt động như app</strong>
-            <p>Mở danh sách thông báo, đánh dấu đã đọc và điều hướng tới từng mục.</p>
-          </div>
-        </article>
-        <article class="update-item-v20">
-          <b>03</b>
-          <div>
-            <strong>Runtime HUD module</strong>
-            <p>Bật module có loading, log chạy realtime và trạng thái ACTIVE/LOADING.</p>
-          </div>
-        </article>
-        <article class="update-item-v20">
-          <b>04</b>
-          <div>
-            <strong>Login screen nâng cấp</strong>
-            <p>Logo động, vòng quay đỏ vàng và nút kích hoạt AIMLOCK thon gọn hơn.</p>
-          </div>
-        </article>
-      </div>
-    </section>
-  </div>
-
-  <div class="notify-panel-v15" id="notifyPanel" aria-hidden="true">
-    <div class="notify-backdrop-v15" data-close-notify></div>
-    <section class="notify-card-v15" role="dialog" aria-modal="true" aria-labelledby="notifyTitle">
-      <div class="notify-head-v15">
-        <div>
-          <span>MESSAGE CENTER</span>
-          <h3 id="notifyTitle">Thông báo hệ thống</h3>
-        </div>
-        <div class="notify-actions-v15">
-          <button type="button" id="markAllReadBtn">Đánh dấu đã đọc</button>
-          <button type="button" class="ghost-close-v15" data-close-notify aria-label="Đóng">×</button>
-        </div>
-      </div>
-      <div class="notify-list-v15" id="notifyList">
-        <button class="notify-item-v15 unread" type="button" data-notify-action="update">
-          <strong>Cyber Gaming V15 sẵn sàng</strong>
-          <p>Đã bổ sung menu thật, bảng giá VIP tối ưu và trung tâm thông báo.</p>
-          <small>Vừa xong</small>
-        </button>
-        <button class="notify-item-v15 unread" type="button" data-notify-action="vip">
-          <strong>Bảng giá VIP mới</strong>
-          <p>Gói 550K vĩnh viễn đã có antiban, bảo hành và hỗ trợ leo rank.</p>
-          <small>1 phút trước</small>
-        </button>
-        <button class="notify-item-v15" type="button" data-notify-action="support">
-          <strong>Hỗ trợ Zalo online</strong>
-          <p>Kết nối nhanh qua số 0333 635135 để nhận tư vấn nâng cấp.</p>
-          <small>Hôm nay</small>
-        </button>
-      </div>
-    </section>
-  </div>
-
-  <div class="settings-modal-v15" id="settingsModal" aria-hidden="true">
-    <div class="settings-backdrop-v15" data-close-settings></div>
-    <section class="settings-card-v15" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
-      <div class="settings-head-v15">
-        <div>
-          <span>HUD CONTROL</span>
-          <h3 id="settingsTitle">Cài đặt giao diện</h3>
-        </div>
-        <button type="button" class="ghost-close-v15" data-close-settings aria-label="Đóng">×</button>
-      </div>
-      <div class="settings-list-v15">
-        <label class="settings-row-v15">
-          <div><strong>Chế độ hiệu năng</strong><small>Giảm blur, tối ưu thao tác trên máy yếu.</small></div>
-          <input type="checkbox" id="perfModeToggle">
-        </label>
-        <label class="settings-row-v15">
-          <div><strong>Hiệu ứng scanline</strong><small>Bật lớp nền gaming đậm chất HUD.</small></div>
-          <input type="checkbox" id="scanlineToggle" checked>
-        </label>
-        <label class="settings-row-v15">
-          <div><strong>Thu gọn card</strong><small>Giảm chiều cao card để nhìn gọn hơn.</small></div>
-          <input type="checkbox" id="compactToggle">
-        </label>
-      </div>
-      <div class="settings-foot-v15">
-        <button type="button" class="settings-secondary-v15" id="resetModulesBtn">Reset module</button>
-        <button type="button" class="settings-primary-v15" id="saveSettingsBtn">Lưu cài đặt</button>
-      </div>
-    </section>
-  </div>
 
   <div class="toast" id="toast"></div>
   <script src="api-config.js"></script>
