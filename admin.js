@@ -1,6 +1,7 @@
 const API_BASE_URL = String(window.AIMLOCK_API_BASE_URL || "").trim().replace(/\/+$/, "");
 const IS_GITHUB_PAGES = /github\.io$/i.test(location.hostname);
 const STATIC_PREVIEW_MODE = IS_GITHUB_PAGES && !API_BASE_URL;
+const MAX_SETTINGS_PAYLOAD_BYTES = 900 * 1024; // 900 KB, thấp hơn giới hạn server để tránh lỗi 413.
 
 const loginBox = document.getElementById("loginBox");
 const adminContent = document.getElementById("adminContent");
@@ -84,8 +85,17 @@ async function fetchJson(path, options = {}) {
     throw new Error("API trả dữ liệu lỗi, không đọc được JSON.");
   }
 
-  if (!response.ok && data?.message) {
-    throw new Error(data.message);
+  if (!response.ok) {
+    if (response.status === 413) {
+      throw new Error(
+        data?.message ||
+        "Dữ liệu gửi lên quá lớn (HTTP 413). Hãy kiểm tra phần JSON cập nhật."
+      );
+    }
+
+    throw new Error(
+      data?.message || `API lỗi HTTP ${response.status}: ${response.statusText || "Không xác định"}`
+    );
   }
 
   return data;
@@ -152,7 +162,7 @@ function demoDevices(key) {
 
 function defaultSettings() {
   return {
-    freeKeyUrl: "https://link4m.net/GhYJFCll",
+    freeKeyUrl: "https://link4m.net/GhYJFCIl",
     zaloUrl: "https://zalo.me/0333635135",
     boostLinkUrl: "https://boostylink.com/Kt8rStah",
     currentVersion: "1",
@@ -181,10 +191,27 @@ function normalizeSettings(data) {
   const raw = data?.raw || data?.settings || data || {};
   const update = data?.update || {};
   const defaults = defaultSettings();
-  const itemsJson = raw.updateItemsJson || JSON.stringify(update.items || JSON.parse(defaults.updateItemsJson), null, 2);
+
+  let items = raw.updateItems ?? raw.update_items ?? update.items;
+
+  if (!items && raw.updateItemsJson) {
+    try {
+      const parsed = JSON.parse(raw.updateItemsJson);
+      if (Array.isArray(parsed)) items = parsed;
+    } catch (_) {}
+  }
+
+  if (!Array.isArray(items)) {
+    items = JSON.parse(defaults.updateItemsJson);
+  }
+
   return {
     ...defaults,
     ...raw,
+    boostLinkUrl: raw.boostLinkUrl || raw.updateUrl || defaults.boostLinkUrl,
+    currentVersion: String(raw.currentVersion ?? raw.latestVersion ?? defaults.currentVersion),
+    latestVersion: String(raw.latestVersion ?? raw.currentVersion ?? defaults.latestVersion),
+    minVersion: String(raw.minVersion ?? defaults.minVersion),
     updateVersion: raw.updateVersion || update.version || defaults.updateVersion,
     updateTitle: raw.updateTitle || update.title || defaults.updateTitle,
     updateLabel: raw.updateLabel || update.label || defaults.updateLabel,
@@ -193,7 +220,7 @@ function normalizeSettings(data) {
     updateTimeLabel: raw.updateTimeLabel || update.time_label || defaults.updateTimeLabel,
     forceUpdate: raw.forceUpdate === true || raw.forceUpdate === "true" || raw.forceUpdate === "1",
     maintenance: raw.maintenance === true || raw.maintenance === "true" || raw.maintenance === "1",
-    updateItemsJson: typeof itemsJson === "string" ? itemsJson : JSON.stringify(itemsJson, null, 2)
+    updateItemsJson: JSON.stringify(items, null, 2)
   };
 }
 
@@ -208,24 +235,32 @@ function fillSettings(data) {
 
 function collectSettings() {
   let updateItemsJson = settingsFields.updateItemsJson?.value || "[]";
+  let updateItems = [];
+
   try {
-    const parsed = JSON.parse(updateItemsJson);
-    if (!Array.isArray(parsed)) throw new Error("Update items phải là mảng JSON.");
-    updateItemsJson = JSON.stringify(parsed, null, 2);
+    updateItems = JSON.parse(updateItemsJson);
+    if (!Array.isArray(updateItems)) {
+      throw new Error("Update items phải là mảng JSON.");
+    }
+
+    updateItemsJson = JSON.stringify(updateItems, null, 2);
     settingsFields.updateItemsJson.value = updateItemsJson;
   } catch (error) {
     throw new Error(`JSON cập nhật bị lỗi: ${error.message}`);
   }
 
+  const boostLinkUrl = settingsFields.boostLinkUrl?.value.trim() || "";
+
   return {
     freeKeyUrl: settingsFields.freeKeyUrl?.value.trim() || "",
     zaloUrl: settingsFields.zaloUrl?.value.trim() || "",
-    boostLinkUrl: settingsFields.boostLinkUrl?.value.trim() || "",
+    boostLinkUrl,
+    updateUrl: boostLinkUrl,
     currentVersion: settingsFields.currentVersion?.value.trim() || "1",
     latestVersion: settingsFields.latestVersion?.value.trim() || "1",
     minVersion: settingsFields.minVersion?.value.trim() || "1",
-    forceUpdate: settingsFields.forceUpdate?.checked ? "true" : "false",
-    maintenance: settingsFields.maintenance?.checked ? "true" : "false",
+    forceUpdate: settingsFields.forceUpdate?.checked ? "1" : "0",
+    maintenance: settingsFields.maintenance?.checked ? "1" : "0",
     forceTitle: settingsFields.forceTitle?.value.trim() || "",
     forceMessage: settingsFields.forceMessage?.value.trim() || "",
     maintenanceTitle: settingsFields.maintenanceTitle?.value.trim() || "",
@@ -236,6 +271,7 @@ function collectSettings() {
     updateHeadline: settingsFields.updateHeadline?.value.trim() || "Cập nhật mới",
     updateSummary: settingsFields.updateSummary?.value.trim() || "",
     updateTimeLabel: settingsFields.updateTimeLabel?.value.trim() || "Vừa cập nhật",
+    updateItems,
     updateItemsJson
   };
 }
@@ -262,27 +298,58 @@ async function loadSettings() {
 }
 
 async function saveSettings() {
+  const originalButtonText = saveSettingsBtn?.textContent || "Lưu settings";
+
   try {
     const payload = collectSettings();
+    const body = JSON.stringify(payload);
+    const payloadBytes = new TextEncoder().encode(body).length;
+
+    console.log(`[ADMIN] Settings payload: ${payloadBytes} bytes`);
+
+    if (payloadBytes > MAX_SETTINGS_PAYLOAD_BYTES) {
+      throw new Error(
+        `Settings quá lớn: ${(payloadBytes / 1024).toFixed(1)} KB. ` +
+        `Giới hạn phía Admin là ${(MAX_SETTINGS_PAYLOAD_BYTES / 1024).toFixed(0)} KB.`
+      );
+    }
+
     if (STATIC_PREVIEW_MODE) {
-      localStorage.setItem("aimlockAdminSettingsDemo", JSON.stringify(payload));
+      localStorage.setItem("aimlockAdminSettingsDemo", body);
       settingsStatus.textContent = "Đã lưu settings demo trong trình duyệt.";
       settingsStatus.style.color = "#22e06e";
       return;
     }
 
+    if (saveSettingsBtn) {
+      saveSettingsBtn.disabled = true;
+      saveSettingsBtn.textContent = "Đang lưu...";
+    }
+
+    settingsStatus.textContent = `Đang gửi ${payloadBytes} bytes lên Railway...`;
+    settingsStatus.style.color = "#ffd000";
+
     const data = await fetchJson("/api/app-settings", {
       method: "POST",
       headers: headers(),
-      body: JSON.stringify(payload)
+      body
     });
 
-    settingsStatus.textContent = data.message || "Đã lưu settings.";
-    settingsStatus.style.color = data.ok ? "#22e06e" : "#ef4444";
-    if (data.ok) fillSettings(data);
+    if (!data?.ok) {
+      throw new Error(data?.message || "Server không xác nhận đã lưu settings.");
+    }
+
+    fillSettings(data);
+    settingsStatus.textContent = `${data.message || "Đã lưu settings."} (${payloadBytes} bytes)`;
+    settingsStatus.style.color = "#22e06e";
   } catch (error) {
     settingsStatus.textContent = error.message || "Lỗi lưu settings.";
     settingsStatus.style.color = "#ef4444";
+  } finally {
+    if (saveSettingsBtn) {
+      saveSettingsBtn.disabled = false;
+      saveSettingsBtn.textContent = originalButtonText;
+    }
   }
 }
 
