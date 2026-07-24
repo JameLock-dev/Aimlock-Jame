@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Expires" content="0"/>
 <meta content="#050308" name="theme-color"/>
 <meta content="yes" name="mobile-web-app-capable"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
@@ -75,7 +78,7 @@
 </button>
 </div>
 <div class="dual-actions">
-<a class="secondary-btn key-action-v27 free-key-v27" href="https://link-cua-ban.com/lay-key" id="freeKeyBtn" rel="noopener" target="_blank">
+<a class="secondary-btn key-action-v27 free-key-v27" href="https://link4m.net/GhYJFCIl" id="freeKeyBtn" rel="noopener" target="_blank">
 <span aria-hidden="true" class="key-icon-badge">
 <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewbox="0 0 24 24"><circle cx="8" cy="12" r="3.5"></circle><path d="M11.5 12H22"></path><path d="M18 12v-2.5"></path><path d="M20.5 12v2.5"></path></svg>
 </span>
@@ -652,7 +655,244 @@
 <button class="settings-primary-v15" id="saveSettingsBtn" type="button">Lưu cài đặt</button>
 </div>
 </section>
-</div></div><div class="toast" id="toast"></div>  <script src="api-config.js?v=20260721-stable-6"></script>
-  <script src="aimlock-controller.js?v=20260721-stable-6"></script>
+</div></div><div class="toast" id="toast"></div>
+  <script src="api-config.js?v=20260724-sync-2"></script>
+  <script>
+  (() => {
+    "use strict";
+
+    // Luôn dùng đúng Railway API cho bản GitHub Pages này.
+    const RAILWAY_API_BASE_URL =
+      "https://aimlock-jame-production.up.railway.app";
+
+    window.AIMLOCK_API_BASE_URL = RAILWAY_API_BASE_URL;
+
+    const state = {
+      loading: null,
+      lastLoadedAt: 0
+    };
+
+    function safeHttpUrl(value) {
+      try {
+        const url = new URL(String(value || "").trim(), location.href);
+        return /^https?:$/i.test(url.protocol) ? url.href : "";
+      } catch (_) {
+        return "";
+      }
+    }
+
+    function parseItems(value) {
+      if (Array.isArray(value)) return value;
+
+      if (typeof value === "string") {
+        try {
+          const parsed = JSON.parse(value);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (_) {
+          return [];
+        }
+      }
+
+      return [];
+    }
+
+    function setText(id, value) {
+      const element = document.getElementById(id);
+      if (element && value !== undefined && value !== null && String(value).trim()) {
+        element.textContent = String(value);
+      }
+    }
+
+    function setHref(element, value) {
+      if (!element) return;
+      const url = safeHttpUrl(value);
+      if (url) element.href = url;
+    }
+
+    function applyUpdateItems(items) {
+      const list = document.getElementById("updateList");
+      if (!list || !Array.isArray(items) || !items.length) return;
+
+      list.replaceChildren();
+
+      items.forEach((item, index) => {
+        const article = document.createElement("article");
+        article.className = `update-item-v20${index === 0 ? " latest" : ""}`;
+
+        const badge = document.createElement("b");
+        badge.textContent = String(item?.badge || String(index + 1).padStart(2, "0"));
+
+        const copy = document.createElement("div");
+        const title = document.createElement("strong");
+        const description = document.createElement("p");
+
+        title.textContent = String(item?.title || "Cập nhật AIMLOCK");
+        description.textContent = String(item?.description || "");
+
+        copy.append(title, description);
+        article.append(badge, copy);
+        list.appendChild(article);
+      });
+    }
+
+    function applySettings(responseData) {
+      const settings =
+        responseData?.settings && typeof responseData.settings === "object"
+          ? responseData.settings
+          : responseData || {};
+
+      const update =
+        responseData?.update && typeof responseData.update === "object"
+          ? responseData.update
+          : {};
+
+      const freeKeyUrl =
+        settings.freeKeyUrl ||
+        settings.keyUrl ||
+        settings.getKeyUrl;
+
+      const zaloUrl =
+        settings.zaloUrl ||
+        settings.supportUrl;
+
+      const tiktokUrl =
+        settings.tiktokUrl ||
+        settings.communityUrl;
+
+      setHref(document.getElementById("freeKeyBtn"), freeKeyUrl);
+
+      document
+        .querySelectorAll('a[href*="zalo.me"]')
+        .forEach((element) => setHref(element, zaloUrl));
+
+      document
+        .querySelectorAll('a[href*="tiktok.com"]')
+        .forEach((element) => setHref(element, tiktokUrl));
+
+      setText(
+        "updateBannerLabel",
+        settings.updateLabel || update.label
+      );
+
+      setText(
+        "updateBannerTitle",
+        settings.updateTitle || update.title
+      );
+
+      setText(
+        "updateBannerText",
+        settings.updateSummary || update.summary
+      );
+
+      const items = parseItems(
+        settings.updateItems ??
+        settings.updateItemsJson ??
+        update.items
+      );
+
+      applyUpdateItems(items);
+
+      window.__AIMLOCK_REMOTE_SETTINGS__ = {
+        loadedAt: new Date().toISOString(),
+        response: responseData,
+        settings
+      };
+
+      document.documentElement.dataset.aimlockSettings = "railway";
+      window.dispatchEvent(
+        new CustomEvent("aimlock:settings-loaded", {
+          detail: window.__AIMLOCK_REMOTE_SETTINGS__
+        })
+      );
+    }
+
+    async function loadRailwaySettings(options = {}) {
+      const force = Boolean(options.force);
+      const now = Date.now();
+
+      if (!force && now - state.lastLoadedAt < 5000) {
+        return window.__AIMLOCK_REMOTE_SETTINGS__;
+      }
+
+      if (state.loading) return state.loading;
+
+      state.loading = (async () => {
+        const endpoint =
+          `${RAILWAY_API_BASE_URL}/api/app-settings` +
+          `?github_pages=1&t=${Date.now()}`;
+
+        const response = await fetch(endpoint, {
+          method: "GET",
+          mode: "cors",
+          cache: "no-store",
+          credentials: "omit",
+          headers: {
+            Accept: "application/json",
+            "Cache-Control": "no-cache"
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Railway API HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (!data || data.ok === false) {
+          throw new Error(data?.message || "Railway API trả dữ liệu không hợp lệ.");
+        }
+
+        applySettings(data);
+        state.lastLoadedAt = Date.now();
+
+        console.info(
+          "[AIMLOCK] Đã đồng bộ settings từ Railway:",
+          data?.settings?.freeKeyUrl || data?.freeKeyUrl || ""
+        );
+
+        return window.__AIMLOCK_REMOTE_SETTINGS__;
+      })();
+
+      try {
+        return await state.loading;
+      } catch (error) {
+        document.documentElement.dataset.aimlockSettings = "fallback";
+        console.error("[AIMLOCK] Không đồng bộ được settings từ Railway:", error);
+        return null;
+      } finally {
+        state.loading = null;
+      }
+    }
+
+    window.loadAimlockRailwaySettings = loadRailwaySettings;
+
+    function startSettingsSync() {
+      loadRailwaySettings({ force: true });
+
+      // Cập nhật lại khi người dùng quay lại tab.
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) loadRailwaySettings({ force: true });
+      });
+
+      window.addEventListener("pageshow", () => {
+        loadRailwaySettings({ force: true });
+      });
+
+      // Trang đang mở vẫn nhận thay đổi từ Admin.
+      window.setInterval(() => {
+        loadRailwaySettings({ force: true });
+      }, 60000);
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", startSettingsSync, {
+        once: true
+      });
+    } else {
+      startSettingsSync();
+    }
+  })();
+  </script>
+  <script src="aimlock-controller.js?v=20260724-sync-2"></script>
 </body>
 </html>
