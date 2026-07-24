@@ -64,20 +64,10 @@ if (DATABASE_URL) {
 app.set("trust proxy", true);
 app.use(cors());
 
-// Cho phép Admin gửi settings lớn hơn 1 MB và ghi log kích thước request.
+// Cho phép Admin gửi settings lớn hơn 1 MB.
 // Có thể thay đổi trên Railway bằng biến JSON_BODY_LIMIT, ví dụ: 5mb.
+// Không ghi log từng request để Railway Logs gọn hơn.
 const JSON_BODY_LIMIT = String(process.env.JSON_BODY_LIMIT || "5mb").trim() || "5mb";
-
-app.use((req, res, next) => {
-  if (["POST", "PUT", "PATCH"].includes(req.method)) {
-    const contentLength = Number(req.headers["content-length"] || 0);
-    console.log(
-      `[REQUEST] ${req.method} ${req.originalUrl} - ${contentLength} bytes`
-    );
-  }
-
-  next();
-});
 
 app.use(express.json({ limit: JSON_BODY_LIMIT }));
 app.use(express.urlencoded({ extended: true, limit: JSON_BODY_LIMIT }));
