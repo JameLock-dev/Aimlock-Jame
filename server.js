@@ -63,7 +63,24 @@ if (DATABASE_URL) {
 
 app.set("trust proxy", true);
 app.use(cors());
-app.use(express.json({ limit: "1mb" }));
+
+// Cho phép Admin gửi settings lớn hơn 1 MB và ghi log kích thước request.
+// Có thể thay đổi trên Railway bằng biến JSON_BODY_LIMIT, ví dụ: 5mb.
+const JSON_BODY_LIMIT = String(process.env.JSON_BODY_LIMIT || "5mb").trim() || "5mb";
+
+app.use((req, res, next) => {
+  if (["POST", "PUT", "PATCH"].includes(req.method)) {
+    const contentLength = Number(req.headers["content-length"] || 0);
+    console.log(
+      `[REQUEST] ${req.method} ${req.originalUrl} - ${contentLength} bytes`
+    );
+  }
+
+  next();
+});
+
+app.use(express.json({ limit: JSON_BODY_LIMIT }));
+app.use(express.urlencoded({ extended: true, limit: JSON_BODY_LIMIT }));
 app.use(express.static(__dirname));
 
 function dbErrorMessage(error) {
@@ -918,6 +935,46 @@ app.delete("/api/admin/keys/:key", requireDatabase, requireAdmin, async (req, re
   } catch (error) {
     return res.status(500).json({ ok: false, message: dbErrorMessage(error) });
   }
+});
+
+// Trả lỗi JSON rõ ràng cho request quá lớn hoặc JSON không hợp lệ.
+// Middleware lỗi phải đặt sau các route và trước middleware 404.
+app.use((error, req, res, next) => {
+  const status = Number(error?.status || error?.statusCode || 500);
+  const contentLength = Number(req.headers["content-length"] || 0);
+
+  if (error?.type === "entity.too.large" || status === 413) {
+    console.error(
+      `[413] ${req.method} ${req.originalUrl} - ${contentLength} bytes - limit ${JSON_BODY_LIMIT}`
+    );
+
+    return res.status(413).json({
+      ok: false,
+      message: `Dữ liệu gửi lên quá lớn (${contentLength} bytes). Giới hạn hiện tại: ${JSON_BODY_LIMIT}.`,
+      code: "PAYLOAD_TOO_LARGE"
+    });
+  }
+
+  if (error instanceof SyntaxError && error?.type === "entity.parse.failed") {
+    console.error(`[400] JSON không hợp lệ tại ${req.method} ${req.originalUrl}`);
+
+    return res.status(400).json({
+      ok: false,
+      message: "Dữ liệu JSON gửi lên không hợp lệ.",
+      code: "INVALID_JSON"
+    });
+  }
+
+  console.error(
+    `[SERVER ERROR] ${req.method} ${req.originalUrl}:`,
+    dbErrorMessage(error)
+  );
+
+  return res.status(status >= 400 && status < 600 ? status : 500).json({
+    ok: false,
+    message: dbErrorMessage(error),
+    code: "SERVER_ERROR"
+  });
 });
 
 // Luôn trả JSON thay vì trang HTML "Cannot METHOD /...".
