@@ -15,7 +15,6 @@
 <link href="styles.css?v=20260721-stable-6" rel="stylesheet"/>
 <style>
     [hidden] { display: none !important; }
-
     html[data-aimlock-auth="1"] #loginScreen {
       display: none !important;
     }
@@ -23,7 +22,6 @@
     html:not([data-aimlock-auth="1"]) #mainApp {
       display: none !important;
     }
-
     #mainApp {
       min-height: 100vh;
     }
@@ -36,7 +34,7 @@
       document.documentElement.dataset.aimlockAuth = "0";
     }
   </script>
-  <link rel="stylesheet" href="aimlock-stable.css?v=20260721-stable-6" />
+  <link rel="stylesheet" href="aimlock-stable.css?v=20260731-ui-fix-3" />
 </head>
 <body class="theme-dark">
 <main class="app-shell login-shell" id="loginScreen">
@@ -487,7 +485,7 @@
 </div><div aria-hidden="true" class="vip-modal-v14" id="vipModal">
 <div class="vip-modal-backdrop-v14" data-close-vip=""></div>
 <section aria-labelledby="vipModalTitle" aria-modal="true" class="vip-modal-card-v14" role="dialog">
-<button aria-label="Đóng" class="vip-close-v14" id="closeVipModal" type="button">×</button>
+<button aria-label="Đóng" class="vip-close-v14" id="closeVipModal" data-close-vip="" type="button">×</button>
 <div class="vip-modal-head-v14">
 <span>VIP UPGRADE CENTER</span>
 <h2 id="vipModalTitle">Gia hạn AIMLOCK JAME</h2>
@@ -660,7 +658,6 @@
   <script>
   (() => {
     "use strict";
-
     // Luôn dùng đúng Railway API cho bản GitHub Pages này.
     const RAILWAY_API_BASE_URL =
       "https://aimlock-jame-production.up.railway.app";
@@ -671,7 +668,6 @@
       loading: null,
       lastLoadedAt: 0
     };
-
     function safeHttpUrl(value) {
       try {
         const url = new URL(String(value || "").trim(), location.href);
@@ -683,7 +679,6 @@
 
     function parseItems(value) {
       if (Array.isArray(value)) return value;
-
       if (typeof value === "string") {
         try {
           const parsed = JSON.parse(value);
@@ -702,7 +697,6 @@
         element.textContent = String(value);
       }
     }
-
     function setHref(element, value) {
       if (!element) return;
       const url = safeHttpUrl(value);
@@ -714,7 +708,6 @@
       if (!list || !Array.isArray(items) || !items.length) return;
 
       list.replaceChildren();
-
       items.forEach((item, index) => {
         const article = document.createElement("article");
         article.className = `update-item-v20${index === 0 ? " latest" : ""}`;
@@ -725,7 +718,6 @@
         const copy = document.createElement("div");
         const title = document.createElement("strong");
         const description = document.createElement("p");
-
         title.textContent = String(item?.title || "Cập nhật AIMLOCK");
         description.textContent = String(item?.description || "");
 
@@ -740,7 +732,6 @@
         responseData?.settings && typeof responseData.settings === "object"
           ? responseData.settings
           : responseData || {};
-
       const update =
         responseData?.update && typeof responseData.update === "object"
           ? responseData.update
@@ -760,7 +751,6 @@
         settings.communityUrl;
 
       setHref(document.getElementById("freeKeyBtn"), freeKeyUrl);
-
       document
         .querySelectorAll('a[href*="zalo.me"]')
         .forEach((element) => setHref(element, zaloUrl));
@@ -778,7 +768,6 @@
         "updateBannerTitle",
         settings.updateTitle || update.title
       );
-
       setText(
         "updateBannerText",
         settings.updateSummary || update.summary
@@ -797,7 +786,6 @@
         response: responseData,
         settings
       };
-
       document.documentElement.dataset.aimlockSettings = "railway";
       window.dispatchEvent(
         new CustomEvent("aimlock:settings-loaded", {
@@ -813,7 +801,6 @@
       if (!force && now - state.lastLoadedAt < 5000) {
         return window.__AIMLOCK_REMOTE_SETTINGS__;
       }
-
       if (state.loading) return state.loading;
 
       state.loading = (async () => {
@@ -831,7 +818,6 @@
             "Cache-Control": "no-cache"
           }
         });
-
         if (!response.ok) {
           throw new Error(`Railway API HTTP ${response.status}`);
         }
@@ -849,7 +835,6 @@
           "[AIMLOCK] Đã đồng bộ settings từ Railway:",
           data?.settings?.freeKeyUrl || data?.freeKeyUrl || ""
         );
-
         return window.__AIMLOCK_REMOTE_SETTINGS__;
       })();
 
@@ -865,7 +850,6 @@
     }
 
     window.loadAimlockRailwaySettings = loadRailwaySettings;
-
     function startSettingsSync() {
       loadRailwaySettings({ force: true });
 
@@ -877,7 +861,6 @@
       window.addEventListener("pageshow", () => {
         loadRailwaySettings({ force: true });
       });
-
       // Trang đang mở vẫn nhận thay đổi từ Admin.
       window.setInterval(() => {
         loadRailwaySettings({ force: true });

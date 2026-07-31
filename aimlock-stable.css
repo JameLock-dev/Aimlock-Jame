@@ -97,3 +97,100 @@ html[data-aimlock-auth="1"] #mainApp {
 html[data-aimlock-ready="1"] [data-stat-card] {
   pointer-events: auto !important;
 }
+
+/* AIMLOCK_UI_FIX_20260731_START */
+/* Chỉ sửa nút đóng VIP và khung Active Slot; không thay đổi tính năng khác. */
+
+.vip-modal-v14 .vip-close-v14,
+#closeVipModal {
+  position: absolute !important;
+  z-index: 50 !important;
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+  cursor: pointer !important;
+}
+
+.page-dashboard-v13 .account-card-v11,
+.page-dashboard-v14 .account-card-v11,
+.dashboard-shell-v11 .account-card-v11 {
+  grid-template-columns: 86px minmax(0, 1fr) minmax(116px, 132px) !important;
+}
+
+.page-dashboard-v13 .account-key-v11,
+.page-dashboard-v14 .account-key-v11,
+.dashboard-shell-v11 .account-key-v11 {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 132px !important;
+  padding-left: 6px !important;
+  padding-right: 6px !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+.page-dashboard-v13 .account-key-v11 strong,
+.page-dashboard-v14 .account-key-v11 strong,
+.dashboard-shell-v11 .account-key-v11 strong,
+#slotText {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-top: 10px !important;
+  font-size: clamp(1.15rem, 4.4vw, 1.9rem) !important;
+  line-height: 1 !important;
+  letter-spacing: -0.055em !important;
+  font-variant-numeric: tabular-nums !important;
+  white-space: nowrap !important;
+  text-align: center !important;
+  overflow: visible !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 430px) {
+  .page-dashboard-v13 .account-card-v11,
+  .page-dashboard-v14 .account-card-v11,
+  .dashboard-shell-v11 .account-card-v11 {
+    grid-template-columns: 60px minmax(0, 1fr) minmax(98px, 108px) !important;
+    gap: 9px !important;
+  }
+
+  .page-dashboard-v13 .account-key-v11,
+  .page-dashboard-v14 .account-key-v11,
+  .dashboard-shell-v11 .account-key-v11 {
+    max-width: 108px !important;
+    min-height: 92px !important;
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+  }
+
+  .page-dashboard-v13 .account-key-v11 strong,
+  .page-dashboard-v14 .account-key-v11 strong,
+  .dashboard-shell-v11 .account-key-v11 strong,
+  #slotText {
+    font-size: clamp(1rem, 5.5vw, 1.45rem) !important;
+    letter-spacing: -0.065em !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .page-dashboard-v13 .account-card-v11,
+  .page-dashboard-v14 .account-card-v11,
+  .dashboard-shell-v11 .account-card-v11 {
+    grid-template-columns: 56px minmax(0, 1fr) 96px !important;
+    gap: 7px !important;
+  }
+
+  .page-dashboard-v13 .account-key-v11,
+  .page-dashboard-v14 .account-key-v11,
+  .dashboard-shell-v11 .account-key-v11 {
+    max-width: 96px !important;
+  }
+
+  .page-dashboard-v13 .account-key-v11 strong,
+  .page-dashboard-v14 .account-key-v11 strong,
+  .dashboard-shell-v11 .account-key-v11 strong,
+  #slotText {
+    font-size: 1.02rem !important;
+  }
+}
+/* AIMLOCK_UI_FIX_20260731_END */
