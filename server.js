@@ -8,12 +8,14 @@ const { Pool } = require("pg");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Ưu tiên DATABASE_PUBLIC_URL để tránh lỗi ENOTFOUND postgres.railway.internal.
-// Trên Railway App Service nên đặt: DATABASE_URL=${{Postgres.DATABASE_PUBLIC_URL}}
+// Railway: nếu App và Postgres ở cùng project/environment, ưu tiên DATABASE_URL
+// (private networking). Chỉ fallback sang public URL khi cần kết nối ngoài private network.
 const DATABASE_URL = String(
+  process.env.DATABASE_URL ||
+  process.env.DATABASE_PRIVATE_URL ||
+  process.env.POSTGRES_URL ||
   process.env.DATABASE_PUBLIC_URL ||
   process.env.POSTGRES_PUBLIC_URL ||
-  process.env.DATABASE_URL ||
   ""
 ).trim();
 
@@ -48,12 +50,16 @@ let pool = null;
 if (DATABASE_URL) {
   pool = new Pool({
     connectionString: DATABASE_URL,
-    max: 10,
-    idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 10000,
+    max: Math.max(1, Number(process.env.PG_POOL_MAX || 10)),
+    idleTimeoutMillis: Math.max(1000, Number(process.env.PG_IDLE_TIMEOUT_MS || 30000)),
+    connectionTimeoutMillis: Math.max(1000, Number(process.env.PG_CONNECT_TIMEOUT_MS || 10000)),
+    keepAlive: true,
+    keepAliveInitialDelayMillis: Math.max(0, Number(process.env.PG_KEEPALIVE_DELAY_MS || 10000)),
     ssl: sslConfig(DATABASE_URL)
   });
 
+  // Bắt lỗi từ idle client để Node không phát sinh unhandled "error" event.
+  // Pool sẽ bỏ connection lỗi; request tiếp theo có thể tạo connection mới.
   pool.on("error", (err) => {
     console.error("Postgres pool error:", dbErrorMessage(err));
   });
@@ -73,33 +79,120 @@ app.use(express.json({ limit: JSON_BODY_LIMIT }));
 app.use(express.urlencoded({ extended: true, limit: JSON_BODY_LIMIT }));
 app.use(express.static(__dirname));
 
+function isTransientDbError(error) {
+  const code = String(error?.code || "").toUpperCase();
+  const msg = String(error?.message || error || "").toLowerCase();
+
+  // PostgreSQL connection / shutdown classes + common TCP/socket failures.
+  if (
+    [
+      "08000", "08001", "08003", "08004", "08006", "08007", "08P01",
+      "57P01", "57P02", "57P03",
+      "ECONNRESET", "ECONNREFUSED", "ETIMEDOUT", "EPIPE", "ENETUNREACH", "EHOSTUNREACH"
+    ].includes(code)
+  ) {
+    return true;
+  }
+
+  return (
+    msg.includes("connection terminated unexpectedly") ||
+    msg.includes("connection terminated") ||
+    msg.includes("connection closed") ||
+    msg.includes("connection reset") ||
+    msg.includes("socket hang up") ||
+    msg.includes("server closed the connection unexpectedly") ||
+    msg.includes("terminating connection due to administrator command") ||
+    msg.includes("the database system is starting up") ||
+    msg.includes("the database system is shutting down")
+  );
+}
+
+function dbStatusCode(error) {
+  return isTransientDbError(error) ? 503 : 500;
+}
+
 function dbErrorMessage(error) {
   const msg = error?.message || String(error || "Lỗi không xác định");
 
   if (msg.includes("ENOTFOUND") || msg.includes("getaddrinfo")) {
-    return "Không tìm thấy host Postgres. Hãy đặt DATABASE_URL=${{Postgres.DATABASE_PUBLIC_URL}} trong Railway App Service, rồi Redeploy.";
+    return "Không tìm thấy host Postgres. Nếu App và Postgres cùng Railway project, hãy đặt DATABASE_URL=${{Postgres.DATABASE_URL}} rồi Redeploy.";
   }
 
   if (msg.includes("ECONNREFUSED")) {
-    return "Postgres từ chối kết nối. Kiểm tra lại DATABASE_URL / DATABASE_PUBLIC_URL trên Railway.";
+    return "Postgres đang từ chối kết nối. Kiểm tra service Postgres và DATABASE_URL trên Railway.";
   }
 
   if (msg.includes("password authentication failed")) {
-    return "Sai user/password Postgres. Hãy copy lại DATABASE_PUBLIC_URL từ PostgreSQL service trên Railway.";
+    return "Sai user/password Postgres. Hãy kiểm tra lại DATABASE_URL được tham chiếu từ PostgreSQL service trên Railway.";
   }
 
-  if (msg.includes("does not support SSL") || msg.includes("SSL")) {
-    return "Lỗi SSL Postgres. Nếu dùng private URL hãy đặt DB_SSL=false, nếu dùng public URL hãy dùng DATABASE_PUBLIC_URL.";
+  if (msg.includes("does not support SSL") || /ssl/i.test(msg)) {
+    return "Lỗi SSL Postgres. Private Railway URL thường không cần SSL; public URL có thể đặt DB_SSL=true nếu cần.";
+  }
+
+  if (isTransientDbError(error)) {
+    return "Kết nối PostgreSQL vừa bị gián đoạn tạm thời. Server đã loại bỏ connection lỗi; vui lòng thử lại request.";
   }
 
   return msg;
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// Chỉ retry lúc CHECKOUT connection từ pool. Không tự retry toàn transaction
+// để tránh lặp lại thao tác ghi khi trạng thái COMMIT trước đó không chắc chắn.
+async function connectDbWithRetry(maxAttempts = 3) {
+  if (!pool) {
+    const error = new Error("Postgres pool chưa được cấu hình.");
+    error.code = "NO_DATABASE";
+    throw error;
+  }
+
+  let lastError = null;
+  const attempts = Math.max(1, Number(maxAttempts || 1));
+
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      return await pool.connect();
+    } catch (error) {
+      lastError = error;
+      console.warn(
+        `Postgres connect attempt ${attempt}/${attempts} failed:`,
+        dbErrorMessage(error)
+      );
+
+      if (!isTransientDbError(error) || attempt >= attempts) break;
+      await sleep(250 * attempt);
+    }
+  }
+
+  throw lastError || new Error("Không thể kết nối PostgreSQL.");
+}
+
+async function rollbackQuietly(client) {
+  if (!client) return;
+  try {
+    await client.query("ROLLBACK");
+  } catch (_) {}
+}
+
+function releaseDbClient(client, destroy = false) {
+  if (!client) return;
+  try {
+    // destroy=true buộc Pool bỏ connection nghi ngờ/hỏng thay vì tái sử dụng.
+    client.release(Boolean(destroy));
+  } catch (error) {
+    console.warn("Không release được Postgres client:", dbErrorMessage(error));
+  }
 }
 
 function requireDatabase(req, res, next) {
   if (!pool || !DATABASE_URL) {
     return res.status(500).json({
       ok: false,
-      message: "Chưa cấu hình DATABASE_URL. Trên Railway App Service hãy thêm DATABASE_URL=${{Postgres.DATABASE_PUBLIC_URL}} rồi Redeploy.",
+      message: "Chưa cấu hình DATABASE_URL. Nếu App và Postgres cùng Railway project, hãy thêm DATABASE_URL=${{Postgres.DATABASE_URL}} rồi Redeploy.",
       railway: "NO DATABASE"
     });
   }
@@ -470,7 +563,7 @@ app.get("/api/health", requireDatabase, async (req, res) => {
       time: new Date().toISOString()
     });
   } catch (error) {
-    return res.status(500).json({ ok: false, message: dbErrorMessage(error) });
+    return res.status(dbStatusCode(error)).json({ ok: false, message: dbErrorMessage(error), retryable: isTransientDbError(error) });
   }
 });
 
@@ -502,7 +595,7 @@ app.get("/api/stats", requireDatabase, async (req, res) => {
       railway: "Online"
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(dbStatusCode(error)).json({
       ok: false,
       online: 0,
       activeKeys: 0,
@@ -529,9 +622,10 @@ app.get("/api/app-settings", async (req, res) => {
   } catch (error) {
     const fallback = defaultAppSettings();
 
-    return res.status(500).json({
+    return res.status(dbStatusCode(error)).json({
       ok: false,
       message: dbErrorMessage(error),
+      retryable: isTransientDbError(error),
       ...fallback,
       settings: fallback
     });
@@ -607,13 +701,15 @@ app.post("/api/verify-key", async (req, res) => {
   if (!pool || !DATABASE_URL) {
     return res.status(500).json({
       ok: false,
-      message: "Chưa cấu hình DATABASE_URL. Hãy thêm DATABASE_URL=${{Postgres.DATABASE_PUBLIC_URL}} trên Railway rồi Redeploy."
+      message: "Chưa cấu hình DATABASE_URL. Nếu App và Postgres cùng Railway project, hãy thêm DATABASE_URL=${{Postgres.DATABASE_URL}} rồi Redeploy."
     });
   }
 
-  const client = await pool.connect();
+  let client = null;
+  let destroyClient = false;
 
   try {
+    client = await connectDbWithRetry();
     await client.query("BEGIN");
 
     const result = await client.query(
@@ -696,13 +792,16 @@ app.post("/api/verify-key", async (req, res) => {
       key: rowToKey(updated.rows[0])
     });
   } catch (error) {
-    try {
-      await client.query("ROLLBACK");
-    } catch (_) {}
+    destroyClient = true;
+    await rollbackQuietly(client);
 
-    return res.status(500).json({ ok: false, message: dbErrorMessage(error) });
+    return res.status(dbStatusCode(error)).json({
+      ok: false,
+      message: dbErrorMessage(error),
+      retryable: isTransientDbError(error)
+    });
   } finally {
-    client.release();
+    releaseDbClient(client, destroyClient);
   }
 });
 
@@ -721,7 +820,7 @@ app.get("/api/admin/keys", requireDatabase, requireAdmin, async (req, res) => {
 
     return res.json({ ok: true, keys: result.rows.map(rowToKey) });
   } catch (error) {
-    return res.status(500).json({ ok: false, message: dbErrorMessage(error) });
+    return res.status(dbStatusCode(error)).json({ ok: false, message: dbErrorMessage(error), retryable: isTransientDbError(error) });
   }
 });
 
@@ -743,9 +842,11 @@ app.post("/api/admin/keys", requireDatabase, requireAdmin, async (req, res) => {
     return res.status(400).json({ ok: false, message: "Thiếu key." });
   }
 
-  const client = await pool.connect();
+  let client = null;
+  let destroyClient = false;
 
   try {
+    client = await connectDbWithRetry();
     await client.query("BEGIN");
 
     const result = await client.query(
@@ -779,13 +880,16 @@ app.post("/api/admin/keys", requireDatabase, requireAdmin, async (req, res) => {
       key: rowToKey(result.rows[0])
     });
   } catch (error) {
-    try {
-      await client.query("ROLLBACK");
-    } catch (_) {}
+    destroyClient = true;
+    await rollbackQuietly(client);
 
-    return res.status(500).json({ ok: false, message: dbErrorMessage(error) });
+    return res.status(dbStatusCode(error)).json({
+      ok: false,
+      message: dbErrorMessage(error),
+      retryable: isTransientDbError(error)
+    });
   } finally {
-    client.release();
+    releaseDbClient(client, destroyClient);
   }
 });
 
@@ -813,14 +917,16 @@ app.get("/api/admin/keys/:key/devices", requireDatabase, requireAdmin, async (re
 
     return res.json({ ok: true, devices: result.rows });
   } catch (error) {
-    return res.status(500).json({ ok: false, message: dbErrorMessage(error) });
+    return res.status(dbStatusCode(error)).json({ ok: false, message: dbErrorMessage(error), retryable: isTransientDbError(error) });
   }
 });
 
 app.delete("/api/admin/keys/:key/devices", requireDatabase, requireAdmin, async (req, res) => {
-  const client = await pool.connect();
+  let client = null;
+  let destroyClient = false;
 
   try {
+    client = await connectDbWithRetry();
     await client.query("BEGIN");
 
     const keyRow = await getKeyRowByValue(client, req.params.key);
@@ -845,20 +951,25 @@ app.delete("/api/admin/keys/:key/devices", requireDatabase, requireAdmin, async 
       key: rowToKey(updated.rows[0])
     });
   } catch (error) {
-    try {
-      await client.query("ROLLBACK");
-    } catch (_) {}
+    destroyClient = true;
+    await rollbackQuietly(client);
 
-    return res.status(500).json({ ok: false, message: dbErrorMessage(error) });
+    return res.status(dbStatusCode(error)).json({
+      ok: false,
+      message: dbErrorMessage(error),
+      retryable: isTransientDbError(error)
+    });
   } finally {
-    client.release();
+    releaseDbClient(client, destroyClient);
   }
 });
 
 app.delete("/api/admin/keys/:key/devices/:deviceId", requireDatabase, requireAdmin, async (req, res) => {
-  const client = await pool.connect();
+  let client = null;
+  let destroyClient = false;
 
   try {
+    client = await connectDbWithRetry();
     await client.query("BEGIN");
 
     const keyRow = await getKeyRowByValue(client, req.params.key);
@@ -883,13 +994,16 @@ app.delete("/api/admin/keys/:key/devices/:deviceId", requireDatabase, requireAdm
       key: rowToKey(updated)
     });
   } catch (error) {
-    try {
-      await client.query("ROLLBACK");
-    } catch (_) {}
+    destroyClient = true;
+    await rollbackQuietly(client);
 
-    return res.status(500).json({ ok: false, message: dbErrorMessage(error) });
+    return res.status(dbStatusCode(error)).json({
+      ok: false,
+      message: dbErrorMessage(error),
+      retryable: isTransientDbError(error)
+    });
   } finally {
-    client.release();
+    releaseDbClient(client, destroyClient);
   }
 });
 
@@ -907,7 +1021,7 @@ app.delete("/api/admin/keys", requireDatabase, requireAdmin, async (req, res) =>
         : "Không còn key rỗng trong database."
     });
   } catch (error) {
-    return res.status(500).json({ ok: false, message: dbErrorMessage(error) });
+    return res.status(dbStatusCode(error)).json({ ok: false, message: dbErrorMessage(error), retryable: isTransientDbError(error) });
   }
 });
 
@@ -923,7 +1037,7 @@ app.delete("/api/admin/keys/:key", requireDatabase, requireAdmin, async (req, re
       message: result.rowCount ? "Đã xóa key." : "Không tìm thấy key."
     });
   } catch (error) {
-    return res.status(500).json({ ok: false, message: dbErrorMessage(error) });
+    return res.status(dbStatusCode(error)).json({ ok: false, message: dbErrorMessage(error), retryable: isTransientDbError(error) });
   }
 });
 
@@ -960,10 +1074,15 @@ app.use((error, req, res, next) => {
     dbErrorMessage(error)
   );
 
-  return res.status(status >= 400 && status < 600 ? status : 500).json({
+  const finalStatus = status >= 400 && status < 600
+    ? status
+    : dbStatusCode(error);
+
+  return res.status(finalStatus).json({
     ok: false,
     message: dbErrorMessage(error),
-    code: "SERVER_ERROR"
+    code: isTransientDbError(error) ? "DATABASE_TEMPORARILY_UNAVAILABLE" : "SERVER_ERROR",
+    retryable: isTransientDbError(error)
   });
 });
 
@@ -975,6 +1094,21 @@ app.use((req, res) => {
   });
 });
 
+async function shutdown(signal) {
+  console.log(`\n${signal} received. Shutting down...`);
+
+  try {
+    if (pool) await pool.end();
+  } catch (error) {
+    console.warn("Lỗi khi đóng Postgres pool:", dbErrorMessage(error));
+  } finally {
+    process.exit(0);
+  }
+}
+
+process.once("SIGTERM", () => shutdown("SIGTERM"));
+process.once("SIGINT", () => shutdown("SIGINT"));
+
 initDb()
   .catch((error) => {
     console.error("❌ Database init failed:", dbErrorMessage(error));
@@ -982,6 +1116,6 @@ initDb()
   .finally(() => {
     app.listen(PORT, () => {
       console.log(`✅ AIMLOCK JAME server running on port ${PORT}`);
-      console.log(`✅ Database URL mode: ${DATABASE_URL ? (isRailwayInternalUrl(DATABASE_URL) ? "internal" : "public/external") : "missing"}`);
+      console.log(`✅ Database URL mode: ${DATABASE_URL ? (isRailwayInternalUrl(DATABASE_URL) ? "internal/private" : "public/external") : "missing"}`);
     });
   });
