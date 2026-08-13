@@ -1,6 +1,6 @@
 const API_BASE_URL = String(window.AIMLOCK_API_BASE_URL || "").trim().replace(/\/+$/, "");
 const IS_GITHUB_PAGES = /github\.io$/i.test(location.hostname);
-const STATIC_PREVIEW_MODE = false;
+const STATIC_PREVIEW_MODE = IS_GITHUB_PAGES && !API_BASE_URL;
 const MAX_SETTINGS_PAYLOAD_BYTES = 900 * 1024; // 900 KB, thấp hơn giới hạn server để tránh lỗi 413.
 
 const loginBox = document.getElementById("loginBox");
@@ -14,16 +14,6 @@ const statActive = document.getElementById("statActive");
 const statToday = document.getElementById("statToday");
 const statRailway = document.getElementById("statRailway");
 
-const keyInput = document.getElementById("keyInput");
-const typeInput = document.getElementById("typeInput");
-const expireInput = document.getElementById("expireInput");
-const slotLimitInput = document.getElementById("slotLimitInput");
-const saveKeyBtn = document.getElementById("saveKeyBtn");
-const saveStatus = document.getElementById("saveStatus");
-const keyTable = document.getElementById("keyTable");
-const reloadBtn = document.getElementById("reloadBtn");
-const deviceTable = document.getElementById("deviceTable");
-const deviceHelp = document.getElementById("deviceHelp");
 const adminLogoutTop = document.getElementById("adminLogoutTop");
 
 const settingsFields = {
@@ -52,7 +42,7 @@ const loadSettingsBtn = document.getElementById("loadSettingsBtn");
 const previewSettingsBtn = document.getElementById("previewSettingsBtn");
 const settingsStatus = document.getElementById("settingsStatus");
 
-let adminPass = sessionStorage.getItem("aimlockAdminPassword") || "";
+let adminPass = localStorage.getItem("aimlockAdminPassword") || "";
 let selectedDeviceKey = "";
 let editingKeyStatus = "active";
 
@@ -101,64 +91,9 @@ async function fetchJson(path, options = {}) {
   return data;
 }
 
-function formatExpire(value) {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value || "--";
 
-  return date.toLocaleString("vi-VN", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric"
-  });
-}
 
-function toInputDateTime(value) {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "";
-  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-  return local.toISOString().slice(0, 16);
-}
 
-function demoKeys() {
-  return [
-    {
-      key: "",
-      type: "admin",
-      expire: "2099-12-31T23:59:59.000Z",
-      slotUsed: 1,
-      slotLimit: 1,
-      status: "active"
-    },
-    {
-      key: "",
-      type: "vip",
-      expire: new Date(Date.now() + 30 * 86400000).toISOString(),
-      slotUsed: 1,
-      slotLimit: 2,
-      status: "active"
-    }
-  ];
-}
-
-function demoDevices(key) {
-  return [
-    {
-      deviceId: `browser-${String(key || "demo").toLowerCase()}-01`,
-      deviceName: "Chrome / Windows",
-      firstSeen: new Date(Date.now() - 86400000).toISOString(),
-      lastSeen: new Date().toISOString()
-    },
-    {
-      deviceId: `mobile-${String(key || "demo").toLowerCase()}-02`,
-      deviceName: "Mobile WebView",
-      firstSeen: new Date(Date.now() - 3600000).toISOString(),
-      lastSeen: new Date(Date.now() - 300000).toISOString()
-    }
-  ];
-}
 
 function defaultSettings() {
   return {
@@ -374,604 +309,64 @@ async function loadStats() {
 }
 
 
-function normalizeKeyStatus(value) {
-  const status = String(value || "active").trim().toLowerCase();
-
-  if (["locked", "blocked", "disabled", "revoked"].includes(status)) {
-    return "locked";
-  }
-
-  if (status === "expired") return "expired";
-  if (status === "active") return "active";
-  return status || "active";
-}
-
-function keyStatusMeta(value) {
-  const status = normalizeKeyStatus(value);
-
-  if (status === "active") {
-    return {
-      value: "active",
-      label: "Hoạt động",
-      className: "status-active"
-    };
-  }
-
-  if (status === "locked") {
-    return {
-      value: "locked",
-      label: "Đã khóa",
-      className: "status-locked"
-    };
-  }
-
-  if (status === "expired") {
-    return {
-      value: "expired",
-      label: "Hết hạn",
-      className: "status-expired"
-    };
-  }
-
-  return {
-    value: status,
-    label: status,
-    className: "status-other"
-  };
-}
-
-function payloadForStatusUpdate(item, status) {
-  return {
-    key: item.key,
-    type: item.type || "custom",
-    expire: item.expire || new Date(Date.now() + 7 * 86400000).toISOString(),
-    slotLimit: Number(item.slotLimit || 1),
-    status
-  };
-}
-
-async function toggleKeyLock(row) {
-  const item = JSON.parse(row?.dataset.payload || "{}");
-  const status = normalizeKeyStatus(item.status);
-
-  if (!item.key) return;
-
-  if (status === "expired") {
-    saveStatus.textContent =
-      `Key ${item.key} đã hết hạn. Hãy bấm Sửa và gia hạn trước khi mở lại.`;
-    saveStatus.style.color = "#ffb020";
-    return;
-  }
-
-  const willLock = status === "active";
-  const nextStatus = willLock ? "locked" : "active";
-  const actionText = willLock ? "khóa" : "mở khóa";
-
-  if (!confirm(
-    willLock
-      ? `Khóa key ${item.key}? Người dùng sẽ không thể đăng nhập bằng key này.`
-      : `Mở khóa key ${item.key}? Key sẽ dùng lại được nếu vẫn còn hạn.`
-  )) {
-    return;
-  }
-
-  if (STATIC_PREVIEW_MODE) {
-    item.status = nextStatus;
-    row.dataset.payload = JSON.stringify(item);
-    const meta = keyStatusMeta(nextStatus);
-    const statusCell = row.querySelector(".key-status");
-
-    if (statusCell) {
-      statusCell.className = `key-status ${meta.className}`;
-      statusCell.textContent = meta.label;
-    }
-
-    const button = row.querySelector(".toggle-lock");
-    if (button) {
-      button.className =
-        `action-btn toggle-lock ${willLock ? "unlock-key" : "lock-key"}`;
-      button.textContent = willLock ? "Mở khóa" : "Khóa";
-    }
-
-    row.classList.toggle("key-row-locked", willLock);
-    saveStatus.textContent = `Demo: đã ${actionText} key ${item.key}.`;
-    saveStatus.style.color = "#ffd000";
-    return;
-  }
-
-  try {
-    const data = await fetchJson("/api/admin/keys", {
-      method: "POST",
-      headers: headers(),
-      body: JSON.stringify(payloadForStatusUpdate(item, nextStatus))
-    });
-
-    saveStatus.textContent =
-      data.message ||
-      (willLock
-        ? `Đã khóa key ${item.key}.`
-        : `Đã mở khóa key ${item.key}.`);
-
-    saveStatus.style.color = data.ok ? "#22e06e" : "#ef4444";
-
-    if (data.ok) {
-      if (keyInput.value.trim() === item.key) {
-        editingKeyStatus = nextStatus;
-      }
-
-      await loadKeys();
-    }
-  } catch (error) {
-    saveStatus.textContent =
-      error.message || `Không thể ${actionText} key.`;
-    saveStatus.style.color = "#ef4444";
-  }
-}
-
-function renderKeys(keys) {
-  keyTable.innerHTML = "";
-
-  keys.forEach((item) => {
-    const meta = keyStatusMeta(item.status);
-    const canToggleLock = meta.value !== "expired";
-    const lockButton = canToggleLock
-      ? (
-          meta.value === "active"
-            ? `<button class="action-btn toggle-lock lock-key" data-key="${item.key}">Khóa</button>`
-            : `<button class="action-btn toggle-lock unlock-key" data-key="${item.key}">Mở khóa</button>`
-        )
-      : `<button class="action-btn toggle-lock lock-key" data-key="${item.key}" disabled title="Hãy gia hạn key trước">Hết hạn</button>`;
-
-    const tr = document.createElement("tr");
-    tr.classList.toggle("key-row-locked", meta.value === "locked");
-
-    tr.innerHTML = `
-      <td>${item.key}</td>
-      <td>${item.type}</td>
-      <td>${formatExpire(item.expire)}</td>
-      <td>${item.slotUsed || 0}/${item.slotLimit || 1}</td>
-      <td>
-        <span class="key-status ${meta.className}">${meta.label}</span>
-      </td>
-      <td>
-        <div class="action-group">
-          <button class="action-btn edit" data-key="${item.key}">Sửa</button>
-          <button class="action-btn devices" data-key="${item.key}">Thiết bị</button>
-          <button class="action-btn reset" data-key="${item.key}">Reset máy</button>
-          ${lockButton}
-          <button class="action-btn delete" data-key="${item.key}">Xóa</button>
-        </div>
-      </td>
-    `;
-
-    tr.dataset.payload = JSON.stringify(item);
-    keyTable.appendChild(tr);
-  });
-}
-
-function renderDevices(key, devices) {
-  if (!deviceTable) return;
-  selectedDeviceKey = key || selectedDeviceKey;
-  deviceTable.innerHTML = "";
-
-  if (deviceHelp) {
-    deviceHelp.textContent = key
-      ? `Đang xem thiết bị của key: ${key}`
-      : "Chọn “Thiết bị” ở một key để xem danh sách máy đang gắn.";
-  }
-
-  if (!devices || !devices.length) {
-    deviceTable.innerHTML = '<tr><td colspan="5">Chưa có thiết bị nào đang gắn với key này.</td></tr>';
-    return;
-  }
-
-  devices.forEach((device, index) => {
-    const deviceId =
-      device.deviceId ||
-      device.device_id ||
-      device.id ||
-      "--";
-
-    const deviceName =
-      device.deviceName ||
-      device.device_name ||
-      device.name ||
-      `Máy ${index + 1}`;
-
-    const firstSeen =
-      device.firstSeen ||
-      device.first_seen ||
-      device.firstUsedAt ||
-      device.first_used_at ||
-      device.created_at ||
-      device.createdAt;
-
-    const lastSeen =
-      device.lastSeen ||
-      device.last_seen ||
-      device.lastUsedAt ||
-      device.last_used_at ||
-      device.updated_at ||
-      device.updatedAt ||
-      firstSeen;
-
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td title="${deviceId}">${deviceId}</td>
-      <td>${deviceName}</td>
-      <td>${formatExpire(firstSeen)}</td>
-      <td>${formatExpire(lastSeen)}</td>
-      <td>
-        <button
-          class="action-btn delete delete-device"
-          data-key="${key}"
-          data-device="${deviceId}"
-          type="button"
-        >
-          Gỡ máy
-        </button>
-      </td>
-    `;
-    deviceTable.appendChild(tr);
-  });
-}
-
-async function loadDevices(key) {
-  if (!key) return;
-
-  if (STATIC_PREVIEW_MODE) {
-    renderDevices(key, demoDevices(key));
-    saveStatus.textContent = `Đang xem demo thiết bị của key: ${key}`;
-    saveStatus.style.color = "#ffd000";
-    return;
-  }
-
-  try {
-    const data = await fetchJson(
-      `/api/admin/keys/${encodeURIComponent(key)}/devices`,
-      { headers: headers() }
-    );
-
-    const devices =
-      Array.isArray(data.devices)
-        ? data.devices
-        : Array.isArray(data.data?.devices)
-          ? data.data.devices
-          : Array.isArray(data.data)
-            ? data.data
-            : [];
-
-    renderDevices(key, devices);
-
-    saveStatus.textContent =
-      data.message ||
-      (
-        devices.length
-          ? `Đã tải ${devices.length} thiết bị của key ${key}.`
-          : `Key ${key} chưa gắn thiết bị nào.`
-      );
-
-    saveStatus.style.color = "#22e06e";
-  } catch (error) {
-    renderDevices(key, []);
-    saveStatus.textContent =
-      error.message ||
-      "Không tải được thiết bị. Kiểm tra API Railway và mật khẩu admin.";
-    saveStatus.style.color = "#ef4444";
-  }
-}
-
-async function resetDevices(key) {
-  if (!key) return;
-  if (!confirm(`Reset toàn bộ máy của key ${key}?`)) return;
-
-  if (STATIC_PREVIEW_MODE) {
-    renderDevices(key, []);
-    saveStatus.textContent = `Demo: đã reset máy cho key ${key}.`;
-    saveStatus.style.color = "#ffd000";
-    return;
-  }
-
-  try {
-    let data;
-
-    try {
-      // Endpoint chuẩn của server AIMLOCK hiện tại.
-      data = await fetchJson(
-        `/api/admin/keys/${encodeURIComponent(key)}/devices`,
-        {
-          method: "DELETE",
-          headers: headers()
-        }
-      );
-    } catch (deleteError) {
-      // Tương thích với một số server cũ từng dùng route POST.
-      data = await fetchJson(
-        `/api/admin/keys/${encodeURIComponent(key)}/reset-devices`,
-        {
-          method: "POST",
-          headers: headers()
-        }
-      );
-    }
-
-    saveStatus.textContent =
-      data.message || `Đã reset toàn bộ thiết bị của key ${key}.`;
-    saveStatus.style.color = data.ok ? "#22e06e" : "#ef4444";
-
-    await loadKeys();
-    renderDevices(key, []);
-  } catch (error) {
-    saveStatus.textContent =
-      error.message ||
-      "Không reset được máy. Kiểm tra server Railway đã có route reset thiết bị.";
-    saveStatus.style.color = "#ef4444";
-  }
-}
-
-async function deleteDevice(key, deviceId) {
-  if (!key || !deviceId) return;
-  if (!confirm(`Gỡ thiết bị này khỏi key ${key}?`)) return;
-
-  if (STATIC_PREVIEW_MODE) {
-    const devices = demoDevices(key).filter(item => item.deviceId !== deviceId);
-    renderDevices(key, devices);
-    saveStatus.textContent = "Demo: đã gỡ thiết bị.";
-    saveStatus.style.color = "#ffd000";
-    return;
-  }
-
-  try {
-    const data = await fetchJson(`/api/admin/keys/${encodeURIComponent(key)}/devices/${encodeURIComponent(deviceId)}`, {
-      method: "DELETE",
-      headers: headers()
-    });
-    saveStatus.textContent = data.message || "Đã gỡ thiết bị.";
-    saveStatus.style.color = data.ok ? "#22e06e" : "#ef4444";
-    await loadKeys();
-    await loadDevices(key);
-  } catch (error) {
-    saveStatus.textContent = error.message || "Lỗi gỡ thiết bị.";
-    saveStatus.style.color = "#ef4444";
-  }
-}
-
-async function loadKeys() {
-  if (STATIC_PREVIEW_MODE) {
-    renderKeys(demoKeys());
-    loadStats();
-    if (saveStatus) {
-      saveStatus.textContent = "Đang ở GitHub Pages: chỉ xem demo. Muốn thêm/xóa key thật, hãy cấu hình AIMLOCK_API_BASE_URL tới Railway.";
-      saveStatus.style.color = "#ffd000";
-    }
-    return;
-  }
-
-  const data = await fetchJson("/api/admin/keys", { headers: headers() });
-
-  if (!data.ok) {
-    throw new Error(data.message || "Không tải được danh sách key.");
-  }
-
-  renderKeys(data.keys);
-  loadStats();
-}
 
 async function loginAdmin() {
-  adminPass = adminPassword.value.trim();
+  adminPass = adminPassword?.value.trim() || "";
 
   if (!adminPass) {
-    loginStatus.textContent = "Vui lòng nhập mật khẩu admin.";
-    loginStatus.style.color = "#ef4444";
+    if (loginStatus) loginStatus.textContent = "Vui lòng nhập mật khẩu admin.";
     return;
   }
 
   try {
+    // Xác thực thật với backend trước khi mở Admin.
+    // Không dùng /api/admin/keys để đăng nhập và không chấp nhận Admin11 làm key.
     await fetchJson("/api/admin/auth", {
       method: "POST",
       headers: headers(),
-      body: JSON.stringify({})
+      body: JSON.stringify({ adminPassword: adminPass })
     });
 
-    sessionStorage.setItem("aimlockAdminPassword", adminPass);
-    await loadKeys();
     await loadSettings();
+    localStorage.setItem("aimlockAdminPassword", adminPass);
 
-    loginBox.classList.add("hidden");
-    adminContent.classList.remove("hidden");
-    loginStatus.textContent = "";
+    loginBox?.classList.add("hidden");
+    adminContent?.classList.remove("hidden");
+    if (loginStatus) loginStatus.textContent = "";
   } catch (error) {
-    sessionStorage.removeItem("aimlockAdminPassword");
-    adminPass = "";
-    adminContent.classList.add("hidden");
-    loginBox.classList.remove("hidden");
-    loginStatus.textContent = error.message || "Sai mật khẩu admin.";
-    loginStatus.style.color = "#ef4444";
-  }
-}
-
-async function saveKey() {
-  const key = keyInput.value.trim();
-
-  if (!key) {
-    saveStatus.textContent = "Vui lòng nhập key.";
-    saveStatus.style.color = "#ef4444";
-    return;
-  }
-
-  if (STATIC_PREVIEW_MODE) {
-    saveStatus.textContent = "GitHub Pages không có API để lưu key thật. Hãy deploy server.js lên Railway rồi cấu hình api-config.js.";
-    saveStatus.style.color = "#ffd000";
-    return;
-  }
-
-  const expire = expireInput.value
-    ? new Date(expireInput.value).toISOString()
-    : new Date(Date.now() + 7 * 86400000).toISOString();
-
-  const payload = {
-    key,
-    type: typeInput.value.trim() || "custom",
-    expire,
-    slotLimit: Number(slotLimitInput.value || 1),
-    slotUsed: 0,
-    status: editingKeyStatus || "active"
-  };
-
-  try {
-    const data = await fetchJson("/api/admin/keys", {
-      method: "POST",
-      headers: headers(),
-      body: JSON.stringify(payload)
-    });
-
-    saveStatus.textContent = data.message || "Đã lưu key";
-    saveStatus.style.color = data.ok ? "#22e06e" : "#ef4444";
-
-    if (data.ok) {
-      keyInput.value = "";
-      typeInput.value = "";
-      expireInput.value = "";
-      slotLimitInput.value = "100";
-      editingKeyStatus = "active";
-      loadKeys();
+    if (loginStatus) {
+      loginStatus.textContent = error.message || "Sai mật khẩu admin.";
+      loginStatus.style.color = "#ef4444";
     }
-  } catch (error) {
-    saveStatus.textContent = error.message || "Lỗi lưu key.";
-    saveStatus.style.color = "#ef4444";
   }
 }
 
-async function deleteKey(key) {
-  if (STATIC_PREVIEW_MODE) {
-    saveStatus.textContent = "Không thể xóa key thật khi đang chạy trên GitHub Pages static.";
-    saveStatus.style.color = "#ffd000";
-    return;
-  }
+adminLoginBtn?.addEventListener("click", loginAdmin);
 
-  if (!confirm(`Xóa key ${key}?`)) return;
-
-  try {
-    const data = await fetchJson(`/api/admin/keys/${encodeURIComponent(key)}`, {
-      method: "DELETE",
-      headers: headers()
-    });
-
-    saveStatus.textContent = data.message || "Đã xóa key";
-    saveStatus.style.color = data.ok ? "#22e06e" : "#ef4444";
-    loadKeys();
-  } catch (error) {
-    saveStatus.textContent = error.message || "Lỗi xóa key.";
-    saveStatus.style.color = "#ef4444";
-  }
-}
-
-function editKey(row) {
-  const item = JSON.parse(row.dataset.payload || "{}");
-
-  keyInput.value = item.key || "";
-  typeInput.value = item.type || "custom";
-  expireInput.value = toInputDateTime(item.expire);
-  slotLimitInput.value = item.slotLimit || 1;
-  editingKeyStatus = normalizeKeyStatus(item.status);
-
-  window.scrollTo({ top: 0, behavior: "smooth" });
-  saveStatus.textContent = STATIC_PREVIEW_MODE
-    ? `Đang xem demo key: ${item.key}`
-    : `Đang sửa key: ${item.key} · ${
-        editingKeyStatus === "locked" ? "ĐANG KHÓA" : "HOẠT ĐỘNG"
-      }`;
-  saveStatus.style.color = "#ffd000";
-}
-
-adminLoginBtn.addEventListener("click", loginAdmin);
-adminPassword.addEventListener("keydown", (event) => {
+adminPassword?.addEventListener("keydown", (event) => {
   if (event.key === "Enter") loginAdmin();
 });
 
-saveKeyBtn.addEventListener("click", saveKey);
-reloadBtn.addEventListener("click", loadKeys);
 saveSettingsBtn?.addEventListener("click", saveSettings);
 loadSettingsBtn?.addEventListener("click", loadSettings);
-previewSettingsBtn?.addEventListener("click", () => window.open("index.html", "_blank"));
-
-keyTable.addEventListener("click", (event) => {
-  const editBtn = event.target.closest(".edit");
-  const devicesBtn = event.target.closest(".devices");
-  const resetBtn = event.target.closest(".reset");
-  const lockBtn = event.target.closest(".toggle-lock");
-  const deleteBtn = event.target.closest(".delete");
-
-  if (editBtn) {
-    editKey(editBtn.closest("tr"));
-    return;
-  }
-
-  if (devicesBtn) {
-    const originalText = devicesBtn.textContent;
-    devicesBtn.disabled = true;
-    devicesBtn.textContent = "Đang tải...";
-
-    loadDevices(devicesBtn.dataset.key)
-      .finally(() => {
-        devicesBtn.disabled = false;
-        devicesBtn.textContent = originalText;
-      });
-
-    document
-      .querySelector(".devices-card-admin")
-      ?.scrollIntoView({ behavior: "smooth", block: "start" });
-    return;
-  }
-
-  if (resetBtn) {
-    const originalText = resetBtn.textContent;
-    resetBtn.disabled = true;
-    resetBtn.textContent = "Đang reset...";
-
-    resetDevices(resetBtn.dataset.key)
-      .finally(() => {
-        resetBtn.disabled = false;
-        resetBtn.textContent = originalText;
-      });
-    return;
-  }
-
-  if (lockBtn) {
-    if (!lockBtn.disabled) {
-      toggleKeyLock(lockBtn.closest("tr"));
-    }
-    return;
-  }
-
-  if (deleteBtn) {
-    deleteKey(deleteBtn.dataset.key);
-  }
-});
-
-deviceTable?.addEventListener("click", (event) => {
-  const deleteDeviceBtn = event.target.closest(".delete-device");
-  if (deleteDeviceBtn) {
-    deleteDevice(deleteDeviceBtn.dataset.key, deleteDeviceBtn.dataset.device);
-  }
-});
+previewSettingsBtn?.addEventListener(
+  "click",
+  () => window.open("index.html", "_blank")
+);
 
 adminLogoutTop?.addEventListener("click", () => {
-  sessionStorage.removeItem("aimlockAdminPassword");
+  localStorage.removeItem("aimlockAdminPassword");
   adminPass = "";
-  adminContent.classList.add("hidden");
-  loginBox.classList.remove("hidden");
-  adminPassword.value = "";
+  adminContent?.classList.add("hidden");
+  loginBox?.classList.remove("hidden");
+  if (adminPassword) adminPassword.value = "";
+  if (loginStatus) loginStatus.textContent = "";
 });
 
 if (adminPass) {
-  adminPassword.value = adminPass;
+  if (adminPassword) adminPassword.value = adminPass;
   loginAdmin();
 }
 
 loadStats();
 setInterval(loadStats, 4000);
-
-window.addEventListener("admin:new-key-mode", () => {
-  editingKeyStatus = "active";
-});
