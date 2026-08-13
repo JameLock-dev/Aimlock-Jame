@@ -1,6 +1,6 @@
 const API_BASE_URL = String(window.AIMLOCK_API_BASE_URL || "").trim().replace(/\/+$/, "");
 const IS_GITHUB_PAGES = /github\.io$/i.test(location.hostname);
-const STATIC_PREVIEW_MODE = IS_GITHUB_PAGES && !API_BASE_URL;
+const STATIC_PREVIEW_MODE = false;
 const MAX_SETTINGS_PAYLOAD_BYTES = 900 * 1024; // 900 KB, thấp hơn giới hạn server để tránh lỗi 413.
 
 const loginBox = document.getElementById("loginBox");
@@ -762,28 +762,31 @@ async function loginAdmin() {
 
   if (!adminPass) {
     loginStatus.textContent = "Vui lòng nhập mật khẩu admin.";
+    loginStatus.style.color = "#ef4444";
     return;
   }
 
   try {
-    // Xác thực mật khẩu trực tiếp với Railway trước khi mở dashboard.
     await fetchJson("/api/admin/auth", {
       method: "POST",
       headers: headers(),
       body: JSON.stringify({})
     });
 
+    sessionStorage.setItem("aimlockAdminPassword", adminPass);
     await loadKeys();
     await loadSettings();
 
-    sessionStorage.setItem("aimlockAdminPassword", adminPass);
     loginBox.classList.add("hidden");
     adminContent.classList.remove("hidden");
     loginStatus.textContent = "";
   } catch (error) {
     sessionStorage.removeItem("aimlockAdminPassword");
     adminPass = "";
+    adminContent.classList.add("hidden");
+    loginBox.classList.remove("hidden");
     loginStatus.textContent = error.message || "Sai mật khẩu admin.";
+    loginStatus.style.color = "#ef4444";
   }
 }
 
