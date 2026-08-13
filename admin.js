@@ -125,7 +125,7 @@ function toInputDateTime(value) {
 function demoKeys() {
   return [
     {
-      key: "Admin11",
+      key: "",
       type: "admin",
       expire: "2099-12-31T23:59:59.000Z",
       slotUsed: 1,
@@ -133,7 +133,7 @@ function demoKeys() {
       status: "active"
     },
     {
-      key: "JAME-FREE-KEY",
+      key: "",
       type: "vip",
       expire: new Date(Date.now() + 30 * 86400000).toISOString(),
       slotUsed: 1,
