@@ -52,7 +52,7 @@ const loadSettingsBtn = document.getElementById("loadSettingsBtn");
 const previewSettingsBtn = document.getElementById("previewSettingsBtn");
 const settingsStatus = document.getElementById("settingsStatus");
 
-let adminPass = localStorage.getItem("aimlockAdminPassword") || "";
+let adminPass = sessionStorage.getItem("aimlockAdminPassword") || "";
 let selectedDeviceKey = "";
 let editingKeyStatus = "active";
 
@@ -766,13 +766,25 @@ async function loginAdmin() {
   }
 
   try {
+    await fetchJson("/api/admin/auth", {
+      method: "POST",
+      headers: headers(),
+      body: JSON.stringify({})
+    });
+
     await loadKeys();
     await loadSettings();
-    localStorage.setItem("aimlockAdminPassword", adminPass);
-    loginBox.classList.add("hidden");
-    adminContent.classList.remove("hidden");
+    sessionStorage.setItem("aimlockAdminPassword", adminPass);
+    loginBox?.classList.add("hidden");
+    adminContent?.classList.remove("hidden");
+    if (loginStatus) loginStatus.textContent = "";
   } catch (error) {
-    loginStatus.textContent = error.message || "Sai mật khẩu admin.";
+    sessionStorage.removeItem("aimlockAdminPassword");
+    adminPass = "";
+    if (loginStatus) {
+      loginStatus.textContent = error.message || "Sai mật khẩu admin.";
+      loginStatus.style.color = "#ef4444";
+    }
   }
 }
 
@@ -943,7 +955,7 @@ deviceTable?.addEventListener("click", (event) => {
 });
 
 adminLogoutTop?.addEventListener("click", () => {
-  localStorage.removeItem("aimlockAdminPassword");
+  sessionStorage.removeItem("aimlockAdminPassword");
   adminPass = "";
   adminContent.classList.add("hidden");
   loginBox.classList.remove("hidden");

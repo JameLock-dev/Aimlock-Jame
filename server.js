@@ -20,6 +20,7 @@ const DATABASE_URL = String(
 ).trim();
 
 const DEFAULT_KEY = String(process.env.DEFAULT_KEY || "").trim();
+const ADMIN_PASSWORD = String(process.env.ADMIN_PASSWORD || "").trim();
 const FORBIDDEN_KEYS = new Set(["admin11"]);
 
 function isForbiddenKey(value) {
@@ -206,7 +207,22 @@ function requireDatabase(req, res, next) {
 }
 
 function requireAdmin(req, res, next) {
-  // Đã tắt xác thực mật khẩu admin.
+  const provided = String(req.headers["x-admin-password"] || "").trim();
+
+  if (!ADMIN_PASSWORD) {
+    return res.status(503).json({
+      ok: false,
+      message: "ADMIN_PASSWORD chưa được cấu hình trên Railway."
+    });
+  }
+
+  if (!provided || provided !== ADMIN_PASSWORD) {
+    return res.status(401).json({
+      ok: false,
+      message: "Sai mật khẩu admin."
+    });
+  }
+
   next();
 }
 
@@ -817,6 +833,23 @@ app.post("/api/verify-key", async (req, res) => {
   } finally {
     releaseDbClient(client, destroyClient);
   }
+});
+
+app.post("/api/admin/auth", (req, res) => {
+  const provided = String(req.headers["x-admin-password"] || "").trim();
+
+  if (!ADMIN_PASSWORD) {
+    return res.status(503).json({
+      ok: false,
+      message: "ADMIN_PASSWORD chưa được cấu hình trên Railway."
+    });
+  }
+
+  if (!provided || provided !== ADMIN_PASSWORD) {
+    return res.status(401).json({ ok: false, message: "Sai mật khẩu admin." });
+  }
+
+  return res.json({ ok: true, message: "Xác thực admin thành công." });
 });
 
 app.get("/api/admin/keys", requireDatabase, requireAdmin, async (req, res) => {
