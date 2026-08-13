@@ -22,6 +22,7 @@ const DATABASE_URL = String(
 
 const DEFAULT_KEY = String(process.env.DEFAULT_KEY || "").trim();
 const ADMIN_PASSWORD = String(process.env.ADMIN_PASSWORD || "").trim();
+const FORBIDDEN_ADMIN_PASSWORDS = new Set(["admin11"]);
 
 function isRailwayInternalUrl(url) {
   return /railway\.internal/i.test(url || "");
@@ -212,6 +213,14 @@ function requireAdmin(req, res, next) {
     });
   }
 
+  if (FORBIDDEN_ADMIN_PASSWORDS.has(ADMIN_PASSWORD.toLowerCase())) {
+    return res.status(503).json({
+      ok: false,
+      message: "Mật khẩu Admin11 đã bị vô hiệu hóa. Hãy đặt ADMIN_PASSWORD mới trên Railway rồi Redeploy.",
+      code: "ADMIN_PASSWORD_FORBIDDEN"
+    });
+  }
+
   const provided =
     String(req.headers["x-admin-password"] || "").trim() ||
     String(req.body?.adminPassword || "").trim();
@@ -335,21 +344,12 @@ async function initDb() {
     ON CONFLICT (id) DO NOTHING;
   `);
 
-  // Dọn toàn bộ admin-key cũ và Admin11 khỏi database.
-  // Admin chỉ được xác thực bằng ADMIN_PASSWORD qua /api/admin/auth;
-  // tuyệt đối không để Admin11 hoạt động như một key của app.
-  await pool.query(`
-    DELETE FROM keys
-    WHERE LOWER(COALESCE(type, '')) = 'admin'
-       OR LOWER(BTRIM(key_value)) = 'admin11';
-  `);
-
   // Dọn key rỗng do các bản server cũ tạo ra khi DEFAULT_KEY chưa được đặt.
   // Các thiết bị liên quan sẽ tự xóa nhờ khóa ngoại ON DELETE CASCADE.
   await pool.query(`DELETE FROM keys WHERE BTRIM(key_value) = '';`);
 
   // Chỉ tạo key mẫu khi Railway có biến DEFAULT_KEY hợp lệ.
-  if (DEFAULT_KEY) {
+  if (DEFAULT_KEY && DEFAULT_KEY.toLowerCase() !== "admin11") {
     await pool.query(
       `
       INSERT INTO keys (key_value, type, expire, slot_used, slot_limit, status)
@@ -359,6 +359,13 @@ async function initDb() {
       [DEFAULT_KEY]
     );
   }
+
+  // Xóa toàn bộ admin-key cũ và vô hiệu hóa Admin11 khỏi app.
+  await pool.query(`
+    DELETE FROM keys
+    WHERE LOWER(COALESCE(type, '')) = 'admin'
+       OR LOWER(BTRIM(key_value)) = 'admin11';
+  `);
 
   console.log("✅ Postgres connected & database ready");
 }
@@ -755,6 +762,10 @@ app.post("/api/verify-key", async (req, res) => {
     return res.status(400).json({ ok: false, message: "Vui lòng nhập Password / Key." });
   }
 
+  // Admin11 tuyệt đối không còn là key hợp lệ của app.
+  if (input.toLowerCase() === "admin11") {
+    return res.status(403).json({ ok: false, message: "Key không hợp lệ hoặc đã bị vô hiệu hóa." });
+  }
 
   if (!pool || !DATABASE_URL) {
     return res.status(500).json({
