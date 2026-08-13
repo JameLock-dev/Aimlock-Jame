@@ -852,23 +852,18 @@
       if (span) span.textContent = defaultLabel;
     }
 
-    // Key demo/admin vẫn hoạt động khi Railway tạm lỗi.
-    if (value === "Admin11" || value === "JAME-FREE-KEY") {
-      var demo = {
-        key: value,
-        type: value === "Admin11" ? "ADMIN" : "FREE",
-        expire: value === "Admin11"
-          ? "2099-12-31T23:59:59.000Z"
-          : new Date(Date.now() + 30 * 86400000).toISOString(),
-        slotUsed: 1,
-        slotLimit: value === "Admin11" ? 100 : 2,
-        status: "active"
-      };
-
-      saveSession(demo, value);
+    // Admin11 đã bị vô hiệu hóa hoàn toàn. Không có fallback/demo nào được phép mở app.
+    if (value.toLowerCase() === "admin11") {
+      safeRemove("aimlock_auth");
+      safeRemove("aimlock_user");
+      safeRemove("aimlock_active_key");
+      safeRemove("aimlock_key_info");
       finishButton();
-      enterApp();
-      showToast("Kích hoạt thành công.", "success");
+      if (status) {
+        status.textContent = "Key không hợp lệ hoặc đã bị vô hiệu hóa.";
+        status.style.color = "#ff6e7f";
+      }
+      showToast("Admin11 đã bị vô hiệu hóa.", "error");
       return;
     }
 
@@ -1283,6 +1278,18 @@
     });
 
     applySavedSettings();
+
+    // Xóa session cũ nếu trước đây người dùng đã đăng nhập bằng Admin11.
+    var storedActiveKey = safeGet("aimlock_active_key", "");
+    var storedKeyInfo = parseJSON(safeGet("aimlock_key_info", "{}"), {});
+    var storedKeyName = String(storedKeyInfo.key || storedActiveKey || "").trim().toLowerCase();
+    if (storedKeyName === "admin11") {
+      safeRemove("aimlock_auth");
+      safeRemove("aimlock_user");
+      safeRemove("aimlock_active_key");
+      safeRemove("aimlock_key_info");
+    }
+
     applyPageClasses(isAuthenticated());
 
     if (isAuthenticated()) {

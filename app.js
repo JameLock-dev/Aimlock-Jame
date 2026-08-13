@@ -31,25 +31,7 @@ function getRuntimeAppVersion() {
 
 
 
-const VALID_KEYS = ["Admin11", "JAME-FREE-KEY"];
-const DEMO_KEYS = {
-  "Admin11": {
-    key: "ADMIN",
-    type: "admin",
-    expire: "2099-12-31T23:59:59.000Z",
-    slotUsed: 1,
-    slotLimit: 1,
-    status: "active"
-  },
-  "JAME-FREE-KEY": {
-    key: "JAME-FREE-KEY",
-    type: "FREE",
-    expire: new Date(Date.now() + 30 * 86400000).toISOString(),
-    slotUsed: 1,
-    slotLimit: 2,
-    status: "active"
-  }
-};
+const FORBIDDEN_KEYS = new Set(["admin11"]);
 
 const toastEl = document.getElementById("toast");
 
@@ -110,8 +92,6 @@ async function fetchJson(path, options = {}) {
 }
 
 function createStaticKey(inputValue) {
-  if (DEMO_KEYS[inputValue]) return DEMO_KEYS[inputValue];
-
   return {
     key: inputValue || "LOCAL-PREVIEW-KEY",
     type: "vip",
@@ -444,24 +424,19 @@ if (document.getElementById("loginScreen") && !isAimlockAuthenticated()) {
     try {
       let data;
 
-      if (STATIC_PREVIEW_MODE) {
-        data = {
-          ok: true,
-          message: "Kích hoạt Thành công AIMLOCK JAME.",
-          key: createStaticKey(value)
-        };
-      } else {
-        try {
-          data = await fetchJson("/api/verify-key", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ key: value, deviceId: getDeviceId() })
-          });
-        } catch (apiError) {
-          if (!VALID_KEYS.includes(value)) throw apiError;
-          data = { ok: true, message: "Key demo hợp lệ.", key: DEMO_KEYS[value] };
-        }
+      if (FORBIDDEN_KEYS.has(value.toLowerCase())) {
+        throw new Error("Key không hợp lệ hoặc đã bị vô hiệu hóa.");
       }
+
+      if (STATIC_PREVIEW_MODE) {
+        throw new Error("GitHub Pages chưa cấu hình Railway API.");
+      }
+
+      data = await fetchJson("/api/verify-key", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key: value, deviceId: getDeviceId() })
+      });
 
       saveSessionFromKey(data, value);
       loginStatus.innerHTML = '<span class="dot"></span>Kích hoạt Thành công AIMLOCK JAME';

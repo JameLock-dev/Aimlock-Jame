@@ -1,6 +1,5 @@
 require("dotenv").config();
 
-const crypto = require("crypto");
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
@@ -21,8 +20,11 @@ const DATABASE_URL = String(
 ).trim();
 
 const DEFAULT_KEY = String(process.env.DEFAULT_KEY || "").trim();
-const ADMIN_PASSWORD = String(process.env.ADMIN_PASSWORD || "").trim();
-const FORBIDDEN_ADMIN_PASSWORDS = new Set(["admin11"]);
+const FORBIDDEN_KEYS = new Set(["admin11"]);
+
+function isForbiddenKey(value) {
+  return FORBIDDEN_KEYS.has(String(value || "").trim().toLowerCase());
+}
 
 function isRailwayInternalUrl(url) {
   return /railway\.internal/i.test(url || "");
@@ -204,54 +206,7 @@ function requireDatabase(req, res, next) {
 }
 
 function requireAdmin(req, res, next) {
-  // Không bao giờ mở API quản trị nếu Railway chưa cấu hình ADMIN_PASSWORD.
-  if (!ADMIN_PASSWORD) {
-    return res.status(503).json({
-      ok: false,
-      message: "ADMIN_PASSWORD chưa được cấu hình trên Railway. Hãy thêm biến ADMIN_PASSWORD rồi Redeploy.",
-      code: "ADMIN_PASSWORD_NOT_CONFIGURED"
-    });
-  }
-
-  if (FORBIDDEN_ADMIN_PASSWORDS.has(ADMIN_PASSWORD.toLowerCase())) {
-    return res.status(503).json({
-      ok: false,
-      message: "Mật khẩu Admin11 đã bị vô hiệu hóa. Hãy đặt ADMIN_PASSWORD mới trên Railway rồi Redeploy.",
-      code: "ADMIN_PASSWORD_FORBIDDEN"
-    });
-  }
-
-  const provided =
-    String(req.headers["x-admin-password"] || "").trim() ||
-    String(req.body?.adminPassword || "").trim();
-
-  if (!provided) {
-    return res.status(401).json({
-      ok: false,
-      message: "Thiếu mật khẩu admin.",
-      code: "ADMIN_AUTH_REQUIRED"
-    });
-  }
-
-  // So sánh bằng digest cố định để tránh timing leak do độ dài chuỗi.
-  const expectedDigest = crypto
-    .createHash("sha256")
-    .update(ADMIN_PASSWORD, "utf8")
-    .digest();
-
-  const providedDigest = crypto
-    .createHash("sha256")
-    .update(provided, "utf8")
-    .digest();
-
-  if (!crypto.timingSafeEqual(expectedDigest, providedDigest)) {
-    return res.status(401).json({
-      ok: false,
-      message: "Mật khẩu admin không đúng.",
-      code: "ADMIN_AUTH_INVALID"
-    });
-  }
-
+  // Đã tắt xác thực mật khẩu admin.
   next();
 }
 
@@ -344,12 +299,17 @@ async function initDb() {
     ON CONFLICT (id) DO NOTHING;
   `);
 
-  // Dọn key rỗng do các bản server cũ tạo ra khi DEFAULT_KEY chưa được đặt.
+  // Dọn key rỗng và vô hiệu hóa Admin11 còn sót từ các bản server cũ.
   // Các thiết bị liên quan sẽ tự xóa nhờ khóa ngoại ON DELETE CASCADE.
-  await pool.query(`DELETE FROM keys WHERE BTRIM(key_value) = '';`);
+  await pool.query(`
+    DELETE FROM keys
+    WHERE BTRIM(key_value) = ''
+       OR LOWER(BTRIM(key_value)) = 'admin11'
+       OR LOWER(COALESCE(type, '')) = 'admin';
+  `);
 
-  // Chỉ tạo key mẫu khi Railway có biến DEFAULT_KEY hợp lệ.
-  if (DEFAULT_KEY && DEFAULT_KEY.toLowerCase() !== "admin11") {
+  // Chỉ tạo key mẫu khi Railway có biến DEFAULT_KEY hợp lệ và không phải Admin11.
+  if (DEFAULT_KEY && !isForbiddenKey(DEFAULT_KEY)) {
     await pool.query(
       `
       INSERT INTO keys (key_value, type, expire, slot_used, slot_limit, status)
@@ -359,13 +319,6 @@ async function initDb() {
       [DEFAULT_KEY]
     );
   }
-
-  // Xóa toàn bộ admin-key cũ và vô hiệu hóa Admin11 khỏi app.
-  await pool.query(`
-    DELETE FROM keys
-    WHERE LOWER(COALESCE(type, '')) = 'admin'
-       OR LOWER(BTRIM(key_value)) = 'admin11';
-  `);
 
   console.log("✅ Postgres connected & database ready");
 }
@@ -665,14 +618,6 @@ app.get("/api/stats", requireDatabase, async (req, res) => {
 
 
 
-// Xác thực Admin. Frontend gọi route này ngay khi đăng nhập.
-app.post("/api/admin/auth", requireAdmin, (req, res) => {
-  return res.json({
-    ok: true,
-    message: "Đăng nhập admin thành công."
-  });
-});
-
 // AIMLOCK APP SETTINGS API - FIX V2
 // APK/WebView đọc settings công khai.
 app.get("/api/app-settings", async (req, res) => {
@@ -697,7 +642,7 @@ app.get("/api/app-settings", async (req, res) => {
   }
 });
 
-// Admin lưu settings. Yêu cầu ADMIN_PASSWORD.
+// Admin lưu settings. Không yêu cầu mật khẩu.
 app.post("/api/app-settings", requireAdmin, async (req, res) => {
   try {
     const saved = await saveAppSettingsToDb(req.body || {});
@@ -716,7 +661,7 @@ app.post("/api/app-settings", requireAdmin, async (req, res) => {
   }
 });
 
-// Giữ route cũ để admin.js cũ cũng chạy; vẫn yêu cầu ADMIN_PASSWORD.
+// Giữ route cũ để admin.js cũ cũng chạy.
 app.get("/api/admin/settings", requireAdmin, async (req, res) => {
   try {
     const settings = await readAppSettingsFromDb();
@@ -762,8 +707,8 @@ app.post("/api/verify-key", async (req, res) => {
     return res.status(400).json({ ok: false, message: "Vui lòng nhập Password / Key." });
   }
 
-  // Admin11 tuyệt đối không còn là key hợp lệ của app.
-  if (input.toLowerCase() === "admin11") {
+  // Chặn tuyệt đối Admin11 ở server, kể cả khi frontend bị cache hoặc còn mã cũ.
+  if (isForbiddenKey(input)) {
     return res.status(403).json({ ok: false, message: "Key không hợp lệ hoặc đã bị vô hiệu hóa." });
   }
 
@@ -909,6 +854,10 @@ app.post("/api/admin/keys", requireDatabase, requireAdmin, async (req, res) => {
 
   if (!input) {
     return res.status(400).json({ ok: false, message: "Thiếu key." });
+  }
+
+  if (isForbiddenKey(input) || String(type).trim().toLowerCase() === "admin") {
+    return res.status(403).json({ ok: false, message: "Không được tạo hoặc sử dụng key Admin11/admin." });
   }
 
   let client = null;
@@ -1186,6 +1135,5 @@ initDb()
     app.listen(PORT, () => {
       console.log(`✅ AIMLOCK JAME server running on port ${PORT}`);
       console.log(`✅ Database URL mode: ${DATABASE_URL ? (isRailwayInternalUrl(DATABASE_URL) ? "internal/private" : "public/external") : "missing"}`);
-      console.log(`🔐 Admin password: ${ADMIN_PASSWORD ? "configured" : "MISSING - admin API locked"}`);
     });
   });

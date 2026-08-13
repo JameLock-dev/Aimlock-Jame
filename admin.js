@@ -52,7 +52,7 @@ const loadSettingsBtn = document.getElementById("loadSettingsBtn");
 const previewSettingsBtn = document.getElementById("previewSettingsBtn");
 const settingsStatus = document.getElementById("settingsStatus");
 
-let adminPass = sessionStorage.getItem("aimlockAdminPassword") || "";
+let adminPass = localStorage.getItem("aimlockAdminPassword") || "";
 let selectedDeviceKey = "";
 let editingKeyStatus = "active";
 
@@ -766,23 +766,12 @@ async function loginAdmin() {
   }
 
   try {
-    // Xác thực mật khẩu trực tiếp với Railway trước khi mở dashboard.
-    await fetchJson("/api/admin/auth", {
-      method: "POST",
-      headers: headers(),
-      body: JSON.stringify({})
-    });
-
     await loadKeys();
     await loadSettings();
-
-    sessionStorage.setItem("aimlockAdminPassword", adminPass);
+    localStorage.setItem("aimlockAdminPassword", adminPass);
     loginBox.classList.add("hidden");
     adminContent.classList.remove("hidden");
-    loginStatus.textContent = "";
   } catch (error) {
-    sessionStorage.removeItem("aimlockAdminPassword");
-    adminPass = "";
     loginStatus.textContent = error.message || "Sai mật khẩu admin.";
   }
 }
@@ -954,7 +943,7 @@ deviceTable?.addEventListener("click", (event) => {
 });
 
 adminLogoutTop?.addEventListener("click", () => {
-  sessionStorage.removeItem("aimlockAdminPassword");
+  localStorage.removeItem("aimlockAdminPassword");
   adminPass = "";
   adminContent.classList.add("hidden");
   loginBox.classList.remove("hidden");
