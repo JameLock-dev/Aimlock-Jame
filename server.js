@@ -1,5 +1,6 @@
 require("dotenv").config();
 
+const crypto = require("crypto");
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
@@ -20,6 +21,7 @@ const DATABASE_URL = String(
 ).trim();
 
 const DEFAULT_KEY = String(process.env.DEFAULT_KEY || "").trim();
+const ADMIN_PASSWORD = String(process.env.ADMIN_PASSWORD || "").trim();
 
 function isRailwayInternalUrl(url) {
   return /railway\.internal/i.test(url || "");
@@ -201,7 +203,46 @@ function requireDatabase(req, res, next) {
 }
 
 function requireAdmin(req, res, next) {
-  // Đã tắt xác thực mật khẩu admin.
+  // Không bao giờ mở API quản trị nếu Railway chưa cấu hình ADMIN_PASSWORD.
+  if (!ADMIN_PASSWORD) {
+    return res.status(503).json({
+      ok: false,
+      message: "ADMIN_PASSWORD chưa được cấu hình trên Railway. Hãy thêm biến ADMIN_PASSWORD rồi Redeploy.",
+      code: "ADMIN_PASSWORD_NOT_CONFIGURED"
+    });
+  }
+
+  const provided =
+    String(req.headers["x-admin-password"] || "").trim() ||
+    String(req.body?.adminPassword || "").trim();
+
+  if (!provided) {
+    return res.status(401).json({
+      ok: false,
+      message: "Thiếu mật khẩu admin.",
+      code: "ADMIN_AUTH_REQUIRED"
+    });
+  }
+
+  // So sánh bằng digest cố định để tránh timing leak do độ dài chuỗi.
+  const expectedDigest = crypto
+    .createHash("sha256")
+    .update(ADMIN_PASSWORD, "utf8")
+    .digest();
+
+  const providedDigest = crypto
+    .createHash("sha256")
+    .update(provided, "utf8")
+    .digest();
+
+  if (!crypto.timingSafeEqual(expectedDigest, providedDigest)) {
+    return res.status(401).json({
+      ok: false,
+      message: "Mật khẩu admin không đúng.",
+      code: "ADMIN_AUTH_INVALID"
+    });
+  }
+
   next();
 }
 
@@ -608,6 +649,14 @@ app.get("/api/stats", requireDatabase, async (req, res) => {
 
 
 
+// Xác thực Admin. Frontend gọi route này ngay khi đăng nhập.
+app.post("/api/admin/auth", requireAdmin, (req, res) => {
+  return res.json({
+    ok: true,
+    message: "Đăng nhập admin thành công."
+  });
+});
+
 // AIMLOCK APP SETTINGS API - FIX V2
 // APK/WebView đọc settings công khai.
 app.get("/api/app-settings", async (req, res) => {
@@ -632,7 +681,7 @@ app.get("/api/app-settings", async (req, res) => {
   }
 });
 
-// Admin lưu settings. Không yêu cầu mật khẩu.
+// Admin lưu settings. Yêu cầu ADMIN_PASSWORD.
 app.post("/api/app-settings", requireAdmin, async (req, res) => {
   try {
     const saved = await saveAppSettingsToDb(req.body || {});
@@ -651,7 +700,7 @@ app.post("/api/app-settings", requireAdmin, async (req, res) => {
   }
 });
 
-// Giữ route cũ để admin.js cũ cũng chạy.
+// Giữ route cũ để admin.js cũ cũng chạy; vẫn yêu cầu ADMIN_PASSWORD.
 app.get("/api/admin/settings", requireAdmin, async (req, res) => {
   try {
     const settings = await readAppSettingsFromDb();
@@ -1117,5 +1166,6 @@ initDb()
     app.listen(PORT, () => {
       console.log(`✅ AIMLOCK JAME server running on port ${PORT}`);
       console.log(`✅ Database URL mode: ${DATABASE_URL ? (isRailwayInternalUrl(DATABASE_URL) ? "internal/private" : "public/external") : "missing"}`);
+      console.log(`🔐 Admin password: ${ADMIN_PASSWORD ? "configured" : "MISSING - admin API locked"}`);
     });
   });
