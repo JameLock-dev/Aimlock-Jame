@@ -343,8 +343,8 @@ if (document.getElementById("loginScreen") && !isAimlockAuthenticated()) {
   async function loadPublicAppSettings() {
     const sources = [];
 
-    // Luôn ưu tiên server API để Admin bật Bảo trì sẽ tác động ngay.
-    // File tĩnh chỉ là phương án dự phòng khi không có API.
+    // Luôn ưu tiên server để Admin bật bảo trì sẽ áp dụng ngay.
+    // File tĩnh chỉ là dự phòng khi chạy offline/GitHub Pages không có API.
     sources.push({ type: "api", url: "/api/app-settings?t=" + Date.now() });
     sources.push({ type: "static", url: "app-settings.json" });
 
