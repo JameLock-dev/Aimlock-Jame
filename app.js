@@ -1038,11 +1038,7 @@ if (document.getElementById("mainApp")) {
     if (updateList) updateList.innerHTML = buildUpdateItemsMarkup(data.items || []);
     renderNotificationCenter(data, hasUnreadUpdate);
 
-    if (hasUnreadUpdate) {
-      setTimeout(() => {
-        showToast(`Có bản cập nhật mới ${data.version || ""}`.trim(), "success");
-      }, 600);
-    }
+    // Đã tắt thông báo toast "Có bản cập nhật mới V1"
   }
 
   async function loadLatestUpdates() {
