@@ -344,10 +344,9 @@ if (document.getElementById("loginScreen") && !isAimlockAuthenticated()) {
     const sources = [];
 
     // Ưu tiên server API. Khi app chạy cùng Railway, đường dẫn này hoạt động ngay.
-    sources.push({ type: "api", url: "/api/app-settings" });
+    sources.push({ type: "api", url: "/api/app-settings?t=" + Date.now() });
 
-    // Khi chạy GitHub Pages mà chưa cấu hình Railway API, dùng fallback tĩnh để vẫn test được popup.
-    sources.push({ type: "static", url: "app-settings.json" });
+    // Không dùng cấu hình tĩnh để tránh WebView/Chrome lấy dữ liệu cũ.
 
     for (const source of sources) {
       try {
