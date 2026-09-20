@@ -1,0 +1,1028 @@
+```
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AIMLOCK JAME - Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+
+  <style id="ob55SensitivityStyles">
+    /* OB55 Sensitivity Center - isolated styles, không ghi đè giao diện cũ */
+    .ob55-open-btn{
+      min-width:72px;border:1px solid rgba(255,196,65,.38);border-radius:12px;
+      padding:10px 12px;background:linear-gradient(180deg,rgba(255,190,50,.18),rgba(255,105,25,.08));
+      color:#ffd46a;font-weight:800;letter-spacing:.5px;cursor:pointer;
+    }
+    .ob55-open-btn:active{transform:scale(.97)}
+    .ob55-badge-v11{
+      display:grid;place-items:center;font-size:13px;font-weight:900;color:#ffe18a;
+      text-shadow:0 0 12px rgba(255,183,41,.65);
+    }
+
+    .ob55-modal{position:fixed;inset:0;z-index:9999;display:none}
+    .ob55-modal.is-open{display:block}
+    .ob55-backdrop{
+      position:absolute;inset:0;background:rgba(1,4,10,.78);
+      backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    }
+    .ob55-card{
+      position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+      width:min(92vw,520px);max-height:88vh;overflow:auto;
+      border:1px solid rgba(255,196,70,.22);border-radius:22px;
+      background:
+        radial-gradient(circle at 85% 0%,rgba(255,174,0,.12),transparent 32%),
+        linear-gradient(180deg,#111722 0%,#080c13 100%);
+      box-shadow:0 24px 80px rgba(0,0,0,.62),0 0 36px rgba(255,170,0,.08);
+      padding:18px;color:#f5f7fb;
+    }
+    .ob55-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
+    .ob55-kicker{display:block;color:#ffcb55;font-size:10px;font-weight:900;letter-spacing:1.7px;margin-bottom:5px}
+    .ob55-head h3{margin:0;font-size:22px}
+    .ob55-head p{margin:5px 0 0;color:#8e99aa;font-size:12px}
+    .ob55-close{
+      width:36px;height:36px;border-radius:12px;border:1px solid rgba(255,255,255,.09);
+      background:rgba(255,255,255,.045);color:#fff;font-size:22px;cursor:pointer
+    }
+
+    .ob55-picked{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:14px;border:1px solid rgba(255,196,70,.16);border-radius:16px;
+      background:rgba(255,255,255,.035);margin-bottom:16px
+    }
+    .ob55-picked small{display:block;color:#7f8a99;font-size:10px;text-transform:uppercase;letter-spacing:1px}
+    .ob55-picked strong{display:block;margin-top:3px;font-size:15px}
+    .ob55-picked p{margin:3px 0 0;color:#9aa5b5;font-size:11px}
+    .ob55-chip{
+      flex:0 0 auto;padding:7px 9px;border-radius:10px;color:#171006;background:#ffcc58;
+      font-size:11px;font-weight:950;box-shadow:0 0 18px rgba(255,194,62,.18)
+    }
+
+    .ob55-label{display:block;margin:15px 0 8px;font-size:11px;color:#b9c2cf;font-weight:800;letter-spacing:.6px}
+    .ob55-brand-grid,.ob55-preset-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+    .ob55-brand,.ob55-preset{
+      border:1px solid rgba(255,255,255,.08);border-radius:11px;background:#121924;color:#b6c0ce;
+      padding:9px 6px;font-size:11px;font-weight:800;cursor:pointer
+    }
+    .ob55-brand.active,.ob55-preset.active{
+      color:#191105;border-color:#e6b84a;background:linear-gradient(180deg,#ffd86e,#e9a928);
+      box-shadow:0 5px 18px rgba(236,170,37,.13)
+    }
+    .ob55-search{
+      width:100%;box-sizing:border-box;border:1px solid rgba(255,255,255,.09);border-radius:12px;
+      background:#0b111a;color:#fff;padding:11px 12px;outline:none
+    }
+    .ob55-search:focus{border-color:rgba(255,196,70,.48)}
+    .ob55-model-list{
+      margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:7px;
+      max-height:150px;overflow:auto;padding-right:2px
+    }
+    .ob55-model{
+      text-align:left;border:1px solid rgba(255,255,255,.07);border-radius:11px;background:#101722;
+      color:#c6ced9;padding:9px 10px;font-size:11px;cursor:pointer
+    }
+    .ob55-model.active{border-color:#e2b84d;color:#ffdb7d;background:rgba(225,170,47,.09)}
+
+    .ob55-values{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .ob55-value{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      padding:11px;border-radius:12px;background:#0e151f;border:1px solid rgba(255,255,255,.07)
+    }
+    .ob55-value span{font-size:11px;color:#929dad}
+    .ob55-value b{font-size:17px;color:#ffd15d}
+    .ob55-note{
+      margin:12px 0 0;padding:10px 11px;border-radius:11px;
+      background:rgba(55,137,255,.07);border:1px solid rgba(83,153,255,.11);
+      color:#8795a8;font-size:10px;line-height:1.5
+    }
+    .ob55-actions{display:flex;gap:8px;margin-top:12px}
+    .ob55-copy,.ob55-reset{
+      flex:1;border-radius:12px;padding:11px 10px;font-weight:900;cursor:pointer
+    }
+    .ob55-copy{border:1px solid #e7b743;background:linear-gradient(180deg,#ffd665,#e8a727);color:#1c1305}
+    .ob55-reset{border:1px solid rgba(255,255,255,.09);background:#111924;color:#d5dce5}
+    .ob55-copy-state{min-height:16px;text-align:center;color:#73d9a3;font-size:10px;margin-top:7px}
+
+    @media (max-width:430px){
+      .ob55-card{width:94vw;padding:15px;border-radius:19px}
+      .ob55-brand-grid,.ob55-preset-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .ob55-values{grid-template-columns:1fr 1fr}
+    }
+  </style>
+
+</head>
+<body class="theme-dark page-dashboard page-dashboard-v11 page-dashboard-v13 page-dashboard-v14">
+  <main class="app-shell dashboard-shell-v11" id="dashboardTop">
+    <header class="topbar-v11">
+      <button class="icon-square icon-v11" id="menuBtn" type="button" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+
+      <div class="brand-center-v11">
+        <img src="logo.png" alt="AIMLOCK JAME" class="top-logo-v11" />
+        <span>PRIVATE CONTROL</span>
+      </div>
+
+      <button class="icon-square icon-v11" id="notifyBtn" type="button" aria-label="Thông báo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 17H5.5a1.5 1.5 0 0 1-1.2-2.4L6 12.5V10a6 6 0 0 1 12 0v2.5l1.7 2.1A1.5 1.5 0 0 1 18.5 17H15"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
+        <span class="notif-dot"></span>
+      </button>
+    </header>
+
+    <section class="account-card-v11 panel" id="accountSection">
+      <div class="account-glow-v11"></div>
+      <div class="avatar-orbit-v11">
+        <div class="avatar-ring-v11">
+          <img src="logo.png" alt="AIMLOCK JAME" />
+        </div>
+        <div class="online-chip-v11 pulse-v11"><span></span>ONLINE</div>
+      </div>
+
+      <div class="account-copy-v11">
+        <span class="eyebrow-v11">Xin chào,</span>
+        <h1 id="helloName">JAME FF</h1>
+        <div class="vip-meta-v11">
+          <b id="vipPlan">VIP PRO</b>
+          <small>Hết hạn: <em id="vipExpireDate">--/--/----</em></small>
+        </div>
+        <div class="vip-progress-head-v11">
+          <span id="vipDaysText">Đang tải ngày VIP...</span>
+          <strong id="vipPercentText">0%</strong>
+        </div>
+        <div class="vip-progress-v11" aria-label="VIP progress">
+          <i id="vipProgressBar" style="width: 0%"></i>
+        </div>
+      </div>
+
+      <button class="account-key-v11 interactive" id="accountKeyBtn" data-toast="Key VIP đang hoạt động ổn định." data-toast-type="success">
+        <span>Active Slot</span>
+        <strong id="slotText">--/--</strong>
+      </button>
+    </section>
+
+
+
+    <section class="gaming-strip-v13" aria-label="Gaming status">
+      <div class="gaming-chip-v13">
+        <span class="status-lamp-v13"></span>
+        <b>CORE ONLINE</b>
+        <small>Secure session</small>
+      </div>
+      <div class="gaming-chip-v13">
+        <span class="status-lamp-v13 gold"></span>
+        <b>VIP BOOST</b>
+        <small>Priority mode</small>
+      </div>
+      <div class="gaming-chip-v13">
+        <span class="status-lamp-v13 red"></span>
+        <b>LOW PING</b>
+        <small>Stable link</small>
+      </div>
+    </section>
+
+    <section class="stats-grid-v11" aria-label="Dashboard statistics">
+      <button class="panel stat-card-v11 is-loading interactive" id="statOnlineCard" data-stat-card data-toast="Đang đồng bộ số người online." data-toast-type="info">
+        <div class="stat-icon-v11 pulse-v11">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 11a4 4 0 1 0-8 0"/><path d="M4 20a8 8 0 0 1 16 0"/><path d="M19 10a3 3 0 0 1 2 5"/><path d="M3 15a3 3 0 0 1 2-5"/></svg>
+        </div>
+        <div class="stat-title">ONLINE</div>
+        <div class="stat-value" id="statOnline">--</div>
+        <div class="stat-sub">Người dùng</div>
+        <span class="skeleton-line-v11"></span>
+      </button>
+
+      <button class="panel stat-card-v11 is-loading interactive" id="statActiveCard" data-stat-card data-toast="Đang kiểm tra key hoạt động." data-toast-type="info">
+        <div class="stat-icon-v11">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="12.5" r="3.5"/><path d="M11 12.5h10l-2 2 2 2-2 2"/></svg>
+        </div>
+        <div class="stat-title">ACTIVE KEYS</div>
+        <div class="stat-value" id="statActive">--</div>
+        <div class="stat-sub">Đang hoạt động</div>
+        <span class="skeleton-line-v11"></span>
+      </button>
+
+      <button class="panel stat-card-v11 is-loading interactive" id="statTodayCard" data-stat-card data-toast="Đang lấy lượt kích hoạt hôm nay." data-toast-type="info">
+        <div class="stat-icon-v11 fill">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>
+        </div>
+        <div class="stat-title">TODAY</div>
+        <div class="stat-value" id="statToday">--</div>
+        <div class="stat-sub">Lượt kích hoạt</div>
+        <span class="skeleton-line-v11"></span>
+      </button>
+    </section>
+
+    <section class="quick-actions-v11">
+      <div class="section-heading-v11">
+        <span></span><h3>QUICK ACTIONS</h3><span></span>
+      </div>
+      <div class="action-grid-v11">
+        <button class="panel action-card-v11 interactive" id="activateActionBtn" data-toast="Mở trung tâm module game." data-toast-type="success">
+          <i>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/></svg>
+          </i>
+          <b>Kích hoạt key</b>
+          <small>Unlock module game</small>
+        </button>
+        <button class="panel action-card-v11 interactive" id="renewVipBtn" data-toast="Mở bảng giá gia hạn VIP." data-toast-type="info">
+          <i>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 15 9l7 .6-5.3 4.6 1.6 6.8L12 17.4 5.7 21l1.6-6.8L2 9.6 9 9l3-7Z"/></svg>
+          </i>
+          <b>Gia hạn VIP</b>
+          <small>Xem gói VIP / bảo hành</small>
+        </button>
+        <button class="panel action-card-v11 interactive" id="supportZaloBtn" data-toast="Mở Zalo hỗ trợ 0333 635135." data-toast-type="success">
+          <i>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v8Z"/><path d="M8 9h8M8 13h5"/></svg>
+          </i>
+          <b>Hỗ trợ</b>
+          <small>Zalo 0333 635135</small>
+        </button>
+      </div>
+    </section>
+
+    <div class="section-heading-v11 modules-title-v11"><span></span><h3>MODULES</h3><span></span></div>
+
+    <section class="panel runtime-hud-v14" id="runtimeHud" aria-label="Gaming runtime status">
+      <div class="runtime-head-v14">
+        <span class="runtime-dot-v14"></span>
+        <div>
+          <b id="runtimeTitle">ENGINE STANDBY</b>
+          <small id="runtimeDetail">Chọn module để khởi chạy hiệu ứng realtime.</small>
+        </div>
+        <em id="runtimePercent">0%</em>
+      </div>
+      <div class="runtime-bar-v14"><i id="runtimeBar"></i></div>
+      <div class="runtime-log-v14" id="runtimeLog">READY › Secure gaming dashboard loaded</div>
+    </section>
+
+    <section class="feature-list-v11" id="moduleList">
+      <article class="panel feature-row-v11">
+        <div class="feature-badge-v11">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="7" width="12" height="10" rx="1.5"/><path d="M9 4v3M15 4v3M9 17v3M15 17v3M3 10h3M3 14h3M18 10h3M18 14h3"/></svg>
+        </div>
+        <div class="feature-text-v11"><h4>BOOST FPS</h4><p>Tối ưu tài nguyên nền, giữ khung hình ổn định khi combat.</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+        <button class="toggle toggle-v11" data-feature="boostram" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
+      </article>
+
+      <article class="panel feature-row-v11">
+        <div class="feature-badge-v11">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.6"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
+        </div>
+        <div class="feature-text-v11"><h4>AIMBODY PRO</h4><p>Tinh chỉnh phản hồi điều khiển, hỗ trợ cảm giác thao tác chính xác hơn.</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+        <button class="toggle toggle-v11 is-on" data-feature="aimbody" aria-pressed="true"><span class="thumb"></span><span class="label">ON</span></button>
+      </article>
+
+      <article class="panel feature-row-v11">
+        <div class="feature-badge-v11">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 7.8a5 5 0 0 0-8.2-1.5L12 7l-.6-.7a5 5 0 0 0-8.2 5.7L12 21l8.8-9a5 5 0 0 0 0-4.2Z"/><path d="M4 12h4l2-3 3 7 2-4h5"/></svg>
+        </div>
+        <div class="feature-text-v11"><h4>NHẸ TÂM</h4><p>Làm mượt phản hồi input, giảm cảm giác rung và giật khi thao tác.</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+        <button class="toggle toggle-v11" data-feature="nhetam" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
+      </article>
+
+      <article class="panel feature-row-v11">
+        <div class="feature-badge-v11">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 20 6v5c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10V6l8-3Z"/><rect x="8.5" y="11" width="7" height="5" rx="1"/><path d="M10 11V9a2 2 0 0 1 4 0v2"/></svg>
+        </div>
+        <div class="feature-text-v11"><h4>JAMELOCK</h4><p>Khóa cấu hình cá nhân và bảo vệ phiên sử dụng.</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+        <button class="toggle toggle-v11" data-feature="jamelock" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
+      </article>
+
+      <article class="panel feature-row-v11">
+        <div class="feature-badge-v11">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 20 6v5c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10V6l8-3Z"/><path d="m8.8 12.3 2.1 2.1 4.7-5"/></svg>
+        </div>
+        <div class="feature-text-v11"><h4>ANTIBAND SHIELD</h4><p>Bật Chống quét , Chống Ban Acc Từ Vip1 Đến Vip8</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+        <button class="toggle toggle-v11" data-feature="antiban" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
+      </article>
+
+      <article class="panel feature-row-v11">
+        <div class="feature-badge-v11 ff-badge-v11">FF</div>
+        <div class="feature-text-v11"><h4>REG FF</h4><p>Tối Ưu Game Và Hỗ Trợ Anh Em Kéo Đỏ</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+        <button class="toggle toggle-v11" data-feature="regff" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
+      </article>
+
+      <article class="panel feature-row-v11 ob55-feature-row" id="ob55FeatureCard">
+        <div class="feature-badge-v11 ob55-badge-v11">55</div>
+        <div class="feature-text-v11">
+          <h4>ĐỘ NHẠY OB55</h4>
+          <p>Chọn hãng, model và kiểu chơi để lấy cấu hình độ nhạy tham khảo cho thiết bị.</p>
+          <div class="feature-state-v14"><span></span><em>READY</em></div>
+        </div>
+        <button class="ob55-open-btn" type="button" data-open-ob55>MỞ</button>
+      </article>
+    </section>
+
+    <section class="panel update-banner-v11" id="updateBanner">
+      <div class="update-icon-v11">
+        <svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="60" cy="60" r="43" opacity=".2"/>
+          <path d="M28 70h18l28 17V33L46 50H28v20Z"/>
+          <path d="M81 44c10 8 10 24 0 32"/>
+          <path d="M89 34c15 13 15 39 0 52" opacity=".55"/>
+        </svg>
+      </div>
+      <div class="update-copy-v11" id="updateBannerCopy">
+        <span id="updateBannerLabel">BẢN CẬP NHẬT</span>
+        <h3 id="updateBannerTitle">AIMLOCK JAME</h3>
+        <p id="updateBannerText">Bản giao diện chính thức với VIP HUD, menu thật và trung tâm cập nhật mới.</p>
+      </div>
+      <button class="update-btn-v11 interactive" id="updateNowBtn" data-toast="Đang mở trung tâm cập nhật mới." data-toast-type="success">XEM NGAY ›</button>
+    </section>
+
+    <section class="community-card-v11" id="communitySection">
+      <h3>CỘNG ĐỒNG</h3>
+      <div class="quick-links two-col">
+        <a class="quick-link community-link-v11 tiktok-link-v29" href="https://www.tiktok.com/@jame.ff.11" target="_blank" rel="noopener">
+          <span class="social-mark tiktok-mark" aria-hidden="true">
+            <svg viewBox="0 0 64 64" focusable="false" aria-hidden="true">
+              <path class="tt-shadow-cyan" d="M39 11c2.2 5.6 6.8 10.5 12.8 13.1v8.5c-4.9-.2-9.4-1.7-13-4.2v12.8c0 8.8-7.2 16-16 16s-16-7.2-16-16 7.2-16 16-16c1.3 0 2.5.2 3.7.4v8.8c-1.1-.4-2.3-.6-3.6-.6-4 0-7.2 3.2-7.2 7.2s3.2 7.2 7.2 7.2 7.5-3.1 7.5-8.1V7.8H39z"/>
+              <path class="tt-shadow-red" d="M40.5 9.5c2.2 5.6 6.8 10.5 12.8 13.1v8.5c-4.9-.2-9.4-1.7-13-4.2v12.8c0 8.8-7.2 16-16 16s-16-7.2-16-16 7.2-16 16-16c1.3 0 2.5.2 3.7.4v8.8c-1.1-.4-2.3-.6-3.6-.6-4 0-7.2 3.2-7.2 7.2s3.2 7.2 7.2 7.2 7.5-3.1 7.5-8.1V6.3h8.6z"/>
+              <path class="tt-main" d="M39.7 10.2c2.2 5.6 6.8 10.5 12.8 13.1v8.5c-4.9-.2-9.4-1.7-13-4.2v12.8c0 8.8-7.2 16-16 16s-16-7.2-16-16 7.2-16 16-16c1.3 0 2.5.2 3.7.4v8.8c-1.1-.4-2.3-.6-3.6-.6-4 0-7.2 3.2-7.2 7.2s3.2 7.2 7.2 7.2 7.5-3.1 7.5-8.1V7h8.6z"/>
+            </svg>
+          </span>
+          <span><b>TikTok</b><small>AIMLOCK JAME</small></span>
+          <em>›</em>
+        </a>
+        <a class="quick-link community-link-v11 zalo-link-v29" href="https://zalo.me/0333635135" target="_blank" rel="noopener">
+          <span class="social-mark zalo-mark" aria-hidden="true"><span>Zalo</span></span>
+          <span><b>Zalo</b><small>0333 635135</small></span>
+          <em>›</em>
+        </a>
+      </div>
+    </section>
+
+    <nav class="bottom-nav bottom-nav-v11 bottom-nav-v23" aria-label="Điều hướng nhanh">
+      <button class="nav-item nav-item-v23 active interactive" id="navHomeBtn" type="button">
+        <span>⌂</span><small>Trang chủ</small>
+      </button>
+      <button class="nav-item nav-item-v23 interactive" id="navModulesBtn" type="button">
+        <span>⚡</span><small>Module</small>
+      </button>
+      <button class="nav-hub nav-hub-v23 interactive" id="navHudBtn" type="button">
+        <span>◎</span>
+        <small>HUD</small>
+      </button>
+      <button class="nav-item nav-item-v23 interactive" id="navUpdatesBtn" type="button">
+        <span>ⓘ</span><small>Cập nhật</small>
+      </button>
+      <button class="nav-item nav-item-v23 interactive" id="accountBtn" type="button">
+        <span>◌</span><small>Tài khoản</small>
+      </button>
+    </nav>
+  </main>
+
+
+
+  <div class="stat-modal-v25" id="onlineModal" aria-hidden="true">
+    <div class="stat-backdrop-v25" data-close-stat></div>
+    <section class="stat-modal-card-v25" role="dialog" aria-modal="true" aria-labelledby="onlineModalTitle">
+      <div class="stat-modal-head-v25">
+        <div>
+          <span>SESSION STATUS</span>
+          <h3 id="onlineModalTitle">Danh sách online / session</h3>
+        </div>
+        <button type="button" class="ghost-close-v15" data-close-stat aria-label="Đóng">×</button>
+      </div>
+      <div class="stat-modal-body-v25" id="onlineModalBody"></div>
+    </section>
+  </div>
+
+  <div class="stat-modal-v25" id="activeKeysModal" aria-hidden="true">
+    <div class="stat-backdrop-v25" data-close-stat></div>
+    <section class="stat-modal-card-v25" role="dialog" aria-modal="true" aria-labelledby="activeKeysModalTitle">
+      <div class="stat-modal-head-v25">
+        <div>
+          <span>KEY MANAGER</span>
+          <h3 id="activeKeysModalTitle">Quản lý key đang hoạt động</h3>
+        </div>
+        <button type="button" class="ghost-close-v15" data-close-stat aria-label="Đóng">×</button>
+      </div>
+      <div class="stat-modal-body-v25" id="activeKeysModalBody"></div>
+    </section>
+  </div>
+
+  <div class="stat-modal-v25" id="todayModal" aria-hidden="true">
+    <div class="stat-backdrop-v25" data-close-stat></div>
+    <section class="stat-modal-card-v25" role="dialog" aria-modal="true" aria-labelledby="todayModalTitle">
+      <div class="stat-modal-head-v25">
+        <div>
+          <span>ACTIVITY LOG</span>
+          <h3 id="todayModalTitle">Lịch sử kích hoạt trong ngày</h3>
+        </div>
+        <button type="button" class="ghost-close-v15" data-close-stat aria-label="Đóng">×</button>
+      </div>
+      <div class="stat-modal-body-v25" id="todayModalBody"></div>
+    </section>
+  </div>
+
+  <div class="module-modal-v24" id="moduleModal" aria-hidden="true">
+    <div class="module-backdrop-v24" data-close-module></div>
+    <section class="module-modal-card-v24" role="dialog" aria-modal="true" aria-labelledby="moduleModalTitle">
+      <div class="module-modal-head-v24">
+        <div>
+          <span>MODULE CENTER</span>
+          <h3 id="moduleModalTitle">Tab Module AIMLOCK</h3>
+        </div>
+        <button type="button" class="ghost-close-v15" data-close-module aria-label="Đóng">×</button>
+      </div>
+      <p class="module-modal-note-v24">Bật/tắt trực tiếp từng module. Trạng thái sẽ đồng bộ ngay với dashboard chính.</p>
+      <section class="feature-list-v11 feature-list-modal-v24" id="moduleModalList">
+        <article class="panel feature-row-v11">
+          <div class="feature-badge-v11">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="7" width="12" height="10" rx="1.5"/><path d="M9 4v3M15 4v3M9 17v3M15 17v3M3 10h3M3 14h3M18 10h3M18 14h3"/></svg>
+          </div>
+          <div class="feature-text-v11"><h4>BOOST FPS</h4><p>Tối ưu tài nguyên nền, giữ khung hình ổn định khi combat.</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+          <button class="toggle toggle-v11" data-feature="boostram" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
+        </article>
+        <article class="panel feature-row-v11">
+          <div class="feature-badge-v11">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.6"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
+          </div>
+          <div class="feature-text-v11"><h4>AIMBODY PRO</h4><p>Tinh chỉnh phản hồi điều khiển, hỗ trợ cảm giác thao tác chính xác hơn.</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+          <button class="toggle toggle-v11" data-feature="aimbody" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
+        </article>
+        <article class="panel feature-row-v11">
+          <div class="feature-badge-v11">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 7.8a5 5 0 0 0-8.2-1.5L12 7l-.6-.7a5 5 0 0 0-8.2 5.7L12 21l8.8-9a5 5 0 0 0 0-4.2Z"/><path d="M4 12h4l2-3 3 7 2-4h5"/></svg>
+          </div>
+          <div class="feature-text-v11"><h4>NHẸ TÂM</h4><p>Làm mượt phản hồi input, giảm cảm giác rung và giật khi thao tác.</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+          <button class="toggle toggle-v11" data-feature="nhetam" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
+        </article>
+        <article class="panel feature-row-v11">
+          <div class="feature-badge-v11">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 20 6v5c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10V6l8-3Z"/><rect x="8.5" y="11" width="7" height="5" rx="1"/><path d="M10 11V9a2 2 0 0 1 4 0v2"/></svg>
+          </div>
+          <div class="feature-text-v11"><h4>JAMELOCK</h4><p>Khóa cấu hình cá nhân và bảo vệ phiên sử dụng.</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+          <button class="toggle toggle-v11" data-feature="jamelock" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
+        </article>
+        <article class="panel feature-row-v11">
+          <div class="feature-badge-v11">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 20 6v5c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10V6l8-3Z"/><path d="m8.8 12.3 2.1 2.1 4.7-5"/></svg>
+          </div>
+          <div class="feature-text-v11"><h4>ANTIBAND SHIELD</h4><p>Bật Chống quét , Chống Ban Acc Từ Vip1 Đến Vip8</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+          <button class="toggle toggle-v11" data-feature="antiban" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
+        </article>
+        <article class="panel feature-row-v11">
+          <div class="feature-badge-v11 ff-badge-v11">FF</div>
+          <div class="feature-text-v11"><h4>REG FF</h4><p>Tối Ưu Game Và Hỗ Trợ Anh Em Kéo Đỏ</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
+          <button class="toggle toggle-v11" data-feature="regff" aria-pressed="false"><span class="thumb"></span><span class="label">OFF</span></button>
+        </article>
+
+        <article class="panel feature-row-v11 ob55-feature-row" id="ob55FeatureCardModal">
+          <div class="feature-badge-v11 ob55-badge-v11">55</div>
+          <div class="feature-text-v11">
+            <h4>ĐỘ NHẠY OB55</h4>
+            <p>Mở trung tâm chọn thiết bị và cấu hình độ nhạy OB55.</p>
+            <div class="feature-state-v14"><span></span><em>READY</em></div>
+          </div>
+          <button class="ob55-open-btn" type="button" data-open-ob55>MỞ</button>
+        </article>
+      </section>
+    </section>
+  </div>
+
+  <div class="hud-modal-v24" id="hudModal" aria-hidden="true">
+    <div class="hud-backdrop-v24" data-close-hud></div>
+    <section class="hud-modal-card-v24" role="dialog" aria-modal="true" aria-labelledby="hudModalTitle">
+      <div class="hud-modal-head-v24">
+        <div>
+          <span>HUD CONTROL</span>
+          <h3 id="hudModalTitle">Popup HUD AIMLOCK</h3>
+        </div>
+        <button type="button" class="ghost-close-v15" data-close-hud aria-label="Đóng">×</button>
+      </div>
+      <section class="panel runtime-hud-v14 runtime-hud-modal-v24" aria-label="Gaming runtime status popup">
+        <div class="runtime-head-v14">
+          <span class="runtime-dot-v14"></span>
+          <div>
+            <b id="runtimeTitlePopup">ENGINE STANDBY</b>
+            <small id="runtimeDetailPopup">Chọn module để khởi chạy hiệu ứng realtime.</small>
+          </div>
+          <em id="runtimePercentPopup">0%</em>
+        </div>
+        <div class="runtime-bar-v14"><i id="runtimeBarPopup"></i></div>
+        <div class="runtime-log-v14" id="runtimeLogPopup">READY › Secure gaming dashboard loaded</div>
+      </section>
+      <div class="hud-actions-v24">
+        <button type="button" class="account-action-v23" id="hudOpenModulesBtn">Mở tab Module</button>
+        <button type="button" class="account-action-v23" id="hudCloseBtn">Đóng HUD</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="account-modal-v23" id="accountModal" aria-hidden="true">
+    <div class="account-backdrop-v23" data-close-account></div>
+    <section class="account-modal-card-v23" role="dialog" aria-modal="true" aria-labelledby="accountModalTitle">
+      <div class="account-modal-head-v23">
+        <div>
+          <span>PROFILE CENTER</span>
+          <h3 id="accountModalTitle">Tài khoản AIMLOCK JAME</h3>
+        </div>
+        <button type="button" class="ghost-close-v15" data-close-account aria-label="Đóng">×</button>
+      </div>
+      <div class="account-summary-v23">
+        <div class="account-avatar-v23"><img src="logo.png" alt="AIMLOCK JAME"></div>
+        <div class="account-copy-v23">
+          <strong id="accountModalName">ADMIN JAME</strong>
+          <small id="accountModalPlan">Gói: AIMLOCK VIP</small>
+          <b id="accountModalExpire">HSD: 01/01/2100</b>
+        </div>
+      </div>
+      <div class="account-actions-v23">
+        <button type="button" class="account-action-v23" id="accountOpenVipBtn">Mở gia hạn VIP</button>
+        <button type="button" class="account-action-v23" id="accountOpenNotifyBtn">Mở thông báo</button>
+        <button type="button" class="account-action-v23" id="accountSupportBtn">Liên hệ Zalo</button>
+        <button type="button" class="account-action-v23 danger" id="accountLogoutBtn">Đăng xuất</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="vip-modal-v14" id="vipModal" aria-hidden="true">
+    <div class="vip-modal-backdrop-v14" data-close-vip></div>
+    <section class="vip-modal-card-v14" role="dialog" aria-modal="true" aria-labelledby="vipModalTitle">
+      <button class="vip-close-v14" type="button" id="closeVipModal" aria-label="Đóng">×</button>
+      <div class="vip-modal-head-v14">
+        <span>VIP UPGRADE CENTER</span>
+        <h2 id="vipModalTitle">Gia hạn AIMLOCK JAME</h2>
+        <p>Chọn gói phù hợp, bấm “Nhắn Zalo” để liên hệ hỗ trợ 0333 635135.</p>
+      </div>
+      <div class="vip-plans-v14">
+        <article class="vip-plan-v14">
+          <b>100K</b>
+          <div class="vip-plan-copy-v14">
+            <h3>2 tuần</h3>
+            <p>Gói trải nghiệm nhanh.</p>
+          </div>
+          <button type="button" data-plan="100K - 2 tuần">Nhắn Zalo</button>
+        </article>
+        <article class="vip-plan-v14 popular">
+          <b>200K</b>
+          <div class="vip-plan-copy-v14">
+            <h3>1 tháng</h3>
+            <p>Antiban · Bảo hành.</p>
+          </div>
+          <button type="button" data-plan="200K - 1 tháng, antiban, bảo hành">Nhắn Zalo</button>
+        </article>
+        <article class="vip-plan-v14">
+          <b>300K</b>
+          <div class="vip-plan-copy-v14">
+            <h3>2 tháng</h3>
+            <p>Antiban · Bảo hành.</p>
+          </div>
+          <button type="button" data-plan="300K - 2 tháng, antiban, bảo hành">Nhắn Zalo</button>
+        </article>
+        <article class="vip-plan-v14">
+          <b>400K</b>
+          <div class="vip-plan-copy-v14">
+            <h3>5 tháng</h3>
+            <p>Antiban · Bảo hành.</p>
+          </div>
+          <button type="button" data-plan="400K - 5 tháng, antiban, bảo hành">Nhắn Zalo</button>
+        </article>
+        <article class="vip-plan-v14 forever">
+          <b>750K</b>
+          <div class="vip-plan-copy-v14">
+            <h3>Vĩnh viễn</h3>
+            <p>Antiban · Bảo hành · Cầm đi solo · Leo rank · Tử chiến.</p>
+          </div>
+          <button type="button" data-plan="750K - vĩnh viễn, antiban, bảo hành, cầm đi solo, leo rank, tử chiến">Nhắn Zalo</button>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <div class="side-drawer" id="sideDrawer">
+    <div class="drawer-card drawer-card-v11">
+      <div class="drawer-head">
+        <strong>AIMLOCK MENU</strong>
+        <button id="closeDrawer" type="button">×</button>
+      </div>
+      <button class="drawer-link interactive" id="drawerControlBtn" data-toast="Đang chuyển đến Trung tâm điều khiển." data-toast-type="info">Trung tâm điều khiển</button>
+      <button class="drawer-link interactive" id="drawerAppearanceBtn" data-toast="Mở cài đặt giao diện HUD." data-toast-type="warning">Cài đặt giao diện</button>
+      <button class="drawer-link interactive" id="drawerCommunityBtn" data-toast="Mở khu cộng đồng hỗ trợ." data-toast-type="info">Hỗ trợ cộng đồng</button>
+      <button class="drawer-link danger" id="logoutBtn">Đăng xuất</button>
+    </div>
+  </div>
+
+
+
+  <div class="update-modal-v20" id="updateModal" aria-hidden="true">
+    <div class="update-backdrop-v20" data-close-update></div>
+    <section class="update-modal-card-v20" role="dialog" aria-modal="true" aria-labelledby="updateModalTitle">
+      <div class="update-modal-head-v20">
+        <div>
+          <span>UPDATE CENTER</span>
+          <h3 id="updateModalTitle">Cập nhật mới AIMLOCK JAME</h3>
+        </div>
+        <button type="button" class="ghost-close-v15" data-close-update aria-label="Đóng">×</button>
+      </div>
+      <div class="update-list-v20" id="updateList">
+        <article class="update-item-v20 latest">
+          <b>NEW</b><img src="logo.png" height="545" width="568"/>
+          <div>
+            <strong>HUD VIP mới</strong>
+            <p>Tối ưu card tài khoản, trạng thái online và progress VIP đẹp hơn.</p>
+          </div>
+        </article>
+        <article class="update-item-v20">
+          <b>01</b>
+          <div>
+            <strong>Aimlock Menu có chức năng thật</strong>
+            <p>Trung tâm điều khiển, cài đặt giao diện và hỗ trợ cộng đồng đã hoạt động.</p>
+          </div>
+        </article>
+        <article class="update-item-v20">
+          <b>02</b>
+          <div>
+            <strong>Thông báo hoạt động như app</strong>
+            <p>Mở danh sách thông báo, đánh dấu đã đọc và điều hướng tới từng mục.</p>
+          </div>
+        </article>
+        <article class="update-item-v20">
+          <b>03</b>
+          <div>
+            <strong>Runtime HUD module</strong>
+            <p>Bật module có loading, log chạy realtime và trạng thái ACTIVE/LOADING.</p>
+          </div>
+        </article>
+        <article class="update-item-v20">
+          <b>04</b>
+          <div>
+            <strong>Login screen nâng cấp</strong>
+            <p>Logo động, vòng quay đỏ vàng và nút kích hoạt AIMLOCK thon gọn hơn.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <div class="notify-panel-v15" id="notifyPanel" aria-hidden="true">
+    <div class="notify-backdrop-v15" data-close-notify></div>
+    <section class="notify-card-v15" role="dialog" aria-modal="true" aria-labelledby="notifyTitle">
+      <div class="notify-head-v15">
+        <div>
+          <span>MESSAGE CENTER</span>
+          <h3 id="notifyTitle">Thông báo hệ thống</h3>
+        </div>
+        <div class="notify-actions-v15">
+          <button type="button" id="markAllReadBtn">Đánh dấu đã đọc</button>
+          <button type="button" class="ghost-close-v15" data-close-notify aria-label="Đóng">×</button>
+        </div>
+      </div>
+      <div class="notify-list-v15" id="notifyList">
+        <button class="notify-item-v15 unread" type="button" data-notify-action="update">
+          <strong>Cyber Gaming V15 sẵn sàng</strong>
+          <p>Đã bổ sung menu thật, bảng giá VIP tối ưu và trung tâm thông báo.</p>
+          <small>Vừa xong</small>
+        </button>
+        <button class="notify-item-v15 unread" type="button" data-notify-action="vip">
+          <strong>Bảng giá VIP mới</strong>
+          <p>Gói 750k vĩnh viễn đã có antiban, bảo hành và hỗ trợ leo rank.</p>
+          <small>1 phút trước</small>
+        </button>
+        <button class="notify-item-v15" type="button" data-notify-action="support">
+          <strong>Hỗ trợ Zalo online</strong>
+          <p>Kết nối nhanh qua số 0333 635135 để nhận tư vấn nâng cấp.</p>
+          <small>Hôm nay</small>
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <div class="settings-modal-v15" id="settingsModal" aria-hidden="true">
+    <div class="settings-backdrop-v15" data-close-settings></div>
+    <section class="settings-card-v15" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <div class="settings-head-v15">
+        <div>
+          <span>HUD CONTROL</span>
+          <h3 id="settingsTitle">Cài đặt giao diện</h3>
+        </div>
+        <button type="button" class="ghost-close-v15" data-close-settings aria-label="Đóng">×</button>
+      </div>
+      <div class="settings-list-v15">
+        <label class="settings-row-v15">
+          <div><strong>Chế độ hiệu năng</strong><small>Giảm blur, tối ưu thao tác trên máy yếu.</small></div>
+          <input type="checkbox" id="perfModeToggle">
+        </label>
+        <label class="settings-row-v15">
+          <div><strong>Hiệu ứng scanline</strong><small>Bật lớp nền gaming đậm chất HUD.</small></div>
+          <input type="checkbox" id="scanlineToggle" checked>
+        </label>
+        <label class="settings-row-v15">
+          <div><strong>Thu gọn card</strong><small>Giảm chiều cao card để nhìn gọn hơn.</small></div>
+          <input type="checkbox" id="compactToggle">
+        </label>
+      </div>
+      <div class="settings-foot-v15">
+        <button type="button" class="settings-secondary-v15" id="resetModulesBtn">Reset module</button>
+        <button type="button" class="settings-primary-v15" id="saveSettingsBtn">Lưu cài đặt</button>
+      </div>
+    </section>
+  </div>
+
+
+  <div class="ob55-modal" id="ob55SensitivityModal" aria-hidden="true">
+    <div class="ob55-backdrop" data-close-ob55></div>
+    <section class="ob55-card" role="dialog" aria-modal="true" aria-labelledby="ob55Title">
+      <div class="ob55-head">
+        <div>
+          <span class="ob55-kicker">SENSITIVITY CENTER</span>
+          <h3 id="ob55Title">Độ nhạy OB55</h3>
+          <p>Gợi ý độ nhạy Free Fire theo từng dòng máy</p>
+        </div>
+        <button class="ob55-close" type="button" data-close-ob55 aria-label="Đóng">×</button>
+      </div>
+
+      <div class="ob55-picked">
+        <div>
+          <small>Thiết bị đang chọn</small>
+          <strong id="ob55DeviceName">Samsung Galaxy A55 5G</strong>
+          <p id="ob55DeviceInfo">Android • Tầm trung • OB55</p>
+        </div>
+        <span class="ob55-chip">OB55</span>
+      </div>
+
+      <label class="ob55-label">1. CHỌN HÃNG</label>
+      <div class="ob55-brand-grid" id="ob55BrandGrid"></div>
+
+      <label class="ob55-label" for="ob55Search">2. CHỌN MODEL</label>
+      <input class="ob55-search" id="ob55Search" type="search" placeholder="Tìm kiếm model..." autocomplete="off">
+      <div class="ob55-model-list" id="ob55ModelList"></div>
+
+      <label class="ob55-label">3. CHỌN KIỂU CHƠI</label>
+      <div class="ob55-preset-grid" id="ob55PresetGrid"></div>
+
+      <label class="ob55-label">4. ĐỘ NHẠY KHUYẾN NGHỊ</label>
+      <div class="ob55-values" id="ob55Values"></div>
+
+      <div class="ob55-actions">
+        <button class="ob55-reset" id="ob55ResetBtn" type="button">Mặc định</button>
+        <button class="ob55-copy" id="ob55CopyBtn" type="button">Sao chép cấu hình</button>
+      </div>
+      <div class="ob55-copy-state" id="ob55CopyState"></div>
+
+      <p class="ob55-note">
+        Cấu hình là gợi ý tham khảo. Có thể tinh chỉnh nhẹ theo DPI, kích thước màn hình
+        và thói quen kéo tâm của từng người.
+      </p>
+    </section>
+  </div>
+
+
+  <div class="toast" id="toast"></div>
+  <script src="api-config.js"></script>
+  <script src="app.js"></script>
+
+  <script id="ob55SensitivityScript">
+  (() => {
+    const modal = document.getElementById('ob55SensitivityModal');
+    if (!modal) return;
+
+    const brandGrid = document.getElementById('ob55BrandGrid');
+    const modelList = document.getElementById('ob55ModelList');
+    const presetGrid = document.getElementById('ob55PresetGrid');
+    const valuesBox = document.getElementById('ob55Values');
+    const search = document.getElementById('ob55Search');
+    const deviceName = document.getElementById('ob55DeviceName');
+    const deviceInfo = document.getElementById('ob55DeviceInfo');
+    const copyState = document.getElementById('ob55CopyState');
+
+    const devices = {
+      Samsung: [
+        ['Galaxy A15 5G','Android','Phổ thông',0],
+        ['Galaxy A25 5G','Android','Phổ thông',1],
+        ['Galaxy A35 5G','Android','Tầm trung',2],
+        ['Galaxy A55 5G','Android','Tầm trung',3],
+        ['Galaxy S23 FE','Android','Cận cao cấp',4],
+        ['Galaxy S24','Android','Cao cấp',5],
+        ['Galaxy S24 Ultra','Android','Cao cấp',6],
+        ['Galaxy S25 Ultra','Android','Cao cấp',7]
+      ],
+      Apple: [
+        ['iPhone 11','iOS','Tầm trung',2],
+        ['iPhone 12','iOS','Tầm trung',3],
+        ['iPhone 13','iOS','Cận cao cấp',4],
+        ['iPhone 14 Pro','iOS','Cao cấp',5],
+        ['iPhone 15','iOS','Cao cấp',5],
+        ['iPhone 15 Pro Max','iOS','Cao cấp',6],
+        ['iPhone 16','iOS','Cao cấp',6],
+        ['iPhone 16 Pro Max','iOS','Cao cấp',7]
+      ],
+      Xiaomi: [
+        ['Redmi Note 12','Android','Phổ thông',1],
+        ['Redmi Note 13','Android','Tầm trung',2],
+        ['Redmi Note 13 Pro 5G','Android','Tầm trung',3],
+        ['Redmi Note 14 Pro 5G','Android','Tầm trung',4],
+        ['POCO X6 Pro','Android','Cận cao cấp',5],
+        ['POCO F6','Android','Cận cao cấp',5],
+        ['Xiaomi 14','Android','Cao cấp',6],
+        ['Xiaomi 15','Android','Cao cấp',7]
+      ],
+      OPPO: [
+        ['A58','Android','Phổ thông',1],
+        ['A79 5G','Android','Phổ thông',2],
+        ['Reno10 5G','Android','Tầm trung',3],
+        ['Reno11 F 5G','Android','Tầm trung',3],
+        ['Reno12 5G','Android','Cận cao cấp',4],
+        ['Reno13 5G','Android','Cận cao cấp',5],
+        ['Find X7','Android','Cao cấp',6],
+        ['Find X8 Pro','Android','Cao cấp',7]
+      ],
+      realme: [
+        ['C55','Android','Phổ thông',0],
+        ['C67','Android','Phổ thông',1],
+        ['11 Pro 5G','Android','Tầm trung',3],
+        ['12+ 5G','Android','Tầm trung',4],
+        ['13+ 5G','Android','Cận cao cấp',5],
+        ['GT 6','Android','Cao cấp',6],
+        ['GT 7 Pro','Android','Cao cấp',7]
+      ],
+      vivo: [
+        ['Y27','Android','Phổ thông',0],
+        ['Y36','Android','Phổ thông',1],
+        ['V29 5G','Android','Tầm trung',3],
+        ['V30 5G','Android','Tầm trung',4],
+        ['V40 5G','Android','Cận cao cấp',5],
+        ['X100 Pro','Android','Cao cấp',6],
+        ['X200 Pro','Android','Cao cấp',7]
+      ],
+      OnePlus: [
+        ['Nord CE 3 Lite','Android','Phổ thông',1],
+        ['Nord 3','Android','Tầm trung',3],
+        ['Nord 4','Android','Cận cao cấp',4],
+        ['OnePlus 11','Android','Cao cấp',5],
+        ['OnePlus 12','Android','Cao cấp',6],
+        ['OnePlus 13','Android','Cao cấp',7]
+      ],
+      Google: [
+        ['Pixel 6a','Android','Tầm trung',2],
+        ['Pixel 7','Android','Tầm trung',3],
+        ['Pixel 7 Pro','Android','Cận cao cấp',4],
+        ['Pixel 8','Android','Cận cao cấp',5],
+        ['Pixel 8 Pro','Android','Cao cấp',6],
+        ['Pixel 9 Pro XL','Android','Cao cấp',7]
+      ]
+    };
+
+    const presets = {
+      'Cân bằng':   {general:0, red:0, x2:0, x4:0, sniper:0, free:0},
+      'Kéo đỏ':     {general:7, red:9, x2:6, x4:3, sniper:-4, free:4},
+      'Ổn định':    {general:-5, red:-4, x2:-3, x4:-2, sniper:3, free:-3},
+      'Cận chiến':  {general:10, red:11, x2:7, x4:1, sniper:-6, free:5}
+    };
+
+    const base = {
+      general: 184, red: 178, x2: 166, x4: 154, sniper: 112, free: 170
+    };
+
+    let state = {brand:'Samsung', model:'Galaxy A55 5G', preset:'Cân bằng'};
+
+    try {
+      const saved = JSON.parse(localStorage.getItem('aimlock_ob55_config') || 'null');
+      if (saved && devices[saved.brand] && presets[saved.preset] &&
+          devices[saved.brand].some(d => d[0] === saved.model)) {
+        state = saved;
+      }
+    } catch (_) {}
+
+    function currentDevice(){
+      return devices[state.brand].find(d => d[0] === state.model) || devices[state.brand][0];
+    }
+
+    function clamp(n){ return Math.max(1, Math.min(200, Math.round(n))); }
+
+    function calculated(){
+      const d = currentDevice();
+      const power = d[3];
+      const p = presets[state.preset];
+      const tune = power - 3;
+      return {
+        'Tổng quan': clamp(base.general + p.general + tune * 2),
+        'Red Dot': clamp(base.red + p.red + tune * 2),
+        'Ống ngắm 2X': clamp(base.x2 + p.x2 + tune),
+        'Ống ngắm 4X': clamp(base.x4 + p.x4 + tune),
+        'AWM / Sniper': clamp(base.sniper + p.sniper + tune),
+        'Nhìn xung quanh': clamp(base.free + p.free + tune * 2)
+      };
+    }
+
+    function save(){
+      try { localStorage.setItem('aimlock_ob55_config', JSON.stringify(state)); } catch (_) {}
+    }
+
+    function renderBrands(){
+      brandGrid.innerHTML = Object.keys(devices).map(b =>
+        `<button type="button" class="ob55-brand ${b===state.brand?'active':''}" data-brand="${b}">${b}</button>`
+      ).join('');
+    }
+
+    function renderModels(){
+      const q = (search.value || '').trim().toLowerCase();
+      const list = devices[state.brand].filter(d => d[0].toLowerCase().includes(q));
+      modelList.innerHTML = list.length ? list.map(d =>
+        `<button type="button" class="ob55-model ${d[0]===state.model?'active':''}" data-model="${d[0]}">${d[0]}</button>`
+      ).join('') : `<div style="grid-column:1/-1;color:#7f8998;font-size:11px;padding:10px">Không tìm thấy model phù hợp.</div>`;
+    }
+
+    function renderPresets(){
+      presetGrid.innerHTML = Object.keys(presets).map(p =>
+        `<button type="button" class="ob55-preset ${p===state.preset?'active':''}" data-preset="${p}">${p}</button>`
+      ).join('');
+    }
+
+    function renderValues(){
+      const d = currentDevice();
+      deviceName.textContent = d[0];
+      deviceInfo.textContent = `${d[1]} • ${d[2]} • OB55`;
+      const vals = calculated();
+      valuesBox.innerHTML = Object.entries(vals).map(([k,v]) =>
+        `<div class="ob55-value"><span>${k}</span><b>${v}</b></div>`
+      ).join('');
+      save();
+    }
+
+    function renderAll(){
+      renderBrands(); renderModels(); renderPresets(); renderValues();
+    }
+
+    function open(){
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden','false');
+      document.documentElement.style.overflow = 'hidden';
+      renderAll();
+    }
+
+    function close(){
+      modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden','true');
+      document.documentElement.style.overflow = '';
+      copyState.textContent = '';
+    }
+
+    document.addEventListener('click', e => {
+      const openBtn = e.target.closest('[data-open-ob55]');
+      if (openBtn) { e.preventDefault(); open(); return; }
+
+      if (e.target.closest('[data-close-ob55]')) { close(); return; }
+
+      const brand = e.target.closest('[data-brand]');
+      if (brand) {
+        state.brand = brand.dataset.brand;
+        state.model = devices[state.brand][0][0];
+        search.value = '';
+        renderAll();
+        return;
+      }
+
+      const model = e.target.closest('[data-model]');
+      if (model) {
+        state.model = model.dataset.model;
+        renderModels(); renderValues();
+        return;
+      }
+
+      const preset = e.target.closest('[data-preset]');
+      if (preset) {
+        state.preset = preset.dataset.preset;
+        renderPresets(); renderValues();
+      }
+    });
+
+    search.addEventListener('input', renderModels);
+
+    document.getElementById('ob55ResetBtn').addEventListener('click', () => {
+      state = {brand:'Samsung', model:'Galaxy A55 5G', preset:'Cân bằng'};
+      search.value = '';
+      renderAll();
+      copyState.textContent = 'Đã đưa OB55 về cấu hình mặc định.';
+    });
+
+    document.getElementById('ob55CopyBtn').addEventListener('click', async () => {
+      const vals = calculated();
+      const lines = [
+        `ĐỘ NHẠY OB55 - ${state.model}`,
+        `Kiểu chơi: ${state.preset}`,
+        ...Object.entries(vals).map(([k,v]) => `${k}: ${v}`)
+      ];
+      const out = lines.join('\n');
+      try {
+        await navigator.clipboard.writeText(out);
+        copyState.textContent = '✓ Đã sao chép cấu hình OB55';
+      } catch (_) {
+        copyState.textContent = out;
+      }
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && modal.classList.contains('is-open')) close();
+    });
+
+    renderAll();
+  })();
+  </script>
+
+</body>
+</html>
+```
