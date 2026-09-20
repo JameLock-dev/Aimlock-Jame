@@ -36,6 +36,104 @@
     }
   </script>
   <link rel="stylesheet" href="aimlock-stable.css?v=20260731-ui-fix-3" />
+
+<style id="ob55SensitivityStyles">
+/* ===== OB55 SENSITIVITY CENTER - ISOLATED ===== */
+.ob55-open-btn{
+  min-width:72px;border:1px solid rgba(255,196,65,.38);border-radius:12px;
+  padding:10px 12px;background:linear-gradient(180deg,rgba(255,190,50,.18),rgba(255,105,25,.08));
+  color:#ffd46a;font-weight:800;letter-spacing:.5px;cursor:pointer;
+}
+.ob55-open-btn:active{transform:scale(.97)}
+.ob55-badge-v11{
+  display:grid;place-items:center;font-size:13px;font-weight:900;color:#ffe18a;
+  text-shadow:0 0 12px rgba(255,183,41,.65);
+}
+.ob55-modal{position:fixed;inset:0;z-index:100000;display:none}
+.ob55-modal.is-open{display:block}
+.ob55-backdrop{
+  position:absolute;inset:0;background:rgba(1,4,10,.82);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+.ob55-card{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:min(92vw,520px);max-height:88vh;overflow:auto;box-sizing:border-box;
+  border:1px solid rgba(255,196,70,.22);border-radius:22px;
+  background:
+    radial-gradient(circle at 85% 0%,rgba(255,174,0,.12),transparent 32%),
+    linear-gradient(180deg,#111722 0%,#080c13 100%);
+  box-shadow:0 24px 80px rgba(0,0,0,.62),0 0 36px rgba(255,170,0,.08);
+  padding:18px;color:#f5f7fb;
+}
+.ob55-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
+.ob55-kicker{display:block;color:#ffcb55;font-size:10px;font-weight:900;letter-spacing:1.7px;margin-bottom:5px}
+.ob55-head h3{margin:0;font-size:22px}
+.ob55-head p{margin:5px 0 0;color:#8e99aa;font-size:12px}
+.ob55-close{
+  width:36px;height:36px;border-radius:12px;border:1px solid rgba(255,255,255,.09);
+  background:rgba(255,255,255,.045);color:#fff;font-size:22px;cursor:pointer
+}
+.ob55-picked{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px;border:1px solid rgba(255,196,70,.16);border-radius:16px;
+  background:rgba(255,255,255,.035);margin-bottom:16px
+}
+.ob55-picked small{display:block;color:#7f8a99;font-size:10px;text-transform:uppercase;letter-spacing:1px}
+.ob55-picked strong{display:block;margin-top:3px;font-size:15px}
+.ob55-picked p{margin:3px 0 0;color:#9aa5b5;font-size:11px}
+.ob55-chip{
+  flex:0 0 auto;padding:7px 9px;border-radius:10px;color:#171006;background:#ffcc58;
+  font-size:11px;font-weight:950;box-shadow:0 0 18px rgba(255,194,62,.18)
+}
+.ob55-label{display:block;margin:15px 0 8px;font-size:11px;color:#b9c2cf;font-weight:800;letter-spacing:.6px}
+.ob55-brand-grid,.ob55-preset-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+.ob55-brand,.ob55-preset{
+  border:1px solid rgba(255,255,255,.08);border-radius:11px;background:#121924;color:#b6c0ce;
+  padding:9px 6px;font-size:11px;font-weight:800;cursor:pointer
+}
+.ob55-brand.active,.ob55-preset.active{
+  color:#191105;border-color:#e6b84a;background:linear-gradient(180deg,#ffd86e,#e9a928);
+  box-shadow:0 5px 18px rgba(236,170,37,.13)
+}
+.ob55-search{
+  width:100%;box-sizing:border-box;border:1px solid rgba(255,255,255,.09);border-radius:12px;
+  background:#0b111a;color:#fff;padding:11px 12px;outline:none
+}
+.ob55-search:focus{border-color:rgba(255,196,70,.48)}
+.ob55-model-list{
+  margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:7px;
+  max-height:150px;overflow:auto;padding-right:2px
+}
+.ob55-model{
+  text-align:left;border:1px solid rgba(255,255,255,.07);border-radius:11px;background:#101722;
+  color:#c6ced9;padding:9px 10px;font-size:11px;cursor:pointer
+}
+.ob55-model.active{border-color:#e2b84d;color:#ffdb7d;background:rgba(225,170,47,.09)}
+.ob55-values{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ob55-value{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:11px;border-radius:12px;background:#0e151f;border:1px solid rgba(255,255,255,.07)
+}
+.ob55-value span{font-size:11px;color:#929dad}
+.ob55-value b{font-size:17px;color:#ffd15d}
+.ob55-note{
+  margin:12px 0 0;padding:10px 11px;border-radius:11px;
+  background:rgba(55,137,255,.07);border:1px solid rgba(83,153,255,.11);
+  color:#8795a8;font-size:10px;line-height:1.5
+}
+.ob55-actions{display:flex;gap:8px;margin-top:12px}
+.ob55-copy,.ob55-reset{
+  flex:1;border-radius:12px;padding:11px 10px;font-weight:900;cursor:pointer
+}
+.ob55-copy{border:1px solid #e7b743;background:linear-gradient(180deg,#ffd665,#e8a727);color:#1c1305}
+.ob55-reset{border:1px solid rgba(255,255,255,.09);background:#111924;color:#d5dce5}
+.ob55-copy-state{min-height:16px;text-align:center;color:#73d9a3;font-size:10px;margin-top:7px}
+@media (max-width:430px){
+  .ob55-card{width:94vw;padding:15px;border-radius:19px}
+  .ob55-brand-grid,.ob55-preset-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+</style>
+
 </head>
 <body class="theme-dark">
 <main class="app-shell login-shell" id="loginScreen">
@@ -285,6 +383,16 @@
 <div class="feature-text-v11"><h4>REG FF</h4><p>Tối Ưu Game Và Hỗ Trợ Anh Em Kéo Đỏ</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
 <button aria-pressed="false" class="toggle toggle-v11" data-feature="regff"><span class="thumb"></span><span class="label">OFF</span></button>
 </article>
+
+<article class="panel feature-row-v11" id="ob55FeatureCard">
+  <div class="feature-badge-v11 ob55-badge-v11">55</div>
+  <div class="feature-text-v11">
+    <h4>ĐỘ NHẠY OB55</h4>
+    <p>Chọn hãng, model và kiểu chơi để lấy cấu hình độ nhạy OB55 cho thiết bị.</p>
+    <div class="feature-state-v14"><span></span><em>READY</em></div>
+  </div>
+  <button class="ob55-open-btn" type="button" data-open-ob55>MỞ</button>
+</article>
 </section>
 <section class="panel update-banner-v11" id="updateBanner">
 <div class="update-icon-v11">
@@ -428,6 +536,16 @@
 <div class="feature-badge-v11 ff-badge-v11">FF</div>
 <div class="feature-text-v11"><h4>REG FF</h4><p>Tối Ưu Game Và Hỗ Trợ Anh Em Kéo Đỏ</p><div class="feature-state-v14"><span></span><em>STANDBY</em></div></div>
 <button aria-pressed="false" class="toggle toggle-v11" data-feature="regff"><span class="thumb"></span><span class="label">OFF</span></button>
+</article>
+
+<article class="panel feature-row-v11" id="ob55FeatureCardModal">
+  <div class="feature-badge-v11 ob55-badge-v11">55</div>
+  <div class="feature-text-v11">
+    <h4>ĐỘ NHẠY OB55</h4>
+    <p>Mở trung tâm chọn thiết bị và cấu hình độ nhạy OB55.</p>
+    <div class="feature-state-v14"><span></span><em>READY</em></div>
+  </div>
+  <button class="ob55-open-btn" type="button" data-open-ob55>MỞ</button>
 </article>
 </section>
 </section>
@@ -654,7 +772,55 @@
 <button class="settings-primary-v15" id="saveSettingsBtn" type="button">Lưu cài đặt</button>
 </div>
 </section>
-</div></div><div class="toast" id="toast"></div>
+</div></div>
+<div class="ob55-modal" id="ob55SensitivityModal" aria-hidden="true">
+  <div class="ob55-backdrop" data-close-ob55></div>
+  <section class="ob55-card" role="dialog" aria-modal="true" aria-labelledby="ob55Title">
+    <div class="ob55-head">
+      <div>
+        <span class="ob55-kicker">SENSITIVITY CENTER</span>
+        <h3 id="ob55Title">Độ nhạy OB55</h3>
+        <p>Gợi ý độ nhạy Free Fire theo từng dòng máy</p>
+      </div>
+      <button class="ob55-close" type="button" data-close-ob55 aria-label="Đóng">×</button>
+    </div>
+
+    <div class="ob55-picked">
+      <div>
+        <small>Thiết bị đang chọn</small>
+        <strong id="ob55DeviceName">Samsung Galaxy A55 5G</strong>
+        <p id="ob55DeviceInfo">Android • Tầm trung • OB55</p>
+      </div>
+      <span class="ob55-chip">OB55</span>
+    </div>
+
+    <label class="ob55-label">1. CHỌN HÃNG</label>
+    <div class="ob55-brand-grid" id="ob55BrandGrid"></div>
+
+    <label class="ob55-label" for="ob55Search">2. CHỌN MODEL</label>
+    <input class="ob55-search" id="ob55Search" type="search" placeholder="Tìm kiếm model..." autocomplete="off"/>
+    <div class="ob55-model-list" id="ob55ModelList"></div>
+
+    <label class="ob55-label">3. CHỌN KIỂU CHƠI</label>
+    <div class="ob55-preset-grid" id="ob55PresetGrid"></div>
+
+    <label class="ob55-label">4. ĐỘ NHẠY KHUYẾN NGHỊ</label>
+    <div class="ob55-values" id="ob55Values"></div>
+
+    <div class="ob55-actions">
+      <button class="ob55-reset" id="ob55ResetBtn" type="button">Mặc định</button>
+      <button class="ob55-copy" id="ob55CopyBtn" type="button">Sao chép cấu hình</button>
+    </div>
+    <div class="ob55-copy-state" id="ob55CopyState"></div>
+
+    <p class="ob55-note">
+      Cấu hình là gợi ý tham khảo. Có thể tinh chỉnh nhẹ theo DPI, kích thước màn hình
+      và thói quen kéo tâm của từng người.
+    </p>
+  </section>
+</div>
+
+<div class="toast" id="toast"></div>
   <script src="api-config.js?v=20260813-admin11-block-1"></script>
   <script>
   (() => {
@@ -879,5 +1045,263 @@
   </script>
   <script src="app.js?v=maintenance-fix-20260901"></script>
   <script src="aimlock-controller.js?v=20260813-admin11-block-1"></script>
+
+<script id="ob55SensitivityScript">
+(() => {
+  "use strict";
+  const modal = document.getElementById("ob55SensitivityModal");
+  if (!modal) return;
+
+  const brandGrid = document.getElementById("ob55BrandGrid");
+  const modelList = document.getElementById("ob55ModelList");
+  const presetGrid = document.getElementById("ob55PresetGrid");
+  const valuesBox = document.getElementById("ob55Values");
+  const search = document.getElementById("ob55Search");
+  const deviceName = document.getElementById("ob55DeviceName");
+  const deviceInfo = document.getElementById("ob55DeviceInfo");
+  const copyState = document.getElementById("ob55CopyState");
+
+  const devices = {
+    Samsung: [
+      ["Galaxy A15 5G","Android","Phổ thông",0],
+      ["Galaxy A25 5G","Android","Phổ thông",1],
+      ["Galaxy A35 5G","Android","Tầm trung",2],
+      ["Galaxy A55 5G","Android","Tầm trung",3],
+      ["Galaxy S23 FE","Android","Cận cao cấp",4],
+      ["Galaxy S24","Android","Cao cấp",5],
+      ["Galaxy S24 Ultra","Android","Cao cấp",6],
+      ["Galaxy S25 Ultra","Android","Cao cấp",7]
+    ],
+    Apple: [
+      ["iPhone 11","iOS","Tầm trung",2],
+      ["iPhone 12","iOS","Tầm trung",3],
+      ["iPhone 13","iOS","Cận cao cấp",4],
+      ["iPhone 14 Pro","iOS","Cao cấp",5],
+      ["iPhone 15","iOS","Cao cấp",5],
+      ["iPhone 15 Pro Max","iOS","Cao cấp",6],
+      ["iPhone 16","iOS","Cao cấp",6],
+      ["iPhone 16 Pro Max","iOS","Cao cấp",7]
+    ],
+    Xiaomi: [
+      ["Redmi Note 12","Android","Phổ thông",1],
+      ["Redmi Note 13","Android","Tầm trung",2],
+      ["Redmi Note 13 Pro 5G","Android","Tầm trung",3],
+      ["Redmi Note 14 Pro 5G","Android","Tầm trung",4],
+      ["POCO X6 Pro","Android","Cận cao cấp",5],
+      ["POCO F6","Android","Cận cao cấp",5],
+      ["Xiaomi 14","Android","Cao cấp",6],
+      ["Xiaomi 15","Android","Cao cấp",7]
+    ],
+    OPPO: [
+      ["A58","Android","Phổ thông",1],
+      ["A79 5G","Android","Phổ thông",2],
+      ["Reno10 5G","Android","Tầm trung",3],
+      ["Reno11 F 5G","Android","Tầm trung",3],
+      ["Reno12 5G","Android","Cận cao cấp",4],
+      ["Reno13 5G","Android","Cận cao cấp",5],
+      ["Find X7","Android","Cao cấp",6],
+      ["Find X8 Pro","Android","Cao cấp",7]
+    ],
+    realme: [
+      ["C55","Android","Phổ thông",0],
+      ["C67","Android","Phổ thông",1],
+      ["11 Pro 5G","Android","Tầm trung",3],
+      ["12+ 5G","Android","Tầm trung",4],
+      ["13+ 5G","Android","Cận cao cấp",5],
+      ["GT 6","Android","Cao cấp",6],
+      ["GT 7 Pro","Android","Cao cấp",7]
+    ],
+    vivo: [
+      ["Y27","Android","Phổ thông",0],
+      ["Y36","Android","Phổ thông",1],
+      ["V29 5G","Android","Tầm trung",3],
+      ["V30 5G","Android","Tầm trung",4],
+      ["V40 5G","Android","Cận cao cấp",5],
+      ["X100 Pro","Android","Cao cấp",6],
+      ["X200 Pro","Android","Cao cấp",7]
+    ],
+    OnePlus: [
+      ["Nord CE 3 Lite","Android","Phổ thông",1],
+      ["Nord 3","Android","Tầm trung",3],
+      ["Nord 4","Android","Cận cao cấp",4],
+      ["OnePlus 11","Android","Cao cấp",5],
+      ["OnePlus 12","Android","Cao cấp",6],
+      ["OnePlus 13","Android","Cao cấp",7]
+    ],
+    Google: [
+      ["Pixel 6a","Android","Tầm trung",2],
+      ["Pixel 7","Android","Tầm trung",3],
+      ["Pixel 7 Pro","Android","Cận cao cấp",4],
+      ["Pixel 8","Android","Cận cao cấp",5],
+      ["Pixel 8 Pro","Android","Cao cấp",6],
+      ["Pixel 9 Pro XL","Android","Cao cấp",7]
+    ]
+  };
+
+  const presets = {
+    "Cân bằng":  {general:0,  red:0,  x2:0, x4:0, sniper:0,  free:0},
+    "Kéo đỏ":    {general:7,  red:9,  x2:6, x4:3, sniper:-4, free:4},
+    "Ổn định":   {general:-5, red:-4, x2:-3,x4:-2,sniper:3,  free:-3},
+    "Cận chiến": {general:10, red:11, x2:7, x4:1, sniper:-6, free:5}
+  };
+
+  const base = {general:184, red:178, x2:166, x4:154, sniper:112, free:170};
+  let state = {brand:"Samsung", model:"Galaxy A55 5G", preset:"Cân bằng"};
+
+  try {
+    const saved = JSON.parse(localStorage.getItem("aimlock_ob55_config") || "null");
+    if (saved && devices[saved.brand] && presets[saved.preset] &&
+        devices[saved.brand].some(d => d[0] === saved.model)) {
+      state = saved;
+    }
+  } catch (_) {}
+
+  const currentDevice = () =>
+    devices[state.brand].find(d => d[0] === state.model) || devices[state.brand][0];
+
+  const clamp = n => Math.max(1, Math.min(200, Math.round(n)));
+
+  function calculated(){
+    const d = currentDevice();
+    const p = presets[state.preset];
+    const tune = d[3] - 3;
+    return {
+      "Tổng quan": clamp(base.general + p.general + tune * 2),
+      "Red Dot": clamp(base.red + p.red + tune * 2),
+      "Ống ngắm 2X": clamp(base.x2 + p.x2 + tune),
+      "Ống ngắm 4X": clamp(base.x4 + p.x4 + tune),
+      "AWM / Sniper": clamp(base.sniper + p.sniper + tune),
+      "Nhìn xung quanh": clamp(base.free + p.free + tune * 2)
+    };
+  }
+
+  function save(){
+    try { localStorage.setItem("aimlock_ob55_config", JSON.stringify(state)); } catch (_) {}
+  }
+
+  function renderBrands(){
+    brandGrid.innerHTML = Object.keys(devices).map(b =>
+      `<button type="button" class="ob55-brand ${b===state.brand?"active":""}" data-brand="${b}">${b}</button>`
+    ).join("");
+  }
+
+  function renderModels(){
+    const q = (search.value || "").trim().toLowerCase();
+    const list = devices[state.brand].filter(d => d[0].toLowerCase().includes(q));
+    modelList.innerHTML = list.length ? list.map(d =>
+      `<button type="button" class="ob55-model ${d[0]===state.model?"active":""}" data-model="${d[0]}">${d[0]}</button>`
+    ).join("") : `<div style="grid-column:1/-1;color:#7f8998;font-size:11px;padding:10px">Không tìm thấy model phù hợp.</div>`;
+  }
+
+  function renderPresets(){
+    presetGrid.innerHTML = Object.keys(presets).map(p =>
+      `<button type="button" class="ob55-preset ${p===state.preset?"active":""}" data-preset="${p}">${p}</button>`
+    ).join("");
+  }
+
+  function renderValues(){
+    const d = currentDevice();
+    deviceName.textContent = d[0];
+    deviceInfo.textContent = `${d[1]} • ${d[2]} • OB55`;
+    const vals = calculated();
+    valuesBox.innerHTML = Object.entries(vals).map(([k,v]) =>
+      `<div class="ob55-value"><span>${k}</span><b>${v}</b></div>`
+    ).join("");
+    save();
+  }
+
+  function renderAll(){
+    renderBrands();
+    renderModels();
+    renderPresets();
+    renderValues();
+  }
+
+  function openOB55(){
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden","false");
+    document.documentElement.style.overflow = "hidden";
+    renderAll();
+  }
+
+  function closeOB55(){
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden","true");
+    document.documentElement.style.overflow = "";
+    copyState.textContent = "";
+  }
+
+  document.addEventListener("click", e => {
+    const openBtn = e.target.closest("[data-open-ob55]");
+    if (openBtn) {
+      e.preventDefault();
+      e.stopPropagation();
+      openOB55();
+      return;
+    }
+
+    if (e.target.closest("[data-close-ob55]")) {
+      closeOB55();
+      return;
+    }
+
+    const brand = e.target.closest("[data-brand]");
+    if (brand) {
+      state.brand = brand.dataset.brand;
+      state.model = devices[state.brand][0][0];
+      search.value = "";
+      renderAll();
+      return;
+    }
+
+    const model = e.target.closest("[data-model]");
+    if (model) {
+      state.model = model.dataset.model;
+      renderModels();
+      renderValues();
+      return;
+    }
+
+    const preset = e.target.closest("[data-preset]");
+    if (preset) {
+      state.preset = preset.dataset.preset;
+      renderPresets();
+      renderValues();
+    }
+  });
+
+  search.addEventListener("input", renderModels);
+
+  document.getElementById("ob55ResetBtn").addEventListener("click", () => {
+    state = {brand:"Samsung", model:"Galaxy A55 5G", preset:"Cân bằng"};
+    search.value = "";
+    renderAll();
+    copyState.textContent = "✓ Đã đưa OB55 về mặc định";
+  });
+
+  document.getElementById("ob55CopyBtn").addEventListener("click", async () => {
+    const vals = calculated();
+    const out = [
+      `ĐỘ NHẠY OB55 - ${state.model}`,
+      `Kiểu chơi: ${state.preset}`,
+      ...Object.entries(vals).map(([k,v]) => `${k}: ${v}`)
+    ].join("\n");
+
+    try {
+      await navigator.clipboard.writeText(out);
+      copyState.textContent = "✓ Đã sao chép cấu hình OB55";
+    } catch (_) {
+      copyState.textContent = "Không thể tự sao chép trên WebView này.";
+    }
+  });
+
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && modal.classList.contains("is-open")) closeOB55();
+  });
+
+  renderAll();
+})();
+</script>
+
 </body>
 </html>
