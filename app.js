@@ -224,12 +224,106 @@ function syncSinglePageAuthUI() {
   });
 }
 
+
+const AIMLOCK_SESSION_CHECK_MS = 15000;
+let aimlockSessionCheckInFlight = false;
+let aimlockForcedLogout = false;
+
+function clearAimlockAuthStorage() {
+  localStorage.removeItem("aimlock_auth");
+  localStorage.removeItem("aimlock_user");
+  localStorage.removeItem("aimlock_active_key");
+  localStorage.removeItem("aimlock_key_info");
+}
+
+function forceAimlockLogout(message = "Key đã bị vô hiệu hóa. Vui lòng đăng nhập lại.") {
+  if (aimlockForcedLogout) return;
+  aimlockForcedLogout = true;
+  clearAimlockAuthStorage();
+  syncSinglePageAuthUI();
+  showToast(message, "error");
+
+  // Reload để mọi handler của màn hình login được khởi tạo lại kể cả khi trang
+  // ban đầu được mở trong trạng thái đã đăng nhập.
+  window.setTimeout(() => {
+    window.location.reload();
+  }, 250);
+}
+
+async function validateAimlockSession() {
+  if (!isAimlockAuthenticated() || aimlockSessionCheckInFlight || aimlockForcedLogout) {
+    return;
+  }
+
+  const key = String(localStorage.getItem("aimlock_active_key") || getKeyInfo()?.key || "").trim();
+  if (!key) {
+    forceAimlockLogout("Phiên đăng nhập không hợp lệ. Vui lòng nhập lại key.");
+    return;
+  }
+
+  if (!API_BASE_URL || STATIC_PREVIEW_MODE) return;
+
+  aimlockSessionCheckInFlight = true;
+
+  try {
+    const response = await fetch(apiUrl("/api/session-check"), {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      cache: "no-store",
+      body: JSON.stringify({ key, deviceId: getDeviceId() })
+    });
+
+    let data = null;
+    try {
+      data = await response.json();
+    } catch (_) {}
+
+    // Chỉ logout khi server xác nhận phiên không còn hợp lệ.
+    // Lỗi mạng/5xx tạm thời không đá người dùng ra ngoài.
+    if ([401, 403, 404].includes(response.status) || data?.valid === false) {
+      forceAimlockLogout(data?.message || "Key đã bị vô hiệu hóa. Vui lòng đăng nhập lại.");
+      return;
+    }
+
+    if (response.ok && data?.valid === true && data?.key) {
+      const current = getKeyInfo();
+      localStorage.setItem("aimlock_key_info", JSON.stringify({ ...current, ...data.key }));
+    }
+  } catch (_) {
+    // Mất mạng không đồng nghĩa key bị thu hồi; sẽ kiểm tra lại ở nhịp kế tiếp.
+  } finally {
+    aimlockSessionCheckInFlight = false;
+  }
+}
+
+function startAimlockSessionMonitor() {
+  // Kiểm tra ngay khi app khởi động nếu đã có session cũ.
+  if (isAimlockAuthenticated()) {
+    validateAimlockSession();
+  }
+
+  window.setInterval(() => {
+    if (document.visibilityState !== "hidden") {
+      validateAimlockSession();
+    }
+  }, AIMLOCK_SESSION_CHECK_MS);
+
+  window.addEventListener("focus", validateAimlockSession);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") validateAimlockSession();
+  });
+}
+
 function reloadAimlockSinglePage() {
   syncSinglePageAuthUI();
   window.location.reload();
 }
 
 syncSinglePageAuthUI();
+startAimlockSessionMonitor();
 
 if (document.getElementById("loginScreen") && !isAimlockAuthenticated()) {
   const keyInput = document.getElementById("keyInput");

@@ -835,6 +835,72 @@ app.post("/api/verify-key", async (req, res) => {
   }
 });
 
+
+// Kiểm tra phiên đang hoạt động mà không đăng nhập lại / không chiếm thêm slot.
+// Client gọi định kỳ để key bị xóa, khóa, hết hạn hoặc bị gỡ thiết bị sẽ logout.
+app.post("/api/session-check", requireDatabase, async (req, res) => {
+  const input = cleanKey(req.body?.key);
+  const deviceId = cleanDeviceId(req.body?.deviceId);
+
+  if (!input) {
+    return res.status(401).json({ ok: false, valid: false, reason: "missing_key", message: "Phiên đăng nhập không hợp lệ." });
+  }
+
+  if (isForbiddenKey(input)) {
+    return res.status(403).json({ ok: false, valid: false, reason: "revoked", message: "Key đã bị vô hiệu hóa." });
+  }
+
+  try {
+    const result = await pool.query(
+      "SELECT * FROM keys WHERE LOWER(key_value) = LOWER($1) LIMIT 1",
+      [input]
+    );
+
+    if (!result.rows.length) {
+      return res.status(404).json({ ok: false, valid: false, reason: "deleted", message: "Key đã bị xóa bởi admin." });
+    }
+
+    const item = result.rows[0];
+
+    if (item.status !== "active") {
+      return res.status(403).json({ ok: false, valid: false, reason: "locked", message: "Key đã bị khóa bởi admin." });
+    }
+
+    if (new Date(item.expire).getTime() <= Date.now()) {
+      await pool.query("UPDATE keys SET status = 'expired' WHERE id = $1", [item.id]);
+      return res.status(403).json({ ok: false, valid: false, reason: "expired", message: "Key đã hết hạn." });
+    }
+
+    // Nếu admin Reset máy / Gỡ máy thì phiên trên thiết bị đó cũng phải mất hiệu lực.
+    const device = await pool.query(
+      "SELECT id FROM key_devices WHERE key_id = $1 AND device_id = $2 LIMIT 1",
+      [item.id, deviceId]
+    );
+
+    if (!device.rows.length) {
+      return res.status(401).json({ ok: false, valid: false, reason: "device_revoked", message: "Thiết bị đã bị gỡ khỏi key." });
+    }
+
+    await pool.query(
+      "UPDATE key_devices SET last_seen = NOW() WHERE key_id = $1 AND device_id = $2",
+      [item.id, deviceId]
+    );
+
+    return res.json({
+      ok: true,
+      valid: true,
+      key: rowToKey(item)
+    });
+  } catch (error) {
+    return res.status(dbStatusCode(error)).json({
+      ok: false,
+      valid: null,
+      retryable: isTransientDbError(error),
+      message: dbErrorMessage(error)
+    });
+  }
+});
+
 app.post("/api/admin/auth", (req, res) => {
   const provided = String(req.headers["x-admin-password"] || "").trim();
 
